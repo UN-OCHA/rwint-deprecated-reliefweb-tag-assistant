@@ -17,8 +17,8 @@ More information in [this presentation](https://docs.google.com/presentation/d/1
 Requirements:
 - python >3.5 - Available from the [Python Homepage](https://www.python.org/)
 - Language model files: list of terms and dataset in a local route in csv format
-- Themes model files: list of terms and dataset in a local route in csv format 
-Recommended to use the report_theme_uneven_multiple-30k.csv dataset
+- Themes model files: list of terms and dataset in a local route in csv format. 
+ Recommended to use the report_theme_uneven_multiple-30k.csv dataset
 
 *Sample datasets available for downloading in this [folder](https://drive.google.com/drive/folders/1Bo5B4DjtCH-tUOretNQmZvvX90bUsdwd?usp=sharing) and in the data directory*
 
