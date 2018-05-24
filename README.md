@@ -13,10 +13,12 @@ More information in [this presentation](https://docs.google.com/presentation/d/1
 - reliefweb_tag/reliefweb_predict.py - *Main methods for tagging a url using different libraries*
 - reliefweb_tag/reliefweb_tag_aux.py - *Additional functions for working with urls, files and strings*
 
-## To install and execute
+## To install and execute in background
 
 ```
+$ git clone https://github.com/reliefweb/reliefweb-tag-assistant/
+$ cd reliefweb-tag-assistant
 $ python3.5 setup.py build
 $ python3.5 setup.py install
-$ python3.5 __init.py__
+$ python3.5 __init.py__ &
 ```
