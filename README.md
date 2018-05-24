@@ -14,12 +14,19 @@ More information in [this presentation](https://docs.google.com/presentation/d/1
 - reliefweb_tag/reliefweb_tag_aux.py - *Additional functions for working with urls, files and strings*
 
 ## To install and execute in background
-Requirement: > python 3.5 - Available from the [Python Homepage](https://www.python.org/)
+Requirements:
+- python >3.5 - Available from the [Python Homepage](https://www.python.org/)
+- Language model files: list of terms and dataset in a local route in csv format
+- Themes model files: list of terms and dataset in a local route in csv format
+*Sample datasets available for downloading in this [folder](https://drive.google.com/drive/folders/1Bo5B4DjtCH-tUOretNQmZvvX90bUsdwd?usp=sharing)*
 
 ```
+# if you install from your home path, there is no need to change the config file
 $ git clone https://github.com/reliefweb/reliefweb-tag-assistant/
+$ gedit reliefweb-tag-assistant/reliefweb_config.py # configure the data main path and names of the datasets and vocabulary files.
 $ cd reliefweb-tag-assistant
-$ sudo python3.5 setup.py install
+$ sudo apt-get install python3-setuptools
+$ sudo python3 setup.py install
 $ cd reliefweb_tag
-$ python3.5 __init.py__ &
+$ python3 __init__.py &
 ```
