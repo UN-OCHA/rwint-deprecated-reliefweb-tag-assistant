@@ -14,11 +14,11 @@ More information in [this presentation](https://docs.google.com/presentation/d/1
 - reliefweb_tag/reliefweb_tag_aux.py - *Additional functions for working with urls, files and strings*
 
 ## To install and execute in background
+Requirement: > python 3.5 - Available from the [Python Homepage](https://www.python.org/)
 
 ```
 $ git clone https://github.com/reliefweb/reliefweb-tag-assistant/
 $ cd reliefweb-tag-assistant
-$ python3.5 setup.py build
-$ python3.5 setup.py install
+$ sudo python3.5 setup.py install
 $ python3.5 __init.py__ &
 ```
