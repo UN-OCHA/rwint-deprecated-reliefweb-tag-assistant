@@ -5,13 +5,10 @@ PORT = 5463
 DEBUG = False
 
 # Name and route of the temporarary file to create for the PDFs
-# TMP_PDF_FILE = '/home/deeplearning/Desktop/reliefweb deep learning/online_document.pdf'
-TMP_PDF_FILE = "C:\DeepLearning\final_data"
-# PATH_PDF_TMP_FILE
+TMP_PDF_FILE = "~/reliefweb-tag-assistant/temp/online_document.pdf"
 
 # Files with data (with read access)
-# DATA_PATH = "/home/deeplearning/Desktop/reliefweb deep learning/"
-DATA_PATH = "C:\DeepLearning\final_data"
+DATA_PATH = "~/reliefweb-tag-assistant/data/"
 DATASETS = {}
 DATASETS["theme"] =  {"vocabulary":"rw-themes.csv",
                         # "dataset":"report_theme_uneven_multiple-30k.csv" } ,
