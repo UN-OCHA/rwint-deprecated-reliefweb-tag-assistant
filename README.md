@@ -20,5 +20,6 @@ Requirement: > python 3.5 - Available from the [Python Homepage](https://www.pyt
 $ git clone https://github.com/reliefweb/reliefweb-tag-assistant/
 $ cd reliefweb-tag-assistant
 $ sudo python3.5 setup.py install
+$ cd reliefweb_tag
 $ python3.5 __init.py__ &
 ```
