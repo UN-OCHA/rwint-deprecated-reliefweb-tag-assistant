@@ -26,6 +26,7 @@ setup(
 	'cucco',
 	'flask',
 	'newspaper3k',
+	'nltk',
     ],
     python_requires='>3.5.0',
     include_package_data=True,

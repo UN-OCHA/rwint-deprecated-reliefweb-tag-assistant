@@ -132,7 +132,7 @@
 				 if (result["article_html"] == "") {
 				 	document.getElementById("body").innerHTML = result["text"]; // OK
 				 } else {
-				 	document.getElementById("body").innerHTML = result["article_html"]; // OK
+				 	document.getElementById("body").innerHTML = <xmp> + result["article_html"] + </xmp>; // OK
 				 }			
 				 document.getElementById("published-date").innerHTML = result["publish_date"]; // OK
 				 document.getElementById("language").innerHTML = JSON.stringify(result["language"]); // OK
