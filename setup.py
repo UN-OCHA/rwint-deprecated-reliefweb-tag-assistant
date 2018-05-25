@@ -14,7 +14,7 @@ setup(
     author='Miguel Hernandez',
     author_email='hernandez@reliefweb.int',
     description='ReliefWeb Tag Assistant',
-    long_description='Tag urls using ReliefWeb tags',
+    long_description=open('README.txt').read(),
     keywords='reliefweb humanitarian updates news articles neural classification tagging multitagging',
     zip_safe=False,
     install_requires=[
@@ -25,7 +25,13 @@ setup(
         'tensorflow',
 	'cucco',
 	'flask',
+	'newspaper3k',
     ],
     python_requires='>3.5.0',
-    include_package_data=True
+    include_package_data=True,
+    classifiers=[
+        'Programming Language :: Python :: 3',
+        'Natural Language :: English',
+        'Intended Audience :: Developers',
+    ],
 )
