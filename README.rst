@@ -28,20 +28,20 @@ Requirements:
 
 setuptools
 
-```
+``
 $ sudo apt-get install python3-setuptools
-```
+``
 
 pip and newspaper3k. Manual installation due to this [issue](https://github.com/codelucas/newspaper/issues/350)
 
-```
+``
 $ sudo apt-get install python3-setuptools
 pip install newspaper3k
-```
+``
 
 - Main reliefweb-tag 
 
-```
+``
 # if you install from your home path, there is no need to change the config file
 $ git clone https://github.com/reliefweb/reliefweb-tag-assistant/
 $ gedit reliefweb-tag-assistant/reliefweb_config.py # configure the data main path and names of the datasets and vocabulary files.
@@ -49,4 +49,4 @@ $ cd reliefweb-tag-assistant
 $ sudo python3 setup.py install
 $ cd reliefweb_tag
 $ python3 __init__.py &
-```
+``
