@@ -33,13 +33,13 @@ $ source testenv/bin/activate
 
 - Modules required
 
- - setuptools
+ setuptools
 
 ```
 $ sudo apt-get install python3-setuptools
 ```
 
- - pip and newspaper3k. Manual installation due to this [issue](https://github.com/codelucas/newspaper/issues/350)
+ pip and newspaper3k. Manual installation due to this [issue](https://github.com/codelucas/newspaper/issues/350)
 
 ```
 $ sudo apt-get install python3-pip
