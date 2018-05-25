@@ -9,7 +9,7 @@ setup(
     name='reliefweb_tag',
     version='0.1',
     packages=['reliefweb_tag'],
-    url='',
+    url='https://github.com/reliefweb/reliefweb-tag-assistant/',
     license='ReliefWeb',
     author='Miguel Hernandez',
     author_email='hernandez@reliefweb.int',
@@ -22,7 +22,9 @@ setup(
         'pandas',
         'sklearn',
         'keras',
-        'tensorflow'
+        'tensorflow',
+	'cucco',
+	'flask',
     ],
     python_requires='>3.5.0',
     include_package_data=True
