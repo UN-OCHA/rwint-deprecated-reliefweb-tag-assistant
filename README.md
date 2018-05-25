@@ -23,6 +23,14 @@ More information in [this presentation](https://docs.google.com/presentation/d/1
 
 ## Installing and executing in Ubuntu
 
+
+- Create and run virtual environment
+
+``
+$ virtualenv testenv --python=/usr/bin/python3.6 
+$ source testenv/bin/activate
+``
+
 - Modules required
 
 setuptools
@@ -34,8 +42,8 @@ $ sudo apt-get install python3-setuptools
 pip and newspaper3k. Manual installation due to this [issue](https://github.com/codelucas/newspaper/issues/350)
 
 ``
-$ sudo apt-get install python3-setuptools
-pip install newspaper3k
+$ sudo apt-get install python3-pip
+$ pip install newspaper3k
 ``
 
 - Main reliefweb-tag 
