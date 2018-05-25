@@ -14,7 +14,7 @@ setup(
     author='Miguel Hernandez',
     author_email='hernandez@reliefweb.int',
     description='ReliefWeb Tag Assistant',
-    long_description=open('README.txt').read(),
+    long_description=open('README.rst').read(),
     keywords='reliefweb humanitarian updates news articles neural classification tagging multitagging',
     zip_safe=False,
     install_requires=[
