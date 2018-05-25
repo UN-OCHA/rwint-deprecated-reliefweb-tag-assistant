@@ -13,7 +13,7 @@ More information in [this presentation](https://docs.google.com/presentation/d/1
 - reliefweb_tag/reliefweb_predict.py - *Main methods for tagging a url using different libraries*
 - reliefweb_tag/reliefweb_tag_aux.py - *Additional functions for working with urls, files and strings*
 
-## To install and execute in background
+## Requirements
 Requirements:
 - python >3.5 - Available from the [Python Homepage](https://www.python.org/)
 - Language model files: list of terms and dataset in a local route in csv format
@@ -21,6 +21,8 @@ Requirements:
  Recommended to use the report_theme_uneven_multiple-30k.csv dataset
 
 *Sample datasets available for downloading in this [folder](https://drive.google.com/drive/folders/1Bo5B4DjtCH-tUOretNQmZvvX90bUsdwd?usp=sharing) and in the data directory*
+
+## Installing and executing in Ubuntu
 
 ```
 # if you install from your home path, there is no need to change the config file
