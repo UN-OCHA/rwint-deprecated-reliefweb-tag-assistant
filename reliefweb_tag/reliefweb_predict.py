@@ -17,14 +17,14 @@ def tag_metadata_from_url(url):
 
     from newspaper import Article, Config
 
-    config = Config()
-    config.request_timeout = 15  # default = 7
-    config.keep_article_html = True
+    configuration = Config()
+    configuration.request_timeout = 15  # default = 7
+    configuration.keep_article_html = True
 
     article = Article("")
     # if URL IS PDF or any binary then
     if (url.lower()[-4:] in [".pdf"]):
-        article = Article(url, config)
+        article = Article(url, config=configuration)
         pdf = reliefweb_tag_aux.get_pdf_url(url)
 
         pdf_text = ' '.join(pdf)
@@ -38,7 +38,7 @@ def tag_metadata_from_url(url):
 
     else:
         # if it is not pdf
-        article = Article(url, config)
+        article = Article(url, config=configuration)
         article.download()
 
     article.html

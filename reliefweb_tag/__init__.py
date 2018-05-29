@@ -42,6 +42,9 @@ gc.collect()
 # Creating the API endpoints
 from flask import Flask, request
 app = Flask(__name__)
+app.debug = False
+app.threaded = False
+# two parameters to avoid "Tesorflow ... is not an element of this graph"
 
 #get public IP
 import socket

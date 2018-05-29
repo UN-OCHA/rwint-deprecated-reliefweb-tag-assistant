@@ -132,7 +132,8 @@
 				 if (result["article_html"] == "") {
 				 	document.getElementById("body").innerHTML = result["text"]; // OK
 				 } else {
-				 	document.getElementById("body").innerHTML = <xmp> + result["article_html"] + </xmp>; // OK
+				    document.getElementById("body").innerHTML = "<h3>Plain Text</h3>" + result["text"]; // OK
+				 	document.getElementById("body").innerHTML = document.getElementById("body").innerHTML + "<h3>HTML Text</h3><xmp>" + result["article_html"] + "</xmp>"; // OK
 				 }			
 				 document.getElementById("published-date").innerHTML = result["publish_date"]; // OK
 				 document.getElementById("language").innerHTML = JSON.stringify(result["language"]); // OK
