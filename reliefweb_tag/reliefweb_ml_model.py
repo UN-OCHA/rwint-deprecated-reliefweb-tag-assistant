@@ -90,6 +90,10 @@ class ReliefwebModel:
         model = self.build_model()
         model = self.train_model(model)
         model = self.validate_model(model)
+        
+        single_post_serie = pd.Series(["First prediction to initialize the model for multi-threading"])
+        single_test = self.tokenize.texts_to_matrix(single_post_serie)
+        model.predict(single_test)
 
         single_post_serie = pd.Series(["First prediction to initialize the model"])
         single_test = self.tokenize.texts_to_matrix(single_post_serie)
