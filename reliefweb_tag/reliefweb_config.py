@@ -2,7 +2,7 @@
 PORT = 5463
 
 # Debug mode for the messages
-DEBUG = False
+DEBUG = True
 FAST_TESTING = False  # If true, the input dataset is not processed nor normalized for quick testing
 
 # Name and route of the temporarary file to create for the PDFs

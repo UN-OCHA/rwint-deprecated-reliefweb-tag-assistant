@@ -27,13 +27,17 @@ from datetime import datetime
 
 import numpy as np
 import pandas as pd
+import reliefweb_config
 from keras import utils
 from keras.layers import Dense, Activation, Dropout
 from keras.models import Sequential
 from keras.preprocessing import text
 from sklearn.preprocessing import LabelEncoder
 
-logging.basicConfig(stream=sys.stderr, level=logging.INFO)
+if (reliefweb_config.DEBUG):
+    logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+else:
+    logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
 class ReliefwebModel:
 
