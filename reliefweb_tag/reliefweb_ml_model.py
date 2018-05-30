@@ -19,21 +19,20 @@
 from __future__ import division
 from __future__ import print_function
 
+# Debugging options
+import logging
+import sys
+import time
+from datetime import datetime
+
 import numpy as np
 import pandas as pd
-
-from sklearn.preprocessing import LabelBinarizer, LabelEncoder
-
-from keras.models import Sequential
-from keras.layers import Dense, Activation, Dropout
-from keras.preprocessing import text, sequence
 from keras import utils
+from keras.layers import Dense, Activation, Dropout
+from keras.models import Sequential
+from keras.preprocessing import text
+from sklearn.preprocessing import LabelEncoder
 
-from datetime import datetime
-import time
-
-#Debugging options
-import logging, sys
 logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
 class ReliefwebModel:
@@ -142,28 +141,33 @@ class ReliefwebModel:
 
         data = self.read_data (dataset_file)
 
+        logging.info(
+            'START: normalize_input - %d entries / ' % len(data) + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
         tic_input = time.time()
-        logging.info('START: Processing the input - %d entries / ' % len(data) + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
         tic = time.time()
+        toc = tic
 
         if (not skip_normalizing):
             for i in range(1, len(data)):
-                data[dataset_post_field][i] = reliefweb_tag_aux.normalize (data[dataset_post_field][i])
+                data[dataset_post_field][i] = reliefweb_tag_aux.normalize2(data[dataset_post_field][i])
                 data[dataset_tag_field][i] = data[dataset_tag_field][i].strip(' \t\n\r')
                 # TODO: Tokenizer later teorically does this
-                if (i % 2000 == 0):
+                if (i % 1000 == 0):
                 # Displaying time left
                     toc = time.time() # Stimation =
-                    logging.debug( "Normalized %d entries in %d seconds / Left estimation: < %d minutes" % (i , toc - tic, ((toc-tic)*(len(data)-i))/(i*60)+1 ) )
+                logging.debug("normalize_input - %d entries in %d seconds / Left estimation: < %d minutes" % (
+                    i, toc - tic, ((toc - tic) * (len(data) - i)) / (i * 60) + 1))
 
         toc_input = time.time()
-        logging.info("END: Normalized entries / %d sec Elapsed" % ( toc_input - tic_input ))
+        logging.info("END: normalize_input / %d sec Elapsed" % (toc_input - tic_input))
 
         return data
 
     def prepare_dataset (self, data, vocabulary_name, max_words= 16384 , train_percentage =0.9):
 
+        logging.info('START: prepare_dataset / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         train_size = int(len(data) * train_percentage)
 
         #creating the training and testing sets
@@ -177,7 +181,7 @@ class ReliefwebModel:
         self.MAX_WORDS = max_words
 
         self.tokenize = text.Tokenizer(num_words = self.MAX_WORDS, char_level=False, lower=True)
-        logging.info("END: input tokenizer")
+        logging.info("prepare_dataset - END: input tokenizer")
 
         self.tokenize.fit_on_texts(train_posts) # only fit on train
         self.x_train = self.tokenize.texts_to_matrix(train_posts)
@@ -191,26 +195,27 @@ class ReliefwebModel:
         self.y_train = encoder.transform(train_tags)
         self.y_test = encoder.transform(test_tags)
         self.text_labels[vocabulary_name] = encoder.classes_ # for future use
-        logging.info("END: encoder transform / " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        logging.info("prepare_dataset - END: encoder transform / " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
         # Converts the labels to a one-hot representation
         self.num_classes = np.max(self.y_train) + 1
         self.y_train = utils.to_categorical(self.y_train, self.num_classes)
         self.y_test = utils.to_categorical(self.y_test, self.num_classes)
-        logging.info("END: to_categorical conversion / " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        logging.info(
+            "prepare_dataset - END: to_categorical conversion / " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
         logging.info('  x_train shape: ' + str(self.x_train.shape))
         logging.info('  x_test shape: ' + str(self.x_test.shape))
         logging.info('  y_train shape: ' + str(self.y_train.shape))
         logging.info('  y_test shape: '+ str(self.y_test.shape))
-        logging.info('END: Processing the input / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        logging.info('END: prepare_dataset / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
         return
 
 
     def build_model(self):
 
-        logging.debug('START: Building the model / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        logging.debug('START: build_model / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
         # This model trains very quickly and 2 epochs are already more than enough
         # Training for more epochs will likely lead to overfitting on this dataset
@@ -228,12 +233,12 @@ class ReliefwebModel:
                       optimizer='adam',
                       metrics=['accuracy'])
 
-        logging.debug('END: Building the model / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        logging.debug('END: build_model / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         return model
 
 
     def train_model (self, model):
-        logging.debug('START: Training the model / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        logging.debug('START: train_model / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
         history = model.fit(self.x_train, self.y_train,
                             batch_size=self.BATCH_SIZE,
@@ -241,19 +246,19 @@ class ReliefwebModel:
                             verbose=1,
                             validation_split=0.1)
 
-        logging.debug('END: Training the model / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        logging.debug('END: train_model / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         return model
 
 
     def validate_model (self, model):
-        logging.debug('START: Validating the model / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        logging.debug('START: validate_model / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
         score = model.evaluate(self.x_test, self.y_test,
                                batch_size=self.BATCH_SIZE, verbose=1)
         logging.info('Test score: '+ str(score[0]))
         logging.info('Test accuracy: ' + str(score[1]))
 
-        logging.debug ("END: Validating the model / " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        logging.debug("END: validate_model / " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         return model
 
     # PREDICTIONS

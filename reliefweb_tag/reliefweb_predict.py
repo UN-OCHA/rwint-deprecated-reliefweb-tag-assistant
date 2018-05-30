@@ -54,7 +54,7 @@ def tag_metadata_from_url(url):
     data['publication_type'] = article.meta_data.get('PUBLICATION_TYPE', '')
     data['text'] = article.text
     data['full_text'] = article.title + " " + article.text
-    data['html'] = article.html
+    # data['html'] = article.html # html of the whole page
     data['article_html'] = article.article_html
     data['authors'] = article.authors
     data['title'] = article.title
@@ -87,11 +87,9 @@ def tag_language(model, dict):
 
 def tag_language_langdetect(dict):
     # Creates the 'langdetect_language' value on the dictionary based on the theme neural model
-
-    from langdetect import detect
-    dict['langdetect_language'] = detect(dict['full_text'])
+    import reliefweb_tag_aux
+    dict['langdetect_language'] = reliefweb_tag_aux.detect_language(dict['full_text'])
     return dict
-
 
 def tag_country_basic(dict):
     # Creates the 'countries', 'primary_country', 'countries_iso2', 'cities', 'nationalities' value on the dictionary

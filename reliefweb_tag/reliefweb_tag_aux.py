@@ -29,6 +29,7 @@ def normalize (text):
     import re
 
     cucco = Cucco()
+    text = text.lower()
     text = cucco.normalize(text)
 
     text = re.sub('(\d+)%', '%' , text) # convert numbers percent to %
@@ -44,6 +45,43 @@ def normalize (text):
     text = text.split()
     text = [w for w in text if ( len(w) > 2 and len(w) < 20 ) ] # remove short and very long words
     text = ' '.join(text)
-    text = text.lower()
 
     return text
+
+
+def normalize2(text):
+    # normalizing the input -- it is supposed to remove stopwords (if not, nltk.corpus.stopwords.words()-- list of stopwords ) /
+    # markup cleaning / new lines / punctuation and " (string.punctuation() ) / 's / to_lowercase / / names? / numbers - change to . or other char (#) / steaming (normalizing) - nltk.stem.porter.PorterStemmer()
+    # remove if length <= 3 or >= 20 or contains http / roman numbers / bullet point (.) / text + number o al reves > text / ' / - /
+    # for normalizing only necessary stop words (overrepresented), low caps, numbers by # / punctuation
+    # REMOVE PREPOSITIONS N ALL LANGUAGES
+    from cucco import Cucco
+    import re
+
+    text = text.lower()
+
+    cucco = Cucco(language=detect_language(text))
+    normalizations = [
+        'remove_stop_words',
+        # 'remove_accent_marks', # french accents
+        ('replace_hyphens', {'replacement': ' '}),
+        ('replace_symbols', {'replacement': ' '}),
+        ('replace_punctuation', {'replacement': ' '}),
+        'remove_extra_white_spaces',
+    ]
+    text = cucco.normalize(text, normalizations)
+
+    text = re.sub('(\d+)%', '%', text)  # convert numbers percent to %
+    text = re.sub('(\d+)', '#', text)  # convert numbers to #
+    # text = re.sub('#(?P<word>([a-zA-Z])+)', '\g<word>', text) # remove numbers before and after strings'
+    # text = re.sub('(?P<word>([a-zA-Z])+)#', '\g<word>', text) # remove numbers before and after strings'
+    text = text.split()
+    # text = [w for w in text if ( len(w) > 2 and len(w) < 20 ) ] # remove short and very long words
+    text = ' '.join(text)
+
+    return text
+
+
+def detect_language(text):
+    from langdetect import detect
+    return detect(text)
