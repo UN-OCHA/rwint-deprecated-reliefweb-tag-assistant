@@ -3,6 +3,7 @@ PORT = 5463
 
 # Debug mode for the messages
 DEBUG = False
+FAST_TESTING = True # If true, the input dataset is not processed nor normalized for quick testing
 
 # Name and route of the temporarary file to create for the PDFs
 TMP_PDF_FILE = "~/reliefweb-tag-assistant/temp/online_document.pdf"

@@ -59,7 +59,8 @@ class ReliefwebModel:
                               max_words = 16384, # 20000, number of words to take from each post to tokenize),
                               batch_size=128,
                               epochs=5,
-                              train_percentage=0.9
+                              train_percentage=0.9,
+                              skip_normalizing = False
                               ):
         # read_vocabulary(vocabulary_name)
         # normalize_input()
@@ -72,7 +73,8 @@ class ReliefwebModel:
         self.read_vocabulary(vocabulary_file, term_field)
         data = self.normalize_input(dataset_file,
                                     dataset_post_field,
-                                    dataset_tag_field)
+                                    dataset_tag_field,
+                                    skip_normalizing)
         self.prepare_dataset(data, vocabulary_name, max_words, train_percentage)  # 20000, number of words to take from each post to tokenize)
         model = self.create_model(batch_size, epochs)
         self.models[vocabulary_name , vocabulary_language] = model
@@ -126,7 +128,8 @@ class ReliefwebModel:
     def normalize_input(self,
                         dataset_file,
                         dataset_post_field,
-                        dataset_tag_field ):
+                        dataset_tag_field ,
+                        skip_normalizing = False):
 
         import reliefweb_tag_aux
 
@@ -140,14 +143,15 @@ class ReliefwebModel:
 
         tic = time.time()
 
-        for i in range(1, len(data)):
-            data[dataset_post_field][i] = reliefweb_tag_aux.normalize (data[dataset_post_field][i])
-            data[dataset_tag_field][i] = data[dataset_tag_field][i].strip(' \t\n\r')
-            # TODO: Tokenizer later teorically does this
-            if (i % 2000 == 0):
-            # Displaying time left
-                toc = time.time() # Stimation =
-                logging.debug( "Normalized %d entries in %d seconds / Left estimation: < %d minutes" % (i , toc - tic, ((toc-tic)*(len(data)-i))/(i*60)+1 ) )
+        if (not skip_normalizing):
+            for i in range(1, len(data)):
+                data[dataset_post_field][i] = reliefweb_tag_aux.normalize (data[dataset_post_field][i])
+                data[dataset_tag_field][i] = data[dataset_tag_field][i].strip(' \t\n\r')
+                # TODO: Tokenizer later teorically does this
+                if (i % 2000 == 0):
+                # Displaying time left
+                    toc = time.time() # Stimation =
+                    logging.debug( "Normalized %d entries in %d seconds / Left estimation: < %d minutes" % (i , toc - tic, ((toc-tic)*(len(data)-i))/(i*60)+1 ) )
 
         toc_input = time.time()
         logging.info("END: Normalized entries / %d sec Elapsed" % ( toc_input - tic_input ))

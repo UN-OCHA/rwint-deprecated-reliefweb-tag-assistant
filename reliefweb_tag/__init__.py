@@ -18,7 +18,8 @@ RWModel.create_train_model(vocabulary_name = 'language',
                               max_words=reliefweb_config.MAX_WORDS,  # 20000, number of words to take from each post to tokenize),
                               batch_size=reliefweb_config.BATCH_SIZE_LANG,
                               epochs=reliefweb_config.EPOCHS,
-                              train_percentage=reliefweb_config.TRAINING_PERCENTAGE   #0.9
+                              train_percentage=reliefweb_config.TRAINING_PERCENTAGE ,  #0.9
+                              skip_normalizing = reliefweb_config.FAST_TESTING
                               )
 print ("> MAIN: Creating neural network for themes")
 RWModel.create_train_model(vocabulary_name = 'theme',
@@ -31,7 +32,8 @@ RWModel.create_train_model(vocabulary_name = 'theme',
                               max_words=reliefweb_config.MAX_WORDS,  # 20000, number of words to take from each post to tokenize),
                               batch_size=reliefweb_config.BATCH_SIZE,
                               epochs=reliefweb_config.EPOCHS,
-                              train_percentage = reliefweb_config.TRAINING_PERCENTAGE  # 0.9
+                              train_percentage = reliefweb_config.TRAINING_PERCENTAGE , # 0.9
+                              skip_normalizing = reliefweb_config.FAST_TESTING
                               )
 
 
