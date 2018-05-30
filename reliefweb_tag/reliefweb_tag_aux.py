@@ -56,11 +56,14 @@ def normalize2(text):
     # for normalizing only necessary stop words (overrepresented), low caps, numbers by # / punctuation
     # REMOVE PREPOSITIONS N ALL LANGUAGES
     from cucco import Cucco
+    from cucco.config import Config
+
     import re
 
     text = text.lower()
-
-    cucco = Cucco(language=detect_language(text))
+    cucco_config = Config()
+    cucco_config.language = detect_language(text)
+    cucco = Cucco(config=cucco_config)
     normalizations = [
         'remove_stop_words',
         # 'remove_accent_marks', # french accents
