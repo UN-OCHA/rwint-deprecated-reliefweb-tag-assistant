@@ -29,6 +29,7 @@ setup(
         'nltk',
         'langdetect',
         'geotext',
+        'pycountry',
     ],
     python_requires='>3.5.0',
     include_package_data=True,
