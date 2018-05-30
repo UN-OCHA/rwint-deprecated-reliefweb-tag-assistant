@@ -3,7 +3,7 @@ PORT = 5463
 
 # Debug mode for the messages
 DEBUG = False
-FAST_TESTING = True # If true, the input dataset is not processed nor normalized for quick testing
+FAST_TESTING = False  # If true, the input dataset is not processed nor normalized for quick testing
 
 # Name and route of the temporarary file to create for the PDFs
 TMP_PDF_FILE = "~/reliefweb-tag-assistant/temp/online_document.pdf"
@@ -12,8 +12,8 @@ TMP_PDF_FILE = "~/reliefweb-tag-assistant/temp/online_document.pdf"
 DATA_PATH = "~/reliefweb-tag-assistant/data/"
 DATASETS = {}
 DATASETS["theme"] =  {"vocabulary":"rw-themes.csv",
-                        # "dataset":"report_theme_uneven_multiple-30k.csv" } ,
-                      "dataset":"report_theme_en-1k.csv" }
+                      "dataset": "report_theme_uneven_multiple-30k.csv"}
+# "dataset":"report_theme_en-1k.csv" }
 DATASETS["language"] =  {"vocabulary":"rw-languages.csv",
                          "dataset":"report_language-1k.csv"}
 # To access a route : DATA_PATH + DATASETS["theme"]["vocabulary"]

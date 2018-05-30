@@ -3,7 +3,6 @@ import reliefweb_config
 def get_pdf_url (pdf_url):
     # libraries: textract (many bin formats / needs chardet 2.3.0 and there is a new version for other modules)
     # pyPDF2 , read page by page
-    # TODO: Move to external aux module
     import requests
     import slate
 
