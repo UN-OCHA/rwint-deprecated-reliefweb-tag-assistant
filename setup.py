@@ -28,6 +28,7 @@ setup(
         'newspaper3k',
         'nltk',
         'langdetect',
+        'geotext',
     ],
     python_requires='>3.5.0',
     include_package_data=True,
