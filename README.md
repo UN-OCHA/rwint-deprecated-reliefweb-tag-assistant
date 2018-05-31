@@ -49,6 +49,12 @@ $ curl https://raw.githubusercontent.com/codelucas/newspaper/master/download_cor
 
 ```
 
+ [last version of slate updated with last version of PDFminer](https://github.com/timClicks/slate/issues/38) for PDF processing
+ 
+ ```
+ $ pip install https://github.com/timClicks/slate/archive/master.zip #slate
+ ```
+
 - Main reliefweb-tag 
 
 ```
