@@ -63,15 +63,28 @@ def normalize2(text):
     text = text.lower()
     cucco_config = Config()
     cucco_config.language = detect_language(text)
-    cucco = Cucco(config=cucco_config)
-    normalizations = [
-        'remove_stop_words',
-        # 'remove_accent_marks', # french accents
-        ('replace_hyphens', {'replacement': ' '}),
-        ('replace_symbols', {'replacement': ' '}),
-        ('replace_punctuation', {'replacement': ' '}),
-        'remove_extra_white_spaces',
-    ]
+
+    if (cucco_config.language in ('es', 'en', 'fr')):
+        cucco = Cucco(config=cucco_config)
+        normalizations = [
+            'remove_stop_words',
+            # 'remove_accent_marks', # french accents
+            ('replace_hyphens', {'replacement': ' '}),
+            ('replace_symbols', {'replacement': ' '}),
+            ('replace_punctuation', {'replacement': ' '}),
+            'remove_extra_white_spaces',
+        ]
+    else:
+        cucco = Cucco()
+        normalizations = [
+            # 'remove_stop_words', -- not an identified language
+            # 'remove_accent_marks', # french accents
+            ('replace_hyphens', {'replacement': ' '}),
+            ('replace_symbols', {'replacement': ' '}),
+            ('replace_punctuation', {'replacement': ' '}),
+            'remove_extra_white_spaces',
+        ]
+
     text = cucco.normalize(text, normalizations)
 
     text = re.sub('(\d+)%', '%', text)  # convert numbers percent to %

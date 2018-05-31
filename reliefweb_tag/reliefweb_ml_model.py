@@ -34,7 +34,7 @@ from keras.models import Sequential
 from keras.preprocessing import text
 from sklearn.preprocessing import LabelEncoder
 
-if (reliefweb_config.DEBUG):
+if (reliefweb_config.DEBUG): 
     logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 else:
     logging.basicConfig(stream=sys.stderr, level=logging.INFO)
