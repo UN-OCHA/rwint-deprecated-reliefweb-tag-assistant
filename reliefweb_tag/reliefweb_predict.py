@@ -1,5 +1,13 @@
-def url_to_tagged_json(model , url, threshold=0.5, diff_terms=0.1):
-    # Main method to tag a URL
+def url_to_tagged_json(model, url, threshold=0.5, diff_terms=0.1):
+    """
+    Main method to tag a URL
+    :param model:
+    :param url:
+    :param threshold:
+    :param diff_terms:
+    :return:
+    """
+
     import json
 
     sample_dict = tag_metadata_from_url(url)
@@ -12,7 +20,12 @@ def url_to_tagged_json(model , url, threshold=0.5, diff_terms=0.1):
 
 
 def tag_metadata_from_url(url):
-    # Gets all the tags from the newspaper library
+    """
+    Gets all the tags from the newspaper library
+    :param url:
+    :return:
+    """
+
     import reliefweb_tag_aux
 
     from newspaper import Article, Config
@@ -23,7 +36,7 @@ def tag_metadata_from_url(url):
 
     article = Article("")
     # if URL IS PDF or any binary then
-    if (url.lower()[-4:] in [".pdf"]):
+    if url.lower()[-4:] in [".pdf"]:
         article = Article(url, config=configuration)
         pdf = reliefweb_tag_aux.get_pdf_url(url)
 
@@ -67,18 +80,31 @@ def tag_metadata_from_url(url):
 
 
 def tag_theme(model, dict, threshold, diff_terms):
-    # Creates the 'theme' value on the dictionary based on the theme neural model
+    """
+    Creates the 'theme' value on the dictionary based on the theme neural model
+    :param model:
+    :param dict:
+    :param threshold:
+    :param diff_terms:
+    :return:
+    """
+
     text = dict['full_text']
     predicted_value = model.predict_nonlanguage_text(sample=text,
-                                                    vocabulary_name='theme',
-                                                    threshold=threshold,
-                                                    diff_terms=diff_terms)
+                                                     vocabulary_name='theme',
+                                                     threshold=threshold,
+                                                     diff_terms=diff_terms)
     dict['theme'] = predicted_value
     return dict
 
 
 def tag_language(model, dict):
-    # Creates the 'predicted_lang' value on the dictionary based on the language neural model
+    """
+    Creates the 'predicted_lang' value on the dictionary based on the language neural model
+    :param model:
+    :param dict:
+    :return:
+    """
 
     predicted_value = model.predict_language(dict['full_text'])
     dict['predicted_lang'] = predicted_value
@@ -86,19 +112,31 @@ def tag_language(model, dict):
 
 
 def tag_language_langdetect(dict):
-    # Creates the 'langdetect_language' value on the dictionary based on the theme neural model
+    """
+    Creates the 'langdetect_language' value on the dictionary based on the theme neural model
+    :param dict:
+    :return:
+    """
+
     import reliefweb_tag_aux
     dict['langdetect_language'] = reliefweb_tag_aux.detect_language(dict['full_text'])
     return dict
 
+
 def tag_country_basic(dict):
-    # Creates the 'countries', 'primary_country', 'countries_iso2', 'cities', 'nationalities' value on the dictionary
-    # using the GeoText module
-    #  from geopy.geocoders import Nominatim
-    # # geolocator = Nominatim()
-    # # location = geolocator.geocode("175 5th Avenue NYC")
-    # # print(location.address, location.latitude, location.longitude))
-    # TODO: Geotagging with coordinates
+    """
+    Creates the 'countries', 'primary_country', 'countries_iso2', 'cities', 'nationalities' value on the dictionary
+    using the GeoText module
+
+    TODO: Geotagging with coordinates
+    from geopy.geocoders import Nominatim
+    geolocator = Nominatim()
+    location = geolocator.geocode("175 5th Avenue NYC")
+    print(location.address, location.latitude, location.longitude))
+
+    :param dict:
+    :return:
+    """
 
     from geotext import GeoText
     import pycountry
@@ -109,7 +147,7 @@ def tag_country_basic(dict):
     dict['countries_iso2'] = places.country_mentions
 
     dict['primary_country'] = ""
-    if (len(places.country_mentions) > 0):
+    if len(places.country_mentions) > 0:
         country = pycountry.countries.get(alpha_2=list(places.country_mentions)[0])
         dict['primary_country'] = [country.name, list(places.country_mentions)[0]]
 
@@ -118,7 +156,3 @@ def tag_country_basic(dict):
         c = places.country_mentions.popitem(last=False)
         country = pycountry.countries.get(alpha_2=c[0])
         dict['countries'].append((country.name, c[0], c[1]))
-
-
-
-

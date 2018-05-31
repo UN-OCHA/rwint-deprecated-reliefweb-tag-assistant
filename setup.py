@@ -1,9 +1,10 @@
 import sys
-sys.path.append("/usr/local/lib/python3.5/dist-packages/")
-if sys.version_info < (3,5):
-    sys.exit ('Sorry, you should run this on Python > 3.5')
 
 from setuptools import setup
+
+sys.path.append("/usr/local/lib/python3.5/dist-packages/")
+if sys.version_info < (3, 5):
+    sys.exit('Sorry, you should run this on Python > 3.5')
 
 setup(
     name='reliefweb_tag',
@@ -23,7 +24,7 @@ setup(
         'sklearn',
         'keras',
         'tensorflow',
-	    'cucco',
+        'cucco',
         'flask',
         'newspaper3k',
         'nltk',
