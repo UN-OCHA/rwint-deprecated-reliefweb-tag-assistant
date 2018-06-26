@@ -1,0 +1,14 @@
+numpy
+pandas
+sklearn
+keras
+tensorflow
+cucco
+flask
+newspaper3k
+nltk
+langdetect
+geotext
+pycountry
+slate
+requests
