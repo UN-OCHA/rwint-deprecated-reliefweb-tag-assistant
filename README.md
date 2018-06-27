@@ -39,17 +39,17 @@ $ source testenv/bin/activate
 $ sudo apt-get install python3-setuptools
 ```
 
- pip, newspaper3k and corpus. Manual installation due to this [issue](https://github.com/codelucas/newspaper/issues/350)
+ pip for python 3 and newspaper3k. Manual installation due to this [issue](https://github.com/codelucas/newspaper/issues/350)
+ > Already in requirements.txt as an external resource
 
 ```
 $ sudo apt-get install python3-pip
 $ pip install newspaper3k
-$ sudo apt install curl
-$ curl https://raw.githubusercontent.com/codelucas/newspaper/master/download_corpora.py | python3
 
 ```
 
  [last version of slate updated with last version of PDFminer](https://github.com/timClicks/slate/issues/38) for PDF processing
+ > Already in requirements.txt as an external resource
  
  ```
  $ pip install https://github.com/timClicks/slate/archive/master.zip #slate

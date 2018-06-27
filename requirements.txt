@@ -1,0 +1,31 @@
+--extra-index-url https://github.com/timClicks/slate.git@e796bbb09ea5ab473aa33ce2984bf9fc2bebb64b
+--extra-index-url https://github.com/codelucas/newspaper.git
+numpy==1.14.5
+pandas==0.23.1
+sklearn==0.0
+Keras==2.2.0
+tensorflow==1.8.0
+cucco==2.2.1
+Flask==1.0.2
+newspaper3k==0.2.2 #0.2.6
+nltk==3.3.0
+langdetect==1.0.7
+geotext==0.3.0
+pycountry==18.5.26
+slate==0.5.2
+requests==2.19.1
+
+#Flask-RESTful==0.2.10
+#Jinja2==2.7.1
+#MarkupSafe==0.18
+#Werkzeug==0.9.4
+#aniso8601==0.82
+#cssselect==0.9.1
+#itsdangerous==0.23
+#pytz==2013.9
+#six==1.5.2
+#html2text==3.200.3
+#Django==1.11.1
+#gunicorn==19.6.0
+#psycopg2==2.6.2
+#whitenoise==3.2

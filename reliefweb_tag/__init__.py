@@ -3,6 +3,28 @@ import reliefweb_config
 import reliefweb_ml_model
 import reliefweb_predict
 
+# from https://raw.githubusercontent.com/codelucas/newspaper/master/download_corpora.py
+# -*- coding: utf-8 -*-
+"""
+Downloads the necessary NLTK models and corpora required to support
+all of newspaper's features. Modify for your own needs.
+"""
+import nltk
+
+REQUIRED_CORPORA = [
+    'brown',  # Required for FastNPExtractor
+    'punkt',  # Required for WordTokenizer
+    'maxent_treebank_pos_tagger',  # Required for NLTKTagger
+    'movie_reviews',  # Required for NaiveBayesAnalyzer
+    'wordnet',  # Required for lemmatization and Wordnet
+    'stopwords'
+]
+
+for each in REQUIRED_CORPORA:
+    print(('Downloading "{0}"'.format(each)))
+    nltk.download(each)
+print("Finished.")
+
 print("> Initializing machine learning model")
 RWModel = reliefweb_ml_model.ReliefwebModel()
 
@@ -44,7 +66,6 @@ RWModel.create_train_model(vocabulary_name='theme',
                            )
 
 import gc
-
 gc.collect()
 
 # Creating the API endpoints
