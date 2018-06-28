@@ -1,5 +1,5 @@
 # PORT for the API
-PORT = 5463
+PORT = 5000
 
 # Debug mode for the messages
 DEBUG = True
