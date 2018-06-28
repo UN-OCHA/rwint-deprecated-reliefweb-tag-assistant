@@ -34,7 +34,7 @@ setup(
         'slate',
         'requests',
     ],
-    python_requires='>3.5.0',
+    python_requires='>3.6.6',
     include_package_data=True,
     classifiers=[
         'Programming Language :: Python :: 3',

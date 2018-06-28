@@ -6,7 +6,7 @@ More information in [this presentation](https://docs.google.com/presentation/d/1
 ## Structure
 
 - rwtag.html - *HTML page calling the main API endpoint and displaing the JSOn in a friendly way* 
-- setup.py - *Python steup*
+- setup.py - *Python setup for setuptools*
 - reliefweb_tag/__init_.py - *Main program intializing the models and the API service*
 - reliefweb_tag/relieweb_config.py - *Setting for the model and location of datasets*
 - reliefweb_tag/reliefweb_ml_model.py - *Machine learning models for some of the fields/tags*
