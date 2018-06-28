@@ -1,6 +1,3 @@
-# nltk corpora files for heroku
-# also done in __init__.py
-# see https://devcenter.heroku.com/articles/python-nltk
 brown  # Required for FastNPExtractor
 punkt  # Required for WordTokenizer
 maxent_treebank_pos_tagger  # Required for NLTKTagger
