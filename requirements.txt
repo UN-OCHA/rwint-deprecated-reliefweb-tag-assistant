@@ -1,9 +1,3 @@
---extra-index-url https://github.com/timClicks/slate.git@e796bbb09ea5ab473aa33ce2984bf9fc2bebb64b
---extra-index-url https://github.com/codelucas/newspaper.git
-setuptools==39.1.0 #slate>distribute dependenciy
-#distribute==0.7.3 #slate dependency
-#slate==0.3
-https://github.com/timClicks/slate/archive/master.zip
 numpy==1.14.5
 pandas==0.23.1
 sklearn==0.0
@@ -17,6 +11,7 @@ langdetect==1.0.7
 geotext==0.3.0
 pycountry==18.5.26
 requests==2.19.1
+https://github.com/timClicks/slate/archive/master.zip #slate==0.3 / Avoid bug https://github.com/timClicks/slate/issues/38
 
 #Flask-RESTful==0.2.10
 #Jinja2==2.7.1
