@@ -1,3 +1,4 @@
+git+git://github.com/timClicks/slate.git@e796bbb09ea5ab473aa33ce2984bf9fc2bebb64b#egg=slate #slate==0.5.2 (stable ==0.3) / Avoid bug https://github.com/timClicks/slate/issues/38
 setuptools==39.1.0 #slate>distribute dependenciy
 numpy==1.14.5
 pandas==0.23.1
