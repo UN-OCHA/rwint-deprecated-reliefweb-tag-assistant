@@ -31,7 +31,7 @@ from datetime import datetime
 
 import numpy as np
 import pandas as pd
-import reliefweb_config
+from reliefweb_tag import reliefweb_config
 from keras import utils
 from keras.layers import Dense, Activation, Dropout
 from keras.models import Sequential

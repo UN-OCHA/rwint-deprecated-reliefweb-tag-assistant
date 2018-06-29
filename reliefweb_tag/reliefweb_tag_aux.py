@@ -1,4 +1,4 @@
-import reliefweb_config
+from reliefweb_tag import reliefweb_config
 
 
 def get_pdf_url(pdf_url):

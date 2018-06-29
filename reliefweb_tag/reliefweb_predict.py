@@ -26,7 +26,7 @@ def tag_metadata_from_url(url):
     :return:
     """
 
-    import reliefweb_tag_aux
+    from reliefweb_tag import reliefweb_tag_aux
 
     from newspaper import Article, Config
 
@@ -118,7 +118,7 @@ def tag_language_langdetect(dict):
     :return:
     """
 
-    import reliefweb_tag_aux
+    from reliefweb_tag import reliefweb_tag_aux
     dict['langdetect_language'] = reliefweb_tag_aux.detect_language(dict['full_text'])
     return dict
 
