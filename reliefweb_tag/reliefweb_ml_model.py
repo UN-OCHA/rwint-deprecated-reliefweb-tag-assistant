@@ -109,7 +109,7 @@ class ReliefwebModel:
             # save model
             # serialize model to JSON
             model_json = model.to_json()
-            with open("model/model_" + vocabulary_name + ".json", "w") as json_file:
+            with open("model/model_" + vocabulary_name + ".json", "w+") as json_file:
                 json_file.write(model_json)
             # serialize weights to HDF5
             model.save_weights("model/model_" + vocabulary_name + ".h5")
