@@ -1,7 +1,7 @@
 # Initializing the model
-import reliefweb_config
-import reliefweb_ml_model
-import reliefweb_predict
+from reliefweb_tag import reliefweb_config
+from reliefweb_tag import reliefweb_ml_model
+from reliefweb_tag import reliefweb_predict
 
 # from https://raw.githubusercontent.com/codelucas/newspaper/master/download_corpora.py
 # -*- coding: utf-8 -*-
