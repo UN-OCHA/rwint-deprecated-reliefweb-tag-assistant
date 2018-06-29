@@ -108,12 +108,10 @@ if __name__ == '__main__':
 
     gc.collect()
     # app.run(debug=reliefweb_config.DEBUG, host=publicIP, port=reliefweb_config.PORT)  # use_reloader=False
-    app.run(debug=reliefweb_config.DEBUG, host=’0.0.0.0')  # use_reloader=False
+    app.run(debug=reliefweb_config.DEBUG, host='0.0.0.0')  # use_reloader=False
 
-"""
-if __name__ == '/tag':
-    import gc
 
-    gc.collect()
-    app.run(debug=reliefweb_config.DEBUG, host=publicIP, port=reliefweb_config.PORT)  # use_reloader=False
-"""
+#if __name__ == '/tag':
+#    import gc
+#    gc.collect()
+#    app.run(debug=reliefweb_config.DEBUG, host=publicIP, port=reliefweb_config.PORT)  # use_reloader=False
