@@ -13,6 +13,7 @@ langdetect==1.0.7
 geotext==0.3.0
 pycountry==18.5.26
 requests==2.19.1
+gunicorn
 
 #Flask-RESTful==0.2.10
 #Jinja2==2.7.1

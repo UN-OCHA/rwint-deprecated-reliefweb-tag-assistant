@@ -1,7 +1,7 @@
 # Initializing the model
-import reliefweb_config
-import reliefweb_ml_model
-import reliefweb_predict
+from reliefweb_tag import reliefweb_config
+from reliefweb_tag import reliefweb_ml_model
+from reliefweb_tag import reliefweb_predict
 
 # from https://raw.githubusercontent.com/codelucas/newspaper/master/download_corpora.py
 # -*- coding: utf-8 -*-
@@ -107,10 +107,13 @@ if __name__ == '__main__':
     import gc
 
     gc.collect()
-    app.run(debug=reliefweb_config.DEBUG, host=publicIP, port=reliefweb_config.PORT)  # use_reloader=False
+    # app.run(debug=reliefweb_config.DEBUG, host=publicIP, port=reliefweb_config.PORT)  # use_reloader=False
+    app.run(debug=reliefweb_config.DEBUG, host=’0.0.0.0')  # use_reloader=False
 
+"""
 if __name__ == '/tag':
     import gc
 
     gc.collect()
     app.run(debug=reliefweb_config.DEBUG, host=publicIP, port=reliefweb_config.PORT)  # use_reloader=False
+"""
