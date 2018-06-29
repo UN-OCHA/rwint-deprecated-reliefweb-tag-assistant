@@ -25,19 +25,20 @@ from __future__ import print_function
 
 # Debugging options
 import logging
+import os.path
 import sys
 import time
 from datetime import datetime
-
-from reliefweb_tag import reliefweb_tag_aux
-from reliefweb_tag import reliefweb_config
 
 import numpy as np
 import pandas as pd
 from keras import utils
 from keras.layers import Dense, Activation, Dropout
 from keras.models import Sequential
+from keras.models import model_from_json
 from keras.preprocessing import text
+from reliefweb_tag import reliefweb_config
+from reliefweb_tag import reliefweb_tag_aux
 from sklearn.preprocessing import LabelEncoder
 
 if (reliefweb_config.DEBUG):
@@ -82,14 +83,38 @@ class ReliefwebModel:
         create_model (vocabulary_name)-> model
         """
 
-        self.read_vocabulary(vocabulary_file, term_field)
-        data = self.normalize_input(dataset_file,
-                                    dataset_post_field,
-                                    dataset_tag_field,
-                                    skip_normalizing)
-        self.prepare_dataset(data, vocabulary_name, max_words,
-                             train_percentage)  # 20000, number of words to take from each post to tokenize)
-        model = self.create_model(batch_size, epochs)
+        # if model file exists -> load model
+        # if not, create model and save
+
+        if (os.path.isfile("model/model_" + vocabulary_name + "_" + dataset_file + ".json")):
+            # load json and create model
+            json_file = open("model/model_" + vocabulary_name + "_" + dataset_file + ".json", 'r')
+            loaded_model_json = json_file.read()
+            json_file.close()
+            model = model_from_json(loaded_model_json)
+            # load weights into new model
+            model.load_weights("model/model_" + vocabulary_name + "_" + dataset_file + ".h5")
+            print("Loaded model " + vocabulary_name + " from disk")
+
+        else:
+
+            self.read_vocabulary(vocabulary_file, term_field)
+            data = self.normalize_input(dataset_file,
+                                        dataset_post_field,
+                                        dataset_tag_field,
+                                        skip_normalizing)
+            self.prepare_dataset(data, vocabulary_name, max_words,
+                                 train_percentage)  # 20000, number of words to take from each post to tokenize)
+            model = self.create_model(batch_size, epochs)
+            # save model
+            # serialize model to JSON
+            model_json = model.to_json()
+            with open("model/model_" + vocabulary_name + "_" + dataset_file + ".json", "w") as json_file:
+                json_file.write(model_json)
+            # serialize weights to HDF5
+            model.save_weights("model/model_" + vocabulary_name + "_" + dataset_file + ".h5")
+            print("Saved model " + vocabulary_name + " to disk")
+
         self.models[vocabulary_name, vocabulary_language] = model
 
     # pure machine learning model: builds the model, trains it and validates it
