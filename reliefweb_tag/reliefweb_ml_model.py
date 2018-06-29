@@ -29,9 +29,11 @@ import sys
 import time
 from datetime import datetime
 
+from reliefweb_tag import reliefweb_tag_aux
+from reliefweb_tag import reliefweb_config
+
 import numpy as np
 import pandas as pd
-from reliefweb_tag import reliefweb_config
 from keras import utils
 from keras.layers import Dense, Activation, Dropout
 from keras.models import Sequential
