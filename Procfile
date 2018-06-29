@@ -1,1 +1,1 @@
-web: gunicorn --timeout 99999999 reliefweb_tag:app
+web: python3 reliefweb_tag/__init.py__
