@@ -145,8 +145,6 @@ class ReliefwebModel:
                         dataset_tag_field,
                         skip_normalizing=False):
 
-        import reliefweb_tag_aux
-
         self.dataset_post_field = dataset_post_field
         self.dataset_tag_field = dataset_tag_field
 
@@ -283,7 +281,6 @@ class ReliefwebModel:
         with that condition, it returns the maximum value.
         if the next values have a different less than diff_terms, it also returns those values
         """
-        import reliefweb_tag_aux
 
         sample = reliefweb_tag_aux.normalize(sample)
         single_post_serie = pd.Series([sample])
@@ -313,7 +310,6 @@ class ReliefwebModel:
         return result
 
     def predict_language(self, sample):
-        import reliefweb_tag_aux
 
         sample = reliefweb_tag_aux.normalize(sample)
         single_post_serie = pd.Series([sample])
