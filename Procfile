@@ -1,1 +1,1 @@
-web: gunicorn reliefweb-tag-assistant:app
+web: gunicorn --timeout 99999999 reliefweb-tag-assistant:app
