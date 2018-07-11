@@ -3,16 +3,19 @@ PORT = 80
 
 # Debug mode for the messages
 DEBUG = True
-FAST_TESTING = True  # If true, the input dataset is not processed nor normalized for quick testing
+FAST_TESTING = False  # If true, the input dataset is not processed nor normalized for quick testing
 
 # Name and route of the temporarary file to create for the PDFs
 # TMP_PDF_FILE = "~/reliefweb-tag-assistant/temp/online_document.pdf"
-TMP_PDF_FILE = "~/temp/online_document.pdf"  # config for Heroku
+TMP_PDF_FILE = "/home/deeplearning/PycharmProjects/reliefweb-tag-assistant-github/temp/"
+#TMP_PDF_FILE = "~/temp/online_document.pdf"  # config for Heroku
 
-
+#MODEL_PATH = "~/model/"
+MODEL_PATH = "/home/deeplearning/PycharmProjects/reliefweb-tag-assistant-github/model/"
 # Files with data (with read access)
 # DATA_PATH = "~/reliefweb-tag-assistant/data/"
-DATA_PATH = "~/data/"  #config for Heroku
+# DATA_PATH = "~/data/"  #config for Heroku
+DATA_PATH = "/home/deeplearning/PycharmProjects/reliefweb-tag-assistant-github/data/"
 DATASETS = {}
 DATASETS["theme"] = {"vocabulary": "rw-themes.csv",
                      #"dataset": "report_theme_uneven_multiple-30k.csv"}

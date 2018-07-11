@@ -63,6 +63,7 @@ class ReliefwebModel:
                            vocabulary_name,
                            vocabulary_file,
                            dataset_file,
+                           model_path,
                            term_field='value',
                            vocabulary_language='English',  # values: English, Spanish, French
                            dataset_post_field='post',
@@ -86,14 +87,16 @@ class ReliefwebModel:
         # if model file exists -> load model
         # if not, create model and save
 
-        if (os.path.isfile("model/model_" + vocabulary_name +  ".json")):
+        print("Looking for file  " + model_path + "model_" + vocabulary_name + ".json")
+
+        if (os.path.isfile(model_path + "model_" + vocabulary_name + ".json")):
             # load json and create model
-            json_file = open("model/model_" + vocabulary_name +  ".json", 'r')
+            json_file = open(model_path + "model_" + vocabulary_name + ".json", 'r')
             loaded_model_json = json_file.read()
             json_file.close()
             model = model_from_json(loaded_model_json)
             # load weights into new model
-            model.load_weights("model/model_" + vocabulary_name + ".h5")
+            model.load_weights(model_path + "model_" + vocabulary_name + ".h5")
             print("Loaded model " + vocabulary_name + " from disk")
 
         else:
@@ -107,12 +110,13 @@ class ReliefwebModel:
                                  train_percentage)  # 20000, number of words to take from each post to tokenize)
             model = self.create_model(batch_size, epochs)
             # save model
+            # serialize weights to HF5
+            model.save_weights(model_path + "model_" + vocabulary_name + ".h5")
             # serialize model to JSON
             model_json = model.to_json()
-            with open("model/model_" + vocabulary_name + ".json", "w+") as json_file:
-                json_file.write(model_json)
-            # serialize weights to HDF5
-            model.save_weights("model/model_" + vocabulary_name + ".h5")
+            json_file =  open(model_path + "model_" + vocabulary_name + ".json", "w+")
+            json_file.write(model_json)
+            json_file.close()
             print("Saved model " + vocabulary_name + " to disk")
 
         self.models[vocabulary_name, vocabulary_language] = model

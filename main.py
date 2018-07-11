@@ -1,15 +1,6 @@
-# Initializing the model
-from reliefweb_tag import reliefweb_config
-from reliefweb_tag import reliefweb_ml_model
-from reliefweb_tag import reliefweb_predict
+print ("Initializing the ReliefWeb Tag Assistant: auto-tag urls using RW Tags and Machine Learning")
 
-# from https://raw.githubusercontent.com/codelucas/newspaper/master/download_corpora.py
-# -*- coding: utf-8 -*-
-"""
-Downloads the necessary NLTK models and corpora required to support
-all of newspaper's features. Modify for your own needs.
-"""
-import nltk
+
 
 REQUIRED_CORPORA = [
     'brown',  # Required for FastNPExtractor
@@ -20,10 +11,26 @@ REQUIRED_CORPORA = [
     'stopwords'
 ]
 
+print("Start downloading nltk corpora.", flush=True)
+
+import nltk
+
 for each in REQUIRED_CORPORA:
     print(('Downloading "{0}"'.format(each)))
     nltk.download(each)
-print("Finished.")
+
+print("Finished downloading nltk corpora.")
+
+
+# Initializing the model
+from reliefweb_tag import reliefweb_config
+from reliefweb_tag import reliefweb_ml_model
+from reliefweb_tag import reliefweb_predict
+
+# from https://raw.githubusercontent.com/codelucas/newspaper/master/download_corpora.py
+# -*- coding: utf-8 -*-
+## Downloads the necessary NLTK models and corpora required to support
+## all of newspaper's features. Modify for your own needs.
 
 print("> Initializing machine learning model")
 RWModel = reliefweb_ml_model.ReliefwebModel()
@@ -36,6 +43,7 @@ RWModel.create_train_model(vocabulary_name='language',
                            # path+"rw-languages.csv",
                            dataset_file=reliefweb_config.DATA_PATH + reliefweb_config.DATASETS["language"]["dataset"],
                            # path+'report_language-1k.csv',
+                           model_path = reliefweb_config.MODEL_PATH,
                            term_field='language',
                            vocabulary_language='',  # values: English, Spanish, French, ''
                            dataset_post_field='post',
@@ -54,6 +62,7 @@ RWModel.create_train_model(vocabulary_name='theme',
                                "vocabulary"],  # path+"rw-themes.csv",
                            dataset_file=reliefweb_config.DATA_PATH + reliefweb_config.DATASETS["theme"]["dataset"],
                            # path+'report_theme_uneven_multiple-30k.csv',#'report_theme_en-1k.csv',#
+                           model_path = reliefweb_config.MODEL_PATH,
                            term_field='theme',
                            dataset_post_field='post',
                            dataset_tag_field='theme_name',
