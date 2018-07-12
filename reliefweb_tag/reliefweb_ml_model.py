@@ -51,11 +51,11 @@ else:
 
 
 class ReliefwebModel:
-#EeliefwebModel is an array of models and more attributes on its root.
+#ReliefwebModel is an array of models and more attributes on its root.
 
     def __init__(self):
 
-        self.models = {}
+        self.model = {}
         self.text_labels = {}
         pd.options.mode.chained_assignment = None  # don't display warnings from pandas
         return
@@ -139,8 +139,8 @@ class ReliefwebModel:
             print("Saved model " + vocabulary_name + " to disk")
 
         # this is key : save the graph after loading the model
-        self.graphs[vocabulary_name] = tf.get_default_graph()
-        self.models[vocabulary_name, vocabulary_language] = model
+        self.graph = tf.get_default_graph()
+        self.model = model
 
     # pure machine learning model: builds the model, trains it and validates it
     def create_model(self,
@@ -334,40 +334,42 @@ class ReliefwebModel:
         if the next values have a different less than diff_terms, it also returns those values
         """
 
-        sample = reliefweb_tag_aux.normalize(sample)
-        single_post_serie = pd.Series([sample])
-        single_test = self.tokenize.texts_to_matrix(single_post_serie)
-        prediction = model.predict(single_test)
-        prev_predicted_confidence = 1
-        predicted_label = ""
-        predicted_confidence = 1
-        result = {}
-
-        while ((predicted_confidence > threshold)
-               or
-               (((prev_predicted_confidence - predicted_confidence) / predicted_confidence) < diff_terms)
-        ):
-            if len(result) > 0:
-                prev_predicted_confidence = float(result[predicted_label])
-            predicted_confidence = prediction[0, np.argmax(prediction)]
-            predicted_label = self.text_labels[vocabulary_name][np.argmax(prediction)]
-            result[predicted_label] = str(predicted_confidence)
-            prediction[0, np.argmax(prediction)] = 0
-
-        # order the result by %
-
-        from operator import itemgetter
-        result = sorted(result.items(), key=itemgetter(1), reverse=True)
-
-        return result
-
-    def predict_language(self, sample):
-    # Debugging this function. 
-        print(self.graphs.keys())
-        graph = self.graphs['language']
+        graph = self.graph
         with graph.as_default():
 
-            model = self.models['language', ''] 
+            sample = reliefweb_tag_aux.normalize(sample)
+            single_post_serie = pd.Series([sample])
+            single_test = self.tokenize.texts_to_matrix(single_post_serie)
+            prediction = model.predict(single_test)
+            prev_predicted_confidence = 1
+            predicted_label = ""
+            predicted_confidence = 1
+            result = {}
+
+            while ((predicted_confidence > threshold)
+                   or
+                   (((prev_predicted_confidence - predicted_confidence) / predicted_confidence) < diff_terms)
+            ):
+                if len(result) > 0:
+                    prev_predicted_confidence = float(result[predicted_label])
+                predicted_confidence = prediction[0, np.argmax(prediction)]
+                predicted_label = self.text_labels[vocabulary_name][np.argmax(prediction)]
+                result[predicted_label] = str(predicted_confidence)
+                prediction[0, np.argmax(prediction)] = 0
+
+            # order the result by %
+
+            from operator import itemgetter
+            result = sorted(result.items(), key=itemgetter(1), reverse=True)
+
+            return result
+
+    def predict_language(self, sample):
+
+        graph = self.graph
+        with graph.as_default():
+
+            model = self.model
             
             self.tokenize = text.Tokenizer(num_words=reliefweb_config.MAX_WORDS, char_level=False, lower=True)
 
@@ -389,34 +391,40 @@ class ReliefwebModel:
                                   vocabulary_name,
                                   threshold=0.5,
                                   diff_terms=0.05):
-        result = []
-        if self.models['language', ''] == None:
-            logging.ERROR("ERROR: The language model has not been defined yet")
-            return result
-        else:
-            language = self.predict_language(sample)[0][0]
-            # TODO: If there is no value this return an error and not "None"
-            if self.models[vocabulary_name, language] == None:
-                logging.ERROR("ERROR: The model for vocabulary '%s' and language '%s' has not been defined yet" % (
-                    vocabulary_name, language))
+        graph = self.graph
+        with graph.as_default():
+
+            result = []
+            if self.model == None:
+                logging.ERROR("ERROR: The language model has not been defined yet")
                 return result
             else:
-                result = self.predict_value(self.models[vocabulary_name, language], vocabulary_name, sample, threshold,
-                                            diff_terms)
-        return result
+                language = self.predict_language(sample)[0][0]
+                # TODO: If there is no value this return an error and not "None"
+                if self.model == None:
+                    logging.ERROR("ERROR: The model for vocabulary '%s' and language '%s' has not been defined yet" % (
+                        vocabulary_name, language))
+                    return result
+                else:
+                    result = self.predict_value(self.model, vocabulary_name, sample, threshold,
+                                                diff_terms)
+            return result
 
     def predict_nonlanguage_text(self,
                                  sample,
                                  vocabulary_name,
                                  threshold=0.5,
                                  diff_terms=0.05):
-        result = []
+        graph = self.graph
+        with graph.as_default():
 
-        ## TODO: If there is no value this return an error and not "None"
-        if self.models[vocabulary_name, ''] == None:
-            logging.ERROR("ERROR: The unique model for vocabulary '%s' has not been defined yet" % (vocabulary_name))
+            result = []
+
+            ## TODO: If there is no value this return an error and not "None"
+            if self.model == None:
+                logging.ERROR("ERROR: The unique model for vocabulary '%s' has not been defined yet" % (vocabulary_name))
+                return result
+            else:
+                result = self.predict_value(self.model, vocabulary_name, sample, threshold,
+                                            diff_terms)
             return result
-        else:
-            result = self.predict_value(self.models[vocabulary_name, ''], vocabulary_name, sample, threshold,
-                                        diff_terms)
-        return result
