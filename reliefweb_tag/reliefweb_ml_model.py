@@ -36,9 +36,10 @@ from keras import utils
 from keras.layers import Dense, Activation, Dropout
 from keras.models import Sequential
 from keras.models import model_from_json
+from keras.models import load_model
 from keras.preprocessing import text
-from reliefweb_tag import reliefweb_config
-from reliefweb_tag import reliefweb_tag_aux
+import reliefweb_config
+import reliefweb_tag_aux
 from sklearn.preprocessing import LabelEncoder
 
 if (reliefweb_config.DEBUG):
@@ -89,7 +90,10 @@ class ReliefwebModel:
 
         print("Looking for file  " + model_path + "model_" + vocabulary_name + ".json")
 
-        if (os.path.isfile(model_path + "model_" + vocabulary_name + ".json")):
+
+        model = Sequential()
+
+        if (os.path.isfile(model_path + "model_" + vocabulary_name + ".model")):
             # load json and create model
             json_file = open(model_path + "model_" + vocabulary_name + ".json", 'r')
             loaded_model_json = json_file.read()
@@ -97,6 +101,7 @@ class ReliefwebModel:
             model = model_from_json(loaded_model_json)
             # load weights into new model
             model.load_weights(model_path + "model_" + vocabulary_name + ".h5")
+            model = load_model(model_path + "model_" + vocabulary_name + ".model")
             print("Loaded model " + vocabulary_name + " from disk")
 
         else:
@@ -110,6 +115,7 @@ class ReliefwebModel:
                                  train_percentage)  # 20000, number of words to take from each post to tokenize)
             model = self.create_model(batch_size, epochs)
             # save model
+            model.save(model_path + "model_" + vocabulary_name + ".model")
             # serialize weights to HF5
             model.save_weights(model_path + "model_" + vocabulary_name + ".h5")
             # serialize model to JSON

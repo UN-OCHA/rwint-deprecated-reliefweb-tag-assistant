@@ -11,10 +11,10 @@ def url_to_tagged_json(model, url, threshold=0.5, diff_terms=0.1):
     import json
 
     sample_dict = tag_metadata_from_url(url)
-    tag_theme(model, sample_dict, threshold, diff_terms)
-    tag_language(model, sample_dict)
     tag_language_langdetect(sample_dict)
     tag_country_basic(sample_dict)
+    tag_language(model, sample_dict)
+    tag_theme(model, sample_dict, threshold, diff_terms)
 
     return json.dumps(sample_dict, indent=4)
 
@@ -26,7 +26,7 @@ def tag_metadata_from_url(url):
     :return:
     """
 
-    from reliefweb_tag import reliefweb_tag_aux
+    import reliefweb_tag_aux
 
     from newspaper import Article, Config
 
@@ -118,7 +118,7 @@ def tag_language_langdetect(dict):
     :return:
     """
 
-    from reliefweb_tag import reliefweb_tag_aux
+    import reliefweb_tag_aux
     dict['langdetect_language'] = reliefweb_tag_aux.detect_language(dict['full_text'])
     return dict
 
