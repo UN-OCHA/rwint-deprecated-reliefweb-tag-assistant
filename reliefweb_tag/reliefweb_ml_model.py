@@ -30,6 +30,8 @@ import sys
 import time
 from datetime import datetime
 
+import tensorflow as tf
+
 import numpy as np
 import pandas as pd
 from keras import utils
@@ -49,6 +51,7 @@ else:
 
 
 class ReliefwebModel:
+#EeliefwebModel is an array of models and more attributes on its root.
 
     def __init__(self):
 
@@ -92,8 +95,18 @@ class ReliefwebModel:
 
 
         model = Sequential()
+        global graphs 
+        self.graphs = {}
+        #graphs[vocabulary_name] = tf.Graph()
 
         if (os.path.isfile(model_path + "model_" + vocabulary_name + ".model")):
+            self.read_vocabulary(vocabulary_file, term_field)
+            data = self.normalize_input(dataset_file,
+                                        dataset_post_field,
+                                        dataset_tag_field,
+                                        skip_normalizing=True)
+            self.prepare_dataset(data, vocabulary_name, max_words,
+                                 train_percentage)  # 20000, number of words to take from each post to tokenize)
             # load json and create model
             json_file = open(model_path + "model_" + vocabulary_name + ".json", 'r')
             loaded_model_json = json_file.read()
@@ -103,7 +116,7 @@ class ReliefwebModel:
             model.load_weights(model_path + "model_" + vocabulary_name + ".h5")
             model = load_model(model_path + "model_" + vocabulary_name + ".model")
             print("Loaded model " + vocabulary_name + " from disk")
-
+            
         else:
 
             self.read_vocabulary(vocabulary_file, term_field)
@@ -125,6 +138,8 @@ class ReliefwebModel:
             json_file.close()
             print("Saved model " + vocabulary_name + " to disk")
 
+        # this is key : save the graph after loading the model
+        self.graphs[vocabulary_name] = tf.get_default_graph()
         self.models[vocabulary_name, vocabulary_language] = model
 
     # pure machine learning model: builds the model, trains it and validates it
@@ -347,18 +362,27 @@ class ReliefwebModel:
         return result
 
     def predict_language(self, sample):
+    # Debugging this function. 
+        print(self.graphs.keys())
+        graph = self.graphs['language']
+        with graph.as_default():
 
-        sample = reliefweb_tag_aux.normalize(sample)
-        single_post_serie = pd.Series([sample])
-        single_test = self.tokenize.texts_to_matrix(single_post_serie)
-        prediction = self.models['language', ''].predict(single_test)
+            model = self.models['language', ''] 
+            
+            self.tokenize = text.Tokenizer(num_words=reliefweb_config.MAX_WORDS, char_level=False, lower=True)
 
-        predicted_confidence = prediction[0, np.argmax(prediction)]
-        predicted_label = self.text_labels['language'][np.argmax(prediction)]
+            sample = reliefweb_tag_aux.normalize(sample)
+            single_post_serie = pd.Series([sample])
+            self.tokenize.fit_on_texts(single_post_serie)  # only fit on train
+            single_test = self.tokenize.texts_to_matrix(single_post_serie)
+            prediction = model.predict(single_test)
 
-        # print ("DEBUG -- language: " +sample + " / " + str(single_test) + "/"+ predicted_label + " / " + str(predicted_confidence) + " /  " + str(self.text_labels['language']) + " / " + str(prediction))
+            predicted_confidence = prediction[0, np.argmax(prediction)]
+            predicted_label = self.text_labels['language'][np.argmax(prediction)]
 
-        return {predicted_label: str(predicted_confidence)}
+            # print ("DEBUG -- language: " +sample + " / " + str(single_test) + "/"+ predicted_label + " / " + str(predicted_confidence) + " /  " + str(self.text_labels['language']) + " / " + str(prediction))
+
+            return {predicted_label: str(predicted_confidence)}
 
     def predict_multilingual_text(self,
                                   sample,

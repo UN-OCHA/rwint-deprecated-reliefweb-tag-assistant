@@ -14,7 +14,7 @@ def url_to_tagged_json(model, url, threshold=0.5, diff_terms=0.1):
     tag_language_langdetect(sample_dict)
     tag_country_basic(sample_dict)
     tag_language(model, sample_dict)
-    tag_theme(model, sample_dict, threshold, diff_terms)
+    tag_theme(model['theme', ''] , sample_dict, threshold, diff_terms)
 
     return json.dumps(sample_dict, indent=4)
 
