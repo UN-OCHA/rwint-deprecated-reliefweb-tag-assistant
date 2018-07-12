@@ -38,8 +38,8 @@ from keras.models import Sequential
 from keras.models import model_from_json
 from keras.models import load_model
 from keras.preprocessing import text
-import reliefweb_config
-import reliefweb_tag_aux
+from reliefweb_tag import reliefweb_config
+from reliefweb_tag import reliefweb_tag_aux
 from sklearn.preprocessing import LabelEncoder
 
 if (reliefweb_config.DEBUG):
