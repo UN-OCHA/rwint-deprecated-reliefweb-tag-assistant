@@ -117,7 +117,7 @@
             //Use "$.get();" in order to perform a GET-Request (you have to take a look in the rest-API-documentation, if you're unsure what you need)
             //The Browser downloads the webpage from the given url, and returns the data.
 	    //		$.get( "https://api.reliefweb.int/v1" , function( data ) {
-            $.get( "http://192.168.140.128:5463/tag?url=" + document.getElementById("url").value , function( data ) {
+            $.get( "https://rw-tag-v2.herokuapp.com/tag?url=" + document.getElementById("url").value , function( data ) {
                  //As soon as the browser finished downloading, this function is called.
 				
 				result = JSON.parse(data);
