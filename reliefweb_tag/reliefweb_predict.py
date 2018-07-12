@@ -26,7 +26,7 @@ def tag_metadata_from_url(url):
     :return:
     """
 
-    from reliefweb_tagimport reliefweb_tag_aux
+    from reliefweb_tag import reliefweb_tag_aux
 
     from newspaper import Article, Config
 
