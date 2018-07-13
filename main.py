@@ -4,20 +4,21 @@ from reliefweb_tag import reliefweb_ml_model, reliefweb_predict, reliefweb_confi
 from flask import Flask, request
 import socket
 
-global RWModel
-RWModel = {}
-
-# Creating the API endpoints
+global app
 app = Flask(__name__)
 app.debug = False
 app.threaded = False
 
+global RWModel
+RWModel = {}
 
-# two parameters to avoid "Tesorflow ... is not an element of this graph"
+print ("** In the main flow **")
+
 
 def init():
     print("Initializing the ReliefWeb Tag Assistant: auto-tag urls using RW Tags and Machine Learning")
 
+    # Creating the API endpoints
     REQUIRED_CORPORA = [
         'brown',  # Required for FastNPExtractor
         'punkt',  # Required for WordTokenizer
@@ -111,6 +112,7 @@ def RWtag():
         init()
     json_data = reliefweb_predict.url_to_tagged_json(model=RWModel, url=sample, threshold=reliefweb_config.THRESHOLD,
                                                      diff_terms=reliefweb_config.DIFF_TERMS_THRESHOLD)
+    print ("\nDone prediction for: " + sample)
     return json_data
 
 
@@ -136,6 +138,5 @@ if __name__ == '__main__':
     s.close()
 
     # app.run(debug=reliefweb_config.DEBUG, host=publicIP, port=reliefweb_config.PORT)  # use_reloader=False
-    if (RWModel == {}):
-        init()
+    init()
     app.run(debug=reliefweb_config.DEBUG, host='0.0.0.0')  # use_reloader=False // This does not call to main
