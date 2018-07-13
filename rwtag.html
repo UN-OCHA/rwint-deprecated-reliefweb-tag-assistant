@@ -118,7 +118,7 @@
             //The Browser downloads the webpage from the given url, and returns the data.
 	        //$.get( "https://api.reliefweb.int/v1" , function( data ) {
 
-	        if (window.location.hostname.includes("heroku") ) url = "https://rw-tag-v2.herokuapp.com";
+	        if (window.location.hostname.includes("github") ) url = "https://rw-tag-v2.herokuapp.com";
 	        else url = "http://0.0.0.0:5000";
 
             $.get( url + "/tag?url=" + document.getElementById("url").value , function( data ) {
@@ -142,7 +142,7 @@
 				 document.getElementById("published-date").innerHTML = result["publish_date"]; // OK
 				 document.getElementById("language").innerHTML = JSON.stringify(result["language"]); // OK
 				 document.getElementById("meta-language").innerHTML = result["meta_lang"]; // OK
-			         document.getElementById("predict-language").innerHTML = prettyDict(result["predicted_lang"],true);
+			     document.getElementById("predict-language").innerHTML = prettyDict(result["predicted_lang"],true);
 				 document.getElementById("language-langpredict").innerHTML = result["langdetect_language"]; // OK
 				 document.getElementById("meta-language").innerHTML = result["meta_lang"]; // OK
 				 document.getElementById("summary").innerHTML = result["summary"]; // OK
@@ -171,16 +171,21 @@
 				 document.getElementById("tags").innerHTML = prettyArray(result["tags"]); // OK
 				 document.getElementById("meta-keywords").innerHTML = prettyArray(result["meta_keywords"]); // OK
 				 document.getElementById("topics").innerHTML = JSON.stringify(result["topics"]); // OK
+				 document.getElementById("cities").innerHTML = prettyArray(result["cities"]); // OK
+				 document.getElementById("nationalities").innerHTML = prettyArray(result["nationalities"]); // OK
+				 document.getElementById("publication_type").innerHTML = JSON.stringify(result["publication_type"]); // OK
+
+
 
             });
         }
 
     </script>
 
-<link rel="apple-touch-icon" href="/profiles/reliefweb/themes/kobe/images/apple-touch-icon.png">
-<link rel="icon" href="/profiles/reliefweb/themes/kobe/images/favicon.png">
-<!--[if IE]><link rel="shortcut icon" href="/profiles/reliefweb/themes/kobe/favicon.ico"><![endif]-->
-<link rel="shortcut icon" href="https://reliefweb.int/profiles/reliefweb/themes/kobe/favicon.ico" type="image/vnd.microsoft.icon">
+<link rel="apple-touch-icon" href="favicon.ico">
+<link rel="icon" href="favicon.ico">
+<!--[if IE]><link rel="shortcut icon" href="favicon.ico"><![endif]-->
+<link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon">
 
  <title>ReliefWeb Tag Assistant</title>
 
@@ -266,7 +271,8 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 
 </div></div>
 <div class="field body" id="body">
-<p><i>This is the body of your extracted article.</i></a></p></div>
+<p><i>This is the body of your extracted article.</i></p>
+</div>
 
 </div>
 </div>
@@ -293,7 +299,7 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
   </div>  
 
 RW Fields 
-<div class="block block-reliefweb-node block-delta-node-fields clearfix" id="block-reliefweb-node-node-fields">
+<div class="block block-reliefweb-node block-delta-node-fields clearfix" id="block-reliefweb-node-node-fields-1">
 
 <div class="block-content clearfix">
 <ul class="fields">
@@ -307,9 +313,9 @@ RW Fields
 
 <p></p>Additional meta information
 
-<div class="block block-reliefweb-node block-delta-node-fields clearfix" id="block-reliefweb-node-node-fields">
+<div class="block block-reliefweb-node block-delta-node-fields clearfix" id="block-reliefweb-node-node-fields-2">
  <div class="block-content clearfix"><ul class="fields">
-<li class="field ocha-format"><h4>OCHA Format (not implemented):</h4><ul><li id="source"><i>Not implemented</i></li></ul></li>
+<li class="field ocha-format"><h4>OCHA Format (not implemented):</h4><ul><li id="ocha_format"><i>Not implemented</i></li></ul></li>
 <li class="field content-format"><h4>Source:</h4><ul><li id="source"><i>Source</i></li></ul></li>
 <li class="field content-format"><h4>Authors:</h4><ul><li id="authors"><i>Authors</i></li></ul></li>
 <li class="field content-format"><h4>Keywords:</h4><ul><li id="keywords"><i>Keywords</i></li></ul></li>
@@ -320,6 +326,13 @@ RW Fields
 <li class="field language"><h4>Meta language:</h4><ul><li id="meta-language"><i>Meta Language</i></li></ul></li>
 <li class="field language"><h4>Predicted Language (unstable):</h4><ul><li id="predict-language"><i>Language: Percentage</i></li></ul></li>
 <li class="field content-format"><h4>Top Image URL:</h4><ul><li id="top-image-url"><i>sample_url</i></li></ul></li>
+
+<li class="field content-format"><h4>Cities:</h4><ul><li id="cities"><i>City 1</i></li></ul></li>
+<li class="field content-format"><h4>Nationalities:</h4><ul><li id="nationalities"><i>Nationality 1</i></li></ul></li>
+<li class="field content-format"><h4>Publication Type:</h4><ul><li id="publication_type"><i>Publication type</i></li></ul></li>
+
+
+
  </ul></div>
 
 </div>
@@ -338,10 +351,6 @@ RW Fields
 
   </div>
 <!-- End Content -->
-
-
-
-<script type="text/javascript">window.NREUM||(NREUM={});NREUM.info={"beacon":"bam.nr-data.net","licenseKey":"e47e4f98d6","applicationID":"49630826","transactionName":"bgNRZhdZXEtTUBcPXVdJclERUV1WHV0MAldmFlJVAGdEUVdE","queueTime":0,"applicationTime":219,"atts":"QkRSEF9DT0U=","errorBeacon":"bam.nr-data.net","agent":""}</script>
 
 
 </div></body></html>
