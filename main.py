@@ -113,7 +113,7 @@ def htmlpage():
 
 @app.route("/test")
 def test():
-    print ("TEST ENDPOINT")
+    return "TEST ENDPOINT"
 
 
 if __name__ == '__main__':
@@ -127,7 +127,8 @@ if __name__ == '__main__':
     s.close()
 
     # app.run(debug=reliefweb_config.DEBUG, host=publicIP, port=reliefweb_config.PORT)  # use_reloader=False
-    init()
+    if (RWModel == {}):
+       init()
     app.run(debug=reliefweb_config.DEBUG, host='0.0.0.0')  # use_reloader=False // This does not call to main
 
 

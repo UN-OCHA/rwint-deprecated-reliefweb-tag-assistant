@@ -154,5 +154,6 @@ def tag_country_basic(dict):
     dict['countries'] = []
     while len(places.country_mentions) > 0:
         c = places.country_mentions.popitem(last=False)
+        if (c[0]=='UK'): c[0]='GB'
         country = pycountry.countries.get(alpha_2=c[0])
         dict['countries'].append((country.name, c[0], c[1]))

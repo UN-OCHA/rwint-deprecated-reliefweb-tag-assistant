@@ -44,14 +44,14 @@ from reliefweb_tag import reliefweb_config
 from reliefweb_tag import reliefweb_tag_aux
 from sklearn.preprocessing import LabelEncoder
 
-if (reliefweb_config.DEBUG):
+if reliefweb_config.DEBUG:
     logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 else:
     logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
 
 class ReliefwebModel:
-#ReliefwebModel is an array of models and more attributes on its root.
+    # ReliefwebModel is an array of models and more attributes on its root.
 
     def __init__(self):
 
@@ -93,13 +93,9 @@ class ReliefwebModel:
 
         print("Looking for file  " + model_path + "model_" + vocabulary_name + ".json")
 
-
         model = Sequential()
-        global graphs 
-        self.graphs = {}
-        #graphs[vocabulary_name] = tf.Graph()
 
-        if (os.path.isfile(model_path + "model_" + vocabulary_name + ".model")):
+        if os.path.isfile(model_path + "model_" + vocabulary_name + ".model"):
             self.read_vocabulary(vocabulary_file, term_field)
             data = self.normalize_input(dataset_file,
                                         dataset_post_field,
@@ -174,7 +170,6 @@ class ReliefwebModel:
         data.head()
 
         logging.debug('END: Reading the input / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-        self.data = data
         return data
 
     def read_vocabulary(self, vocabulary_file, term_field):
@@ -210,7 +205,7 @@ class ReliefwebModel:
         tic = time.time()
         toc = tic
 
-        if (not skip_normalizing):
+        if not skip_normalizing:
             for i in range(1, len(data)):
                 data[dataset_post_field][i] = reliefweb_tag_aux.normalize2(data[dataset_post_field][i])
                 data[dataset_tag_field][i] = data[dataset_tag_field][i].strip(' \t\n\r')
@@ -276,13 +271,9 @@ class ReliefwebModel:
 
         logging.debug('START: build_model / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
-        # This model trains very quickly and 2 epochs are already more than enough
-        # Training for more epochs will likely lead to overfitting on this dataset
-        # You can try tweaking these hyperparamaters when using this model with your own data
-
         # BUILD THE MODEL
         model = Sequential()
-        model.add(Dense(512, input_shape=(self.MAX_WORDS,)))  ##hidden layers neurons: 512
+        model.add(Dense(512, input_shape=(self.MAX_WORDS,)))  # hidden layers neurons: 512
         model.add(Activation('relu'))
         model.add(Dropout(0.2))  # Default was to 0.5 ** 0.2 seems better results
         model.add(Dense(self.num_classes))
@@ -371,7 +362,7 @@ class ReliefwebModel:
 
             model = self.model
             
-            self.tokenize = text.Tokenizer(num_words=reliefweb_config.MAX_WORDS, char_level=False, lower=True)
+            self.tokenize = text.Tokenizer(num_words=self.MAX_WORDS, char_level=False, lower=True)
 
             sample = reliefweb_tag_aux.normalize(sample)
             single_post_serie = pd.Series([sample])
