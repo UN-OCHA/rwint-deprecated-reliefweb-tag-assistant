@@ -120,6 +120,8 @@
 
 	        if (window.location.hostname.includes("github") ) url = "https://rw-tag-v2.herokuapp.com";
 	        else url = "http://0.0.0.0:5000";
+	        console.log (window.location.hostname);
+
 
             $.get( url + "/tag?url=" + document.getElementById("url").value , function( data ) {
                  //As soon as the browser finished downloading, this function is called.
