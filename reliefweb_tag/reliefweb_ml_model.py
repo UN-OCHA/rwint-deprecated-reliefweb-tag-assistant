@@ -38,7 +38,6 @@ from keras import utils
 from keras.layers import Dense, Activation, Dropout
 from keras.models import Sequential
 from keras.models import model_from_json
-from keras.models import load_model
 from keras.preprocessing import text
 from reliefweb_tag import reliefweb_config
 from reliefweb_tag import reliefweb_tag_aux
@@ -95,7 +94,7 @@ class ReliefwebModel:
 
         model = Sequential()
 
-        if os.path.isfile(model_path + "model_" + vocabulary_name + ".model"):
+        if os.path.isfile(model_path + "model_" + vocabulary_name + ".json"):
             self.read_vocabulary(vocabulary_file, term_field)
             data = self.normalize_input(dataset_file,
                                         dataset_post_field,
@@ -110,7 +109,7 @@ class ReliefwebModel:
             model = model_from_json(loaded_model_json)
             # load weights into new model
             model.load_weights(model_path + "model_" + vocabulary_name + ".h5")
-            model = load_model(model_path + "model_" + vocabulary_name + ".model")
+            # model = load_model(model_path + "model_" + vocabulary_name + ".model")
             print("Loaded model " + vocabulary_name + " from disk")
             
         else:
@@ -124,12 +123,12 @@ class ReliefwebModel:
                                  train_percentage)  # 20000, number of words to take from each post to tokenize)
             model = self.create_model(batch_size, epochs)
             # save model
-            model.save(model_path + "model_" + vocabulary_name + ".model")
+            # model.save(model_path + "model_" + vocabulary_name + ".model")
             # serialize weights to HF5
             model.save_weights(model_path + "model_" + vocabulary_name + ".h5")
             # serialize model to JSON
             model_json = model.to_json()
-            json_file =  open(model_path + "model_" + vocabulary_name + ".json", "w+")
+            json_file = open(model_path + "model_" + vocabulary_name + ".json", "w+")
             json_file.write(model_json)
             json_file.close()
             print("Saved model " + vocabulary_name + " to disk")
@@ -210,7 +209,7 @@ class ReliefwebModel:
                 data[dataset_post_field][i] = reliefweb_tag_aux.normalize2(data[dataset_post_field][i])
                 data[dataset_tag_field][i] = data[dataset_tag_field][i].strip(' \t\n\r')
                 # TODO: Tokenizer later teorically does this
-                if (i % 1000 == 0):
+                if i % 1000 == 0:
                     # Displaying time left
                     toc = time.time()  # Stimation =
                     logging.debug("normalize_input - %d entries in %d seconds / Left estimation: < %d minutes" % (
@@ -411,8 +410,8 @@ class ReliefwebModel:
 
             result = []
 
-            ## TODO: If there is no value this return an error and not "None"
-            if self.model == None:
+            # TODO: If there is no value this return an error and not "None"
+            if self.model is None:
                 logging.ERROR("ERROR: The unique model for vocabulary '%s' has not been defined yet" % (vocabulary_name))
                 return result
             else:

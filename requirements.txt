@@ -1,4 +1,5 @@
-git+git://github.com/timClicks/slate.git@e796bbb09ea5ab473aa33ce2984bf9fc2bebb64b#egg=slate #slate==0.5.2 (stable ==0.3) / Avoid bug https://github.com/timClicks/slate/issues/38
+git+git://github.com/timClicks/slate.git@e796bbb09ea5ab473aa33ce2984bf9fc2bebb64b#egg=slate #slate==0.5.2 (stable ==0.3)
+# Avoid bug https://github.com/timClicks/slate/issues/38
 setuptools==39.1.0 #slate>distribute dependenciy
 numpy==1.14.5
 pandas==0.23.1
@@ -14,6 +15,7 @@ geotext==0.3.0
 pycountry==18.5.26
 requests==2.19.1
 gunicorn
+utils==0.9.0
 h5py # to save and load ML models
 
 #Flask-RESTful==0.2.10
