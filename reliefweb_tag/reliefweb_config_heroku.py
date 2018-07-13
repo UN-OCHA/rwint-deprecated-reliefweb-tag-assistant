@@ -15,8 +15,8 @@ MODEL_PATH = "model/"
 DATA_PATH = "data/"  #config for Heroku
 DATASETS = {}
 DATASETS["theme"] = {"vocabulary": "rw-themes.csv",
-                     "dataset": "report_theme_uneven_multiple-30k.csv"}
-                     #"dataset": "report_theme_en-1k.csv"}
+                     # "dataset": "report_theme_uneven_multiple-30k.csv"}
+                     "dataset": "report_theme_en-1k.csv"}
 DATASETS["language"] = {"vocabulary": "rw-languages.csv",
                         "dataset": "report_language-1k.csv"}
 # To access a route : DATA_PATH + DATASETS["theme"]["vocabulary"]
