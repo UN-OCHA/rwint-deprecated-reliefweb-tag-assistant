@@ -44,30 +44,29 @@ def init():
     ## all of newspaper's features. Modify for your own needs.
 
     print("> Initializing machine learning model")
-    model_language = reliefweb_ml_model.ReliefwebModel()
+    # model_language = reliefweb_ml_model.ReliefwebModel()
 
-    print("> MAIN: Creating neural network for language")
+    # print("> MAIN: Creating neural network for language")
     # as the language model is accurate, we reduce its complexity for gaining on memory
-    model_language.create_train_model(vocabulary_name='language',
-                                      vocabulary_file=reliefweb_config.DATA_PATH +
-                                                      reliefweb_config.DATASETS["language"][
-                                                          "vocabulary"],
+    # model_language.create_train_model(vocabulary_name='language',
+    #                                  vocabulary_file=reliefweb_config.DATA_PATH +
+    #                                                  reliefweb_config.DATASETS["language"]["vocabulary"],
                                       # path+"rw-languages.csv",
-                                      dataset_file=reliefweb_config.DATA_PATH + reliefweb_config.DATASETS["language"][
-                                          "dataset"],
-                                      # path+'report_language-1k.csv',
-                                      model_path=reliefweb_config.MODEL_PATH,
-                                      term_field='language',
-                                      vocabulary_language='',  # values: English, Spanish, French, ''
-                                      dataset_post_field='post',
-                                      dataset_tag_field='language_name',
-                                      max_words=reliefweb_config.MAX_WORDS,
-                                      # 20000, number of words to take from each post to tokenize),
-                                      batch_size=reliefweb_config.BATCH_SIZE_LANG,
-                                      epochs=reliefweb_config.EPOCHS,
-                                      train_percentage=reliefweb_config.TRAINING_PERCENTAGE,  # 0.9
-                                      skip_normalizing=reliefweb_config.FAST_TESTING
-                                      )
+    #                                  dataset_file=reliefweb_config.DATA_PATH + reliefweb_config.DATASETS["language"][
+     #                                     "dataset"],
+    #                                  # path+'report_language-1k.csv',
+    #                                  model_path=reliefweb_config.MODEL_PATH,
+    #                                  term_field='language',
+    #                                  vocabulary_language='',  # values: English, Spanish, French, ''
+    #                                  dataset_post_field='post',
+    #                                  dataset_tag_field='language_name',
+    #                                  max_words=reliefweb_config.MAX_WORDS,
+    #                                  # 20000, number of words to take from each post to tokenize),
+    #                                  batch_size=reliefweb_config.BATCH_SIZE_LANG,
+    #                                  epochs=reliefweb_config.EPOCHS,
+    #                                  train_percentage=reliefweb_config.TRAINING_PERCENTAGE,  # 0.9
+    #                                  skip_normalizing=reliefweb_config.FAST_TESTING
+    #                                  )
     print("> MAIN: Creating neural network for themes")
     model_theme = reliefweb_ml_model.ReliefwebModel()
     model_theme.create_train_model(vocabulary_name='theme',
@@ -88,7 +87,7 @@ def init():
                                    train_percentage=reliefweb_config.TRAINING_PERCENTAGE,  # 0.9
                                    skip_normalizing=reliefweb_config.FAST_TESTING
                                    )
-    RWModel['language'] = model_language
+    #RWModel['language'] = model_language
     RWModel['theme'] = model_theme
 
     import gc
@@ -108,7 +107,8 @@ def RWtag():
 
     gc.collect()
     sample = request.args.get('url')
-    if (RWModel.get('language', '') == '') or (RWModel.get('theme', '') == ''):
+    # if (RWModel.get('language', '') == '') or (RWModel.get('theme', '') == ''):
+    if ( RWModel.get('theme', '') == ''):
         init()
     json_data = reliefweb_predict.url_to_tagged_json(model=RWModel, url=sample, threshold=reliefweb_config.THRESHOLD,
                                                      diff_terms=reliefweb_config.DIFF_TERMS_THRESHOLD)

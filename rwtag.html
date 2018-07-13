@@ -144,7 +144,7 @@
 				 document.getElementById("published-date").innerHTML = result["publish_date"]; // OK
 				 document.getElementById("language").innerHTML = JSON.stringify(result["language"]); // OK
 				 document.getElementById("meta-language").innerHTML = result["meta_lang"]; // OK
-			     document.getElementById("predict-language").innerHTML = prettyDict(result["predicted_lang"],true);
+			     //document.getElementById("predict-language").innerHTML = prettyDict(result["predicted_lang"],true);
 				 document.getElementById("language-langpredict").innerHTML = result["langdetect_language"]; // OK
 				 document.getElementById("meta-language").innerHTML = result["meta_lang"]; // OK
 				 document.getElementById("summary").innerHTML = result["summary"]; // OK
@@ -326,7 +326,7 @@ RW Fields
 <li class="field content-format"><h4>Topics:</h4><ul><li id="topics"><i>Topics</i></li></ul></li>
 <li class="field language"><h4>Language:</h4><ul><li id="language"><i>Language</i></li></ul></li>
 <li class="field language"><h4>Meta language:</h4><ul><li id="meta-language"><i>Meta Language</i></li></ul></li>
-<li class="field language"><h4>Predicted Language (unstable):</h4><ul><li id="predict-language"><i>Language: Percentage</i></li></ul></li>
+<li class="field language"><h4>Predicted Language ML (unstable):</h4><ul><li id="predict-language"><i>Language: Percentage</i></li></ul></li>
 <li class="field content-format"><h4>Top Image URL:</h4><ul><li id="top-image-url"><i>sample_url</i></li></ul></li>
 
 <li class="field content-format"><h4>Cities:</h4><ul><li id="cities"><i>City 1</i></li></ul></li>
