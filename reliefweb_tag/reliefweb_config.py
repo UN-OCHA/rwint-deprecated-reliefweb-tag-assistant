@@ -26,7 +26,7 @@ MAX_WORDS = 16384  # 16384
 BATCH_SIZE_LANG = 128
 BATCH_SIZE = 1024  # 1024
 EPOCHS = 4
-TRAINING_PERCENTAGE = 0.99
+TRAINING_PERCENTAGE = 0.99 
 THRESHOLD = 0.1
 # When predicting, if a terms is lower than this percentage, it won't be returned
 DIFF_TERMS_THRESHOLD = 0.1  # 0.01
