@@ -1,14 +1,11 @@
 # Initializing the model
-from reliefweb_tag import reliefweb_config
-import reliefweb_tag
-from reliefweb_tag import reliefweb_ml_model, reliefweb_predict
-from flask import request
+from reliefweb_tag import reliefweb_ml_model, reliefweb_predict, reliefweb_config
+
+from flask import Flask, request
+import socket
 
 global RWModel
 RWModel = {}
-
-from flask import Flask
-import socket
 
 
 # Creating the API endpoints
@@ -16,13 +13,6 @@ app = Flask(__name__)
 app.debug = False
 app.threaded = False
 # two parameters to avoid "Tesorflow ... is not an element of this graph"
-
-# get public IP
-s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-s.connect(("8.8.8.8", 80))
-publicIP = s.getsockname()[0]
-s.close()
-
 
 def init():
     print ("Initializing the ReliefWeb Tag Assistant: auto-tag urls using RW Tags and Machine Learning")
@@ -116,9 +106,26 @@ def RWtag():
                                                      diff_terms=reliefweb_config.DIFF_TERMS_THRESHOLD)
     return json_data
 
+
+@app.route("/html")
+def htmlpage():
+    return app.send_static_file ('rwtag.html')
+
+@app.route("/test")
+def test():
+    print ("TEST ENDPOINT")
+
+
 if __name__ == '__main__':
     import gc
     gc.collect()
+
+    # get public IP -- if needed
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    publicIP = s.getsockname()[0]
+    s.close()
+
     # app.run(debug=reliefweb_config.DEBUG, host=publicIP, port=reliefweb_config.PORT)  # use_reloader=False
     init()
     app.run(debug=reliefweb_config.DEBUG, host='0.0.0.0')  # use_reloader=False // This does not call to main
