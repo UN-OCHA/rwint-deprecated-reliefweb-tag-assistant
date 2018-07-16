@@ -309,6 +309,24 @@ class ReliefwebModel:
         logging.debug("END: validate_model / " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         return model
 
+    def predict_nonlanguage_text(self,
+                                 sample,
+                                 vocabulary_name,
+                                 threshold=0.5,
+                                 diff_terms=0.05):
+        graph = self.graph
+        with graph.as_default():
+
+            result = []
+
+            if self.model is None:
+                logging.ERROR("ERROR: The unique model for vocabulary '%s' has not been defined yet" % vocabulary_name)
+                return result
+            else:
+                result = self.predict_value(self.model, vocabulary_name, sample, threshold,
+                                            diff_terms)
+            return result
+
     def predict_value(self, model, vocabulary_name, sample,
                       threshold=0.5,
                       diff_terms=0.05):
@@ -399,21 +417,3 @@ class ReliefwebModel:
     #                                             diff_terms)
     #         return result
 
-    # def predict_nonlanguage_text(self,
-    #                              sample,
-    #                              vocabulary_name,
-    #                              threshold=0.5,
-    #                              diff_terms=0.05):
-    #     graph = self.graph
-    #     with graph.as_default():
-    #
-    #         result = []
-    #
-    #         if self.model is None:
-    #             logging.ERROR(
-    #                 "ERROR: The unique model for vocabulary '%s' has not been defined yet" % (vocabulary_name))
-    #             return result
-    #         else:
-    #             result = self.predict_value(self.model, vocabulary_name, sample, threshold,
-    #                                         diff_terms)
-    #         return result
