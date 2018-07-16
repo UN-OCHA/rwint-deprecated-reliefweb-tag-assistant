@@ -26,7 +26,7 @@ def get_pdf_url(pdf_url):
     return doc
 
 
-def normalize(text):
+def normalize_global(text):
     """
     normalizing the input -- it is supposed to remove stopwords (if not, nltk.corpus.stopwords.words()-- list of stopwords ) /
     markup cleaning / new lines / punctuation and " (string.punctuation() ) / 's / to_lowercase / / names? / numbers - change to . or other char (#) / steaming (normalizing) - nltk.stem.porter.PorterStemmer()
@@ -36,22 +36,27 @@ def normalize(text):
     :param text:
     :return:
     """
+    # TODO: Improvement: lemmasation for ES and EN using pattern when stable for python3
 
     from cucco import Cucco
+    from cucco.config import Config
     import re
 
-    cucco = Cucco()
+    cucco_config = Config()
+    cucco_config.language = detect_language(text)
+    # removing stop words per language
+
+    cucco = Cucco(config=cucco_config)
+
     text = text.lower()
+
+    text_in = text
+
     text = cucco.normalize(text)
 
     text = re.sub('(\d+)%', '%', text)  # convert numbers percent to %
     text = re.sub('(\d+)', '#', text)  # convert numbers to #
     text = re.sub('(•|“|‘|”|’s|(.|)’)', "", text)  # remove dot point for lists and “‘”
-    # remove english possessive 'sop’s' and its
-    # remove french l’ and d’ or ‘key
-    #   Mr.Ging > mrging 'genderbasedviolence'  ascertain iraniansupported fuelefficient logisticsrelated
-    # 19 471  no in 780 996 00 10pm a as 425 abovementioned avenirstrongp  genderrelated
-    # in word_counts there are numbers and short words
     text = re.sub('#(?P<word>([a-zA-Z])+)', '\g<word>', text)  # remove numbers before and after strings'
     text = re.sub('(?P<word>([a-zA-Z])+)#', '\g<word>', text)  # remove numbers before and after strings'
     text = text.split()
@@ -61,7 +66,7 @@ def normalize(text):
     return text
 
 
-def normalize2(text):
+def normalize_language(text):
     from cucco import Cucco
     from cucco.config import Config
 
@@ -75,7 +80,6 @@ def normalize2(text):
     #numbers_regex= '(\d+)([,.]*\d*)+'
     #symbols_regex = '[(’\s*)”“]'
     #regex = '[(' + numbers_regex + ')(' + symbols_regex + ')]'
-    text = re.sub('(\d+)([,.]*\d*)+', '',text)
     #text = re.sub(regex, '',text)
 
 
@@ -109,7 +113,9 @@ def normalize2(text):
             'remove_extra_white_spaces',
         ]
 
-    text = cucco.normalize(text, normalizations)
+    text_out = cucco.normalize(text, normalizations)
+
+    text_out_2 = re.sub('(\d+)([,.]*\d*)+', '',text_out ) # remove numbers
 
     # text = re.sub('(\d+)%', '%', text)  # convert numbers percent to %
     # text = re.sub('(\d+)', '#', text)  # convert numbers to #
@@ -119,7 +125,7 @@ def normalize2(text):
     # text = [w for w in text if ( len(w) > 2 and len(w) < 20 ) ] # remove short and very long words
     # text = ' '.join(text)
 
-    return text
+    return text_out_2
 
 
 def detect_language(text):

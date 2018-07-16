@@ -206,7 +206,7 @@ class ReliefwebModel:
 
         if not skip_normalizing:
             for i in range(1, len(data)):
-                data[dataset_post_field][i] = reliefweb_tag_aux.normalize2(data[dataset_post_field][i])
+                data[dataset_post_field][i] = reliefweb_tag_aux.normalize_global(data[dataset_post_field][i])
                 data[dataset_tag_field][i] = data[dataset_tag_field][i].strip(' \t\n\r')
                 # TODO: Tokenizer later teorically does this
                 if i % 1000 == 0:
