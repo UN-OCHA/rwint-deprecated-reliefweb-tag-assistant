@@ -14,7 +14,8 @@ Specs of the entry
 -  There should be a header with no spaces, the name of the entry and the output fields should be specified when calling
 this module: dataset_post_field and dataset_tag_field
 
-Based on https://cloud.google.com/blog/big-data/2017/10/intro-to-text-classification-with-keras-automatically-tagging-stack-overflow-posts
+Based on https://cloud.google.com/
+blog/big-data/2017/10/intro-to-text-classification-with-keras-automatically-tagging-stack-overflow-posts
 
 REQUIREMENTS:
 - pip install https://github.com/timClicks/slate/archive/master.zip #slate
@@ -30,23 +31,36 @@ import sys
 import time
 from datetime import datetime
 
-import tensorflow as tf
-
 import numpy as np
 import pandas as pd
+import tensorflow as tf
 from keras import utils
 from keras.layers import Dense, Activation, Dropout
 from keras.models import Sequential
 from keras.models import model_from_json
 from keras.preprocessing import text
+from sklearn.preprocessing import LabelEncoder
+
 from reliefweb_tag import reliefweb_config
 from reliefweb_tag import reliefweb_tag_aux
-from sklearn.preprocessing import LabelEncoder
 
 if reliefweb_config.DEBUG:
     logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 else:
     logging.basicConfig(stream=sys.stderr, level=logging.INFO)
+
+
+def read_data(dataset_file):
+    # read the dataset
+    # return data object with the input
+
+    logging.debug('START: Reading the input / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
+    data = pd.read_csv(dataset_file)
+    data.head()
+
+    logging.debug('END: Reading the input / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    return data
 
 
 class ReliefwebModel:
@@ -111,7 +125,7 @@ class ReliefwebModel:
             model.load_weights(model_path + "model_" + vocabulary_name + ".h5")
             # model = load_model(model_path + "model_" + vocabulary_name + ".model")
             print("Loaded model " + vocabulary_name + " from disk")
-            
+
         else:
 
             self.read_vocabulary(vocabulary_file, term_field)
@@ -159,18 +173,6 @@ class ReliefwebModel:
 
         return model
 
-    def read_data(self, dataset_file):
-        # read the dataset
-        # return data object with the input
-
-        logging.debug('START: Reading the input / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-
-        data = pd.read_csv(dataset_file)
-        data.head()
-
-        logging.debug('END: Reading the input / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-        return data
-
     def read_vocabulary(self, vocabulary_file, term_field):
         # read the dataset
         # return data object with the input
@@ -194,7 +196,7 @@ class ReliefwebModel:
         self.dataset_post_field = dataset_post_field
         self.dataset_tag_field = dataset_tag_field
 
-        data = self.read_data(dataset_file)
+        data = read_data(dataset_file)
 
         logging.info(
             'START: normalize_input - %d entries / ' % len(data) + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
@@ -202,16 +204,15 @@ class ReliefwebModel:
         tic_input = time.time()
 
         tic = time.time()
-        toc = tic
 
         if not skip_normalizing:
             for i in range(1, len(data)):
                 data[dataset_post_field][i] = reliefweb_tag_aux.normalize_global(data[dataset_post_field][i])
                 data[dataset_tag_field][i] = data[dataset_tag_field][i].strip(' \t\n\r')
-                # TODO: Tokenizer later teorically does this
+                # TODO: Tokenizer later theoretically does this
                 if i % 1000 == 0:
                     # Displaying time left
-                    toc = time.time()  # Stimation =
+                    toc = time.time()
                     logging.debug("normalize_input - %d entries in %d seconds / Left estimation: < %d minutes" % (
                         i, toc - tic, ((toc - tic) * (len(data) - i)) / (i * 60) + 1))
 
@@ -327,7 +328,7 @@ class ReliefwebModel:
         graph = self.graph
         with graph.as_default():
 
-            sample = reliefweb_tag_aux.normalize(sample)
+            sample = reliefweb_tag_aux.normalize_global(sample)
             single_post_serie = pd.Series([sample])
             single_test = self.tokenize.texts_to_matrix(single_post_serie)
             prediction = model.predict(single_test)
@@ -336,10 +337,8 @@ class ReliefwebModel:
             predicted_confidence = 1
             result = {}
 
-            while ((predicted_confidence > threshold)
-                   or
-                   (((prev_predicted_confidence - predicted_confidence) / predicted_confidence) < diff_terms)
-            ):
+            while ((predicted_confidence > threshold) or
+                   (((prev_predicted_confidence - predicted_confidence) / predicted_confidence) < diff_terms)):
                 if len(result) > 0:
                     prev_predicted_confidence = float(result[predicted_label])
                 predicted_confidence = prediction[0, np.argmax(prediction)]
@@ -358,12 +357,11 @@ class ReliefwebModel:
 
         graph = self.graph
         with graph.as_default():
-
             model = self.model
-            
+
             self.tokenize = text.Tokenizer(num_words=self.MAX_WORDS, char_level=False, lower=True)
 
-            sample = reliefweb_tag_aux.normalize(sample)
+            sample = reliefweb_tag_aux.normalize_global(sample)
             single_post_serie = pd.Series([sample])
             self.tokenize.fit_on_texts(single_post_serie)  # only fit on train
             single_test = self.tokenize.texts_to_matrix(single_post_serie)
@@ -372,49 +370,50 @@ class ReliefwebModel:
             predicted_confidence = prediction[0, np.argmax(prediction)]
             predicted_label = self.text_labels['language'][np.argmax(prediction)]
 
-            # print ("DEBUG -- language: " +sample + " / " + str(single_test) + "/"+ predicted_label + " / " + str(predicted_confidence) + " /  " + str(self.text_labels['language']) + " / " + str(prediction))
+            # print ("DEBUG -- language: " +sample + " / " + str(single_test) + "/"+ predicted_label + " / "
+            # + str(predicted_confidence) + " /  " + str(self.text_labels['language']) + " / " + str(prediction))
 
             return {predicted_label: str(predicted_confidence)}
 
-    def predict_multilingual_text(self,
-                                  sample,
-                                  vocabulary_name,
-                                  threshold=0.5,
-                                  diff_terms=0.05):
-        graph = self.graph
-        with graph.as_default():
+    # def predict_multilingual_text(self,
+    #                               sample,
+    #                               vocabulary_name,
+    #                               threshold=0.5,
+    #                               diff_terms=0.05):
+    #     graph = self.graph
+    #     with graph.as_default():
+    #
+    #         result = []
+    #         if self.model is None:
+    #             logging.ERROR("ERROR: The language model has not been defined yet")
+    #             return result
+    #         else:
+    #             language = self.predict_language(sample)[0][0]
+    #             # TODO: If there is no value this return an error and not "None"
+    #             if self.model is None:
+    #                 logging.ERROR("ERROR: The model for vocabulary '%s' and language '%s' has not been defined yet" %
+    #                     ( vocabulary_name, language))
+    #                 return result
+    #             else:
+    #                 result = self.predict_value(self.model, vocabulary_name, sample, threshold,
+    #                                             diff_terms)
+    #         return result
 
-            result = []
-            if self.model == None:
-                logging.ERROR("ERROR: The language model has not been defined yet")
-                return result
-            else:
-                language = self.predict_language(sample)[0][0]
-                # TODO: If there is no value this return an error and not "None"
-                if self.model == None:
-                    logging.ERROR("ERROR: The model for vocabulary '%s' and language '%s' has not been defined yet" % (
-                        vocabulary_name, language))
-                    return result
-                else:
-                    result = self.predict_value(self.model, vocabulary_name, sample, threshold,
-                                                diff_terms)
-            return result
-
-    def predict_nonlanguage_text(self,
-                                 sample,
-                                 vocabulary_name,
-                                 threshold=0.5,
-                                 diff_terms=0.05):
-        graph = self.graph
-        with graph.as_default():
-
-            result = []
-
-            # TODO: If there is no value this return an error and not "None"
-            if self.model is None:
-                logging.ERROR("ERROR: The unique model for vocabulary '%s' has not been defined yet" % (vocabulary_name))
-                return result
-            else:
-                result = self.predict_value(self.model, vocabulary_name, sample, threshold,
-                                            diff_terms)
-            return result
+    # def predict_nonlanguage_text(self,
+    #                              sample,
+    #                              vocabulary_name,
+    #                              threshold=0.5,
+    #                              diff_terms=0.05):
+    #     graph = self.graph
+    #     with graph.as_default():
+    #
+    #         result = []
+    #
+    #         if self.model is None:
+    #             logging.ERROR(
+    #                 "ERROR: The unique model for vocabulary '%s' has not been defined yet" % (vocabulary_name))
+    #             return result
+    #         else:
+    #             result = self.predict_value(self.model, vocabulary_name, sample, threshold,
+    #                                         diff_terms)
+    #         return result

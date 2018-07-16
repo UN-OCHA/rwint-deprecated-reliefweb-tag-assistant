@@ -1,8 +1,9 @@
 # Initializing the model
-from reliefweb_tag import reliefweb_ml_model, reliefweb_predict, reliefweb_config
+import socket
 
 from flask import Flask, request
-import socket
+
+from reliefweb_tag import reliefweb_ml_model, reliefweb_predict, reliefweb_config
 
 global app
 app = Flask(__name__)
@@ -12,7 +13,7 @@ app.threaded = False
 global RWModel
 RWModel = {}
 
-print ("** In the main flow **")
+print("** In the main flow **")
 
 
 def init():
@@ -40,8 +41,8 @@ def init():
 
     # from https://raw.githubusercontent.com/codelucas/newspaper/master/download_corpora.py
     # -*- coding: utf-8 -*-
-    ## Downloads the necessary NLTK models and corpora required to support
-    ## all of newspaper's features. Modify for your own needs.
+    # Downloads the necessary NLTK models and corpora required to support
+    # all of newspaper's features. Modify for your own needs.
 
     print("> Initializing machine learning model")
     # model_language = reliefweb_ml_model.ReliefwebModel()
@@ -51,9 +52,9 @@ def init():
     # model_language.create_train_model(vocabulary_name='language',
     #                                  vocabulary_file=reliefweb_config.DATA_PATH +
     #                                                  reliefweb_config.DATASETS["language"]["vocabulary"],
-                                      # path+"rw-languages.csv",
+    # path+"rw-languages.csv",
     #                                  dataset_file=reliefweb_config.DATA_PATH + reliefweb_config.DATASETS["language"][
-     #                                     "dataset"],
+    #                                     "dataset"],
     #                                  # path+'report_language-1k.csv',
     #                                  model_path=reliefweb_config.MODEL_PATH,
     #                                  term_field='language',
@@ -87,7 +88,7 @@ def init():
                                    train_percentage=reliefweb_config.TRAINING_PERCENTAGE,  # 0.9
                                    skip_normalizing=reliefweb_config.FAST_TESTING
                                    )
-    #RWModel['language'] = model_language
+    # RWModel['language'] = model_language
     RWModel['theme'] = model_theme
 
     import gc
@@ -108,11 +109,11 @@ def RWtag():
     gc.collect()
     sample = request.args.get('url')
     # if (RWModel.get('language', '') == '') or (RWModel.get('theme', '') == ''):
-    if ( RWModel.get('theme', '') == ''):
+    if RWModel.get('theme', '') == '':
         init()
     json_data = reliefweb_predict.url_to_tagged_json(model=RWModel, url=sample, threshold=reliefweb_config.THRESHOLD,
                                                      diff_terms=reliefweb_config.DIFF_TERMS_THRESHOLD)
-    print ("\nDone prediction for: " + sample)
+    print("\nDone prediction for: " + sample)
     return json_data
 
 
