@@ -70,7 +70,9 @@ def tag_metadata_from_url(url):
             'keywords': article.keywords,
             'summary': article.summary,
             'top_image': article.top_image}
-    # data['html'] = article.html # html of the whole page
+
+    if article.article_html == '':
+        data['article_html'] =  article.html #takes all the html of the page
 
     return data
 

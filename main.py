@@ -49,7 +49,7 @@ def init():
 
     # print("> MAIN: Creating neural network for language")
     # as the language model is accurate, we reduce its complexity for gaining on memory
-    # model_language.create_train_model(vocabulary_name='language',
+    # model_language.create_train_one_tag_model(vocabulary_name='language',
     #                                  vocabulary_file=reliefweb_config.DATA_PATH +
     #                                                  reliefweb_config.DATASETS["language"]["vocabulary"],
     # path+"rw-languages.csv",
@@ -70,7 +70,7 @@ def init():
     #                                  )
     print("> MAIN: Creating neural network for themes")
     model_theme = reliefweb_ml_model.ReliefwebModel()
-    model_theme.create_train_model(vocabulary_name='theme',
+    model_theme.create_train_one_tag_model(vocabulary_name='theme',
                                    vocabulary_language='',  # values: English, Spanish, French, ''
                                    vocabulary_file=reliefweb_config.DATA_PATH + reliefweb_config.DATASETS["theme"][
                                        "vocabulary"],  # path+"rw-themes.csv",

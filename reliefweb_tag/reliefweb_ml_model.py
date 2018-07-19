@@ -76,7 +76,7 @@ class ReliefwebModel:
     # main method for creating the whole model:
     # creates the vocabulary, normalize the training set, create the dataset for training,
     # trains and sets the new final model on the models dictionary
-    def create_train_model(self,
+    def create_train_one_tag_model(self,
                            vocabulary_name,
                            vocabulary_file,
                            dataset_file,
@@ -106,24 +106,51 @@ class ReliefwebModel:
 
         print("Looking for file  " + model_path + "model_" + vocabulary_name + ".json")
 
+        import pickle # to load and save the tokenizer
+
         model = Sequential()
 
-        if os.path.isfile(model_path + "model_" + vocabulary_name + ".json"):
+        if os.path.isfile(model_path + "model_" + vocabulary_name + "_model.json") and \
+           os.path.isfile(model_path + "model_" + vocabulary_name + "_weights.h5") and \
+           os.path.isfile(model_path + "model_" + vocabulary_name + "_tokenizer.pickle"):
+            # read the model if it exists
+
+            tic = time.time()
+
             self.read_vocabulary(vocabulary_file, term_field)
+
+            toc = time.time()
+            print ("(t) read_vocabulary : %d " % (toc-tic))
+            tic = time.time()
+
             data = self.normalize_input(dataset_file,
                                         dataset_post_field,
                                         dataset_tag_field,
                                         skip_normalizing=True)
+            toc = time.time()
+            print ("(t) normalize_input : %d " % (toc-tic))
+            tic = time.time()
+
             self.prepare_dataset(data, vocabulary_name, max_words,
                                  train_percentage)  # 20000, number of words to take from each post to tokenize)
+
+            toc = time.time()
+            print ("(t) prepare_dataset : %d " % (toc-tic))
+            tic = time.time()
+
             # load json and create model
-            json_file = open(model_path + "model_" + vocabulary_name + ".json", 'r')
+            json_file = open(model_path + "model_" + vocabulary_name + "_model.json", 'r')
             loaded_model_json = json_file.read()
             json_file.close()
             model = model_from_json(loaded_model_json)
             # load weights into new model
-            model.load_weights(model_path + "model_" + vocabulary_name + ".h5")
+            model.load_weights(model_path + "model_" + vocabulary_name + "_weights.h5")
             # model = load_model(model_path + "model_" + vocabulary_name + ".model")
+
+            # loading
+            tokenizer_file = open(model_path +'model_tokenizer' + vocabulary_name + '_tokenizer.pickle', 'rb')
+            self.tokenize = pickle.load(tokenizer_file)
+
             print("Loaded model " + vocabulary_name + " from disk")
 
         else:
@@ -135,16 +162,23 @@ class ReliefwebModel:
                                         skip_normalizing)
             self.prepare_dataset(data, vocabulary_name, max_words,
                                  train_percentage)  # 20000, number of words to take from each post to tokenize)
-            model = self.create_model(batch_size, epochs)
+            model = self.create_one_tag_model(batch_size, epochs)
             # save model
+
             # model.save(model_path + "model_" + vocabulary_name + ".model")
             # serialize weights to HF5
-            model.save_weights(model_path + "model_" + vocabulary_name + ".h5")
+            model.save_weights(model_path + "model_" + vocabulary_name + "_weights.h5")
             # serialize model to JSON
             model_json = model.to_json()
-            json_file = open(model_path + "model_" + vocabulary_name + ".json", "w+")
+            json_file = open(model_path + "model_" + vocabulary_name + "_model.json", "w+")
             json_file.write(model_json)
             json_file.close()
+            # save tokenizer
+            import pickle
+            # saving tokenizer (vector of words to map the input text)
+            tokenizer_file = open(model_path + 'model_tokenizer' + vocabulary_name + '_tokenizer.pickle', 'w+b')
+            pickle.dump(self.tokenize, tokenizer_file, protocol=pickle.HIGHEST_PROTOCOL)
+
             print("Saved model " + vocabulary_name + " to disk")
 
         # this is key : save the graph after loading the model
@@ -152,15 +186,15 @@ class ReliefwebModel:
         self.model = model
 
     # pure machine learning model: builds the model, trains it and validates it
-    def create_model(self,
+    def create_one_tag_model(self,
                      batch_size=128,
                      epochs=5,
                      ):
         self.BATCH_SIZE = batch_size
         self.EPOCHS = epochs
 
-        model = self.build_model()
-        model = self.train_model(model)
+        model = self.build_one_tag_model()
+        model = self.train_one_tag_model(model)
         model = self.validate_model(model)
 
         single_post_serie = pd.Series(["First prediction to initialize the model for multi-threading"])
@@ -214,7 +248,7 @@ class ReliefwebModel:
                     # Displaying time left
                     toc = time.time()
                     logging.debug("normalize_input - %d entries in %d seconds / Left estimation: < %d minutes" % (
-                        i, toc - tic, ((toc - tic) * (len(data) - i)) / (i * 60) + 1))
+                        i, (toc - tic), ((toc - tic) * (len(data) - i)) / (i * 60) + 1))
 
         toc_input = time.time()
         logging.info("END: normalize_input / %d sec Elapsed" % (toc_input - tic_input))
@@ -238,23 +272,23 @@ class ReliefwebModel:
         self.tokenize = text.Tokenizer(num_words=self.MAX_WORDS, char_level=False, lower=True)
         logging.info("prepare_dataset - END: input tokenizer")
 
-        self.tokenize.fit_on_texts(train_posts)  # only fit on train
-        self.x_train = self.tokenize.texts_to_matrix(train_posts)
+        self.tokenize.fit_on_texts(train_posts)  # only fit on train / build the index of words -- top MAX_WORDS
+        self.x_train = self.tokenize.texts_to_matrix(train_posts) # create a matrix with one item per document
         self.x_test = self.tokenize.texts_to_matrix(test_posts)
         # With  mode="count" the results are not better
+        logging.info("prepare_dataset - END: tokenize.fit_on_texts & tokenize.texts_to_matrix")
 
         # Use sklearn utility to convert label strings to numbered index
-        encoder = LabelEncoder()
-
+        encoder = LabelEncoder() # Encode labels with value between 0 and n_classes-1.
         encoder.fit(self.vocabulary_terms)
         self.y_train = encoder.transform(train_tags)
         self.y_test = encoder.transform(test_tags)
-        self.text_labels[vocabulary_name] = encoder.classes_  # for future use
+        self.text_labels = encoder.classes_
         logging.info("prepare_dataset - END: encoder transform / " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
         # Converts the labels to a one-hot representation
         self.num_classes = np.max(self.y_train) + 1
-        self.y_train = utils.to_categorical(self.y_train, self.num_classes)
+        self.y_train = utils.to_categorical(self.y_train, self.num_classes) # class vector (integers) to binary class matrix
         self.y_test = utils.to_categorical(self.y_test, self.num_classes)
         logging.info(
             "prepare_dataset - END: to_categorical conversion / " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
@@ -267,7 +301,7 @@ class ReliefwebModel:
 
         return
 
-    def build_model(self):
+    def build_one_tag_model(self):
 
         logging.debug('START: build_model / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
@@ -286,7 +320,7 @@ class ReliefwebModel:
         logging.debug('END: build_model / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         return model
 
-    def train_model(self, model):
+    def train_one_tag_model(self, model):
         logging.debug('START: train_model / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
         history = model.fit(self.x_train, self.y_train,
@@ -323,11 +357,11 @@ class ReliefwebModel:
                 logging.ERROR("ERROR: The unique model for vocabulary '%s' has not been defined yet" % vocabulary_name)
                 return result
             else:
-                result = self.predict_value(self.model, vocabulary_name, sample, threshold,
+                result = self.predict_one_tag_value(self.model, vocabulary_name, sample, threshold,
                                             diff_terms)
             return result
 
-    def predict_value(self, model, vocabulary_name, sample,
+    def predict_one_tag_value(self, model, vocabulary_name, sample,
                       threshold=0.5,
                       diff_terms=0.05):
         """
@@ -360,7 +394,7 @@ class ReliefwebModel:
                 if len(result) > 0:
                     prev_predicted_confidence = float(result[predicted_label])
                 predicted_confidence = prediction[0, np.argmax(prediction)]
-                predicted_label = self.text_labels[vocabulary_name][np.argmax(prediction)]
+                predicted_label = self.text_labels[np.argmax(prediction)]
                 result[predicted_label] = str(predicted_confidence)
                 prediction[0, np.argmax(prediction)] = 0
 
@@ -386,7 +420,7 @@ class ReliefwebModel:
             prediction = model.predict(single_test)
 
             predicted_confidence = prediction[0, np.argmax(prediction)]
-            predicted_label = self.text_labels['language'][np.argmax(prediction)]
+            predicted_label = self.text_labels[np.argmax(prediction)]
 
             # print ("DEBUG -- language: " +sample + " / " + str(single_test) + "/"+ predicted_label + " / "
             # + str(predicted_confidence) + " /  " + str(self.text_labels['language']) + " / " + str(prediction))

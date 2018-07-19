@@ -28,6 +28,12 @@ def get_pdf_url(pdf_url):
 
 
 def normalize_global(text):
+
+    text = text.lower()
+
+    return text
+
+def normalize_global_real (text):
     """
     normalizing the input -- it is supposed to remove stopwords (if not, nltk.corpus.stopwords.words()-- l
     ist of stopwords ) /
