@@ -135,12 +135,10 @@
 
 				 // FROM NEWSPAPER ARTICLE
 				 document.getElementById("title").innerHTML = result["title"]; // OK
-				 if (result["article_html"] == "") {
-				 	document.getElementById("body").innerHTML = result["text"]; // OK
-				 } else {
-				    document.getElementById("body").innerHTML = "<h3>Plain Text</h3>" + result["text"]; // OK
-				 	document.getElementById("body").innerHTML = document.getElementById("body").innerHTML + "<h3>HTML Text</h3><xmp>" + result["article_html"] + "</xmp>"; // OK
-				 }			
+		    
+		    		 document.getElementById("body").innerHTML = result["text"]; 				 
+				 document.getElementById("body_html").innerHTML = result["article_html"];
+		
 				 document.getElementById("published-date").innerHTML = result["publish_date"]; // OK
 				 document.getElementById("language").innerHTML = JSON.stringify(result["language"]); // OK
 				 document.getElementById("meta-language").innerHTML = result["meta_lang"]; // OK
@@ -238,14 +236,10 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 	<p>URL to get	<input type="text" id="url" placeholder="Type here your URL with http or https" size="100%">
         <button onclick="clickTag()" type=submit>Tag It!</button></p>
 
-
-
   <!-- Blue header - Local tasks or has a subtitle -->
-
 
   <!-- Page -->
   <div id="page" class="outer"><div id="main-content" class="limiter clearfix">
-
 
     <!-- Headers -->
 
@@ -255,8 +249,6 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 
     <div id="content" class="page-content clearfix">
         <div class="region region-content">
-
-
 
 <div class="node node-report node-full node-page" id="node">
 
@@ -272,9 +264,16 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 </div>
 
 </div></div>
-<div class="field body" id="body">
+<div class="field body" id="body"><h3>Plain text</h3>
 <p><i>This is the body of your extracted article.</i></p>
 </div>
+	
+<div class="field body_html" ><h3>Raw HTML</h3>
+  <textarea disabled id="body_html">
+    <p><i>This is the body of your extracted article.</i></p>
+  </textarea>	
+</div>
+
 
 </div>
 </div>
@@ -333,14 +332,9 @@ RW Fields
 <li class="field content-format"><h4>Nationalities:</h4><ul><li id="nationalities"><i>Nationality 1</i></li></ul></li>
 <li class="field content-format"><h4>Publication Type:</h4><ul><li id="publication_type"><i>Publication type</i></li></ul></li>
 
-
-
  </ul></div>
 
 </div>
-<p></p>
-
-
 
 </div>
 
@@ -353,7 +347,6 @@ RW Fields
 
   </div>
 <!-- End Content -->
-
 
 </div></body></html>
 
