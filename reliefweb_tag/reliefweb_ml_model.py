@@ -104,7 +104,7 @@ class ReliefwebModel:
         # if model file exists -> load model
         # if not, create model and save
 
-        print("Looking for file  " + model_path + "model_" + vocabulary_name + ".json")
+        print("Looking for file  " + model_path + "model_" + vocabulary_name + "_*.*")
 
         import pickle # to load and save the tokenizer
 
@@ -148,7 +148,7 @@ class ReliefwebModel:
             # model = load_model(model_path + "model_" + vocabulary_name + ".model")
 
             # loading
-            tokenizer_file = open(model_path +'model_tokenizer' + vocabulary_name + '_tokenizer.pickle', 'rb')
+            tokenizer_file = open(model_path +'model_' + vocabulary_name + '_tokenizer.pickle', 'rb')
             self.tokenize = pickle.load(tokenizer_file)
 
             print("Loaded model " + vocabulary_name + " from disk")
@@ -176,7 +176,7 @@ class ReliefwebModel:
             # save tokenizer
             import pickle
             # saving tokenizer (vector of words to map the input text)
-            tokenizer_file = open(model_path + 'model_tokenizer' + vocabulary_name + '_tokenizer.pickle', 'w+b')
+            tokenizer_file = open(model_path + 'model_' + vocabulary_name + '_tokenizer.pickle', 'w+b')
             pickle.dump(self.tokenize, tokenizer_file, protocol=pickle.HIGHEST_PROTOCOL)
 
             print("Saved model " + vocabulary_name + " to disk")
