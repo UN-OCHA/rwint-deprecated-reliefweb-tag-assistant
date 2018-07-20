@@ -74,6 +74,9 @@ def tag_metadata_from_url(url):
     if article.article_html == '':
         data['article_html'] =  article.html #takes all the html of the page
 
+    import html2text # Other libraries are tomd and pandoc
+    data['body_markdown']=html2text.html2text(data['article_html'])
+
     return data
 
 

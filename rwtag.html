@@ -138,6 +138,8 @@
 		    
 		    		 document.getElementById("body").innerHTML = result["text"]; 				 
 				 document.getElementById("body_html").innerHTML = result["article_html"];
+				 document.getElementById("body_markdown").innerHTML = result["body_markdown"];
+
 		
 				 document.getElementById("published-date").innerHTML = result["publish_date"]; // OK
 				 document.getElementById("language").innerHTML = JSON.stringify(result["language"]); // OK
@@ -258,18 +260,26 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 <div class="node-info clearfix">
 <span id="summary" class="published-label"><i>Summary</i></span>
 </div>
-<div class="node-content clearfix"><div class="field field-file">
-<div class="reliefweb-file-pdf-preview attachment-small"><div class="file-pdf-preview">
-<img id="top-image" src="https://www.shareicon.net/data/512x512/2016/09/21/831157_cool_512x512.png" width="200" height="259" alt="preview">
+<div class="node-content clearfix">
+
+
+<p></p>
+    <div class="field body_html" ><h3>Markdown body</h3>
+  <textarea disabled id="body_markdown" style="width:100%; height:400px; font-family: Lucida Consola, Monospace, Courier; font-size:10px;">
+    _This is the markdown of your extracted article._
+  </textarea>
 </div>
 
-</div></div>
-<div class="field body" id="body"><h3>Plain text</h3>
+    <p></p>
+    <div class="field body" ><h3>Plain text</h3>
+    <textarea disabled id="body" style="width:100%; height:400px; font-family: Lucida Consola, Monospace, Courier; font-size:10px;">
 <p><i>This is the body of your extracted article.</i></p>
+    </textarea>
 </div>
 
+<p></p>
 <div class="field body_html" ><h3>Raw HTML</h3>
-  <textarea disabled id="body_html" style="width:100%; height:700px; font-family: Lucida Consola, Monospace, Courier; font-size:10px;">
+  <textarea disabled id="body_html" style="width:100%; height:400px; font-family: Lucida Consola, Monospace, Courier; font-size:10px;">
     <p><i>This is the body of your extracted article.</i></p>
   </textarea>
 </div>
@@ -279,7 +289,17 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 </div>
   </div>
     </div>
+
+
               <div id="sidebar-first" class="sidebar clearfix">  <div class="region region-sidebar-first">
+
+                            <div class="field field-file">
+<div class="reliefweb-file-pdf-preview attachment-small"><div class="file-pdf-preview">
+<img id="top-image" src="https://www.shareicon.net/data/512x512/2016/09/21/831157_cool_512x512.png" width="200" height="100" alt="preview">
+</div>
+</div></div>
+
+<p></p>
 
 ReliefWeb Fields
 
