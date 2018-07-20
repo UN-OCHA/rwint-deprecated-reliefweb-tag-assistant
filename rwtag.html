@@ -255,9 +255,9 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 <div id="loader"></div>
 
 <h1 id="title" class="node-title clearfix"><i>Title of your article</i></h1>
-<div class="node-info clearfix"><div class="field-content-format"></div>
-<div class="extra-info"><span id="summary" class="published-label"><i>Summary</i></span>
-</div></div>
+<div class="node-info clearfix">
+<span id="summary" class="published-label"><i>Summary</i></span>
+</div>
 <div class="node-content clearfix"><div class="field field-file">
 <div class="reliefweb-file-pdf-preview attachment-small"><div class="file-pdf-preview">
 <img id="top-image" src="https://www.shareicon.net/data/512x512/2016/09/21/831157_cool_512x512.png" width="200" height="259" alt="preview">
@@ -267,11 +267,11 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 <div class="field body" id="body"><h3>Plain text</h3>
 <p><i>This is the body of your extracted article.</i></p>
 </div>
-	
+
 <div class="field body_html" ><h3>Raw HTML</h3>
-  <textarea disabled id="body_html">
+  <textarea disabled id="body_html" style="width:100%; height:700px; font-family: Lucida Consola, Monospace, Courier; font-size:10px;">
     <p><i>This is the body of your extracted article.</i></p>
-  </textarea>	
+  </textarea>
 </div>
 
 
@@ -281,6 +281,7 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
     </div>
               <div id="sidebar-first" class="sidebar clearfix">  <div class="region region-sidebar-first">
 
+ReliefWeb Fields
 
 <div class="block block-reliefweb-taxonomy block-delta-report-countries" id="block-reliefweb-taxonomy-report-countries">
 
@@ -297,40 +298,46 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 </ul>
 </div>
 
-  </div>  
+    <div class="field content-date other-countries"><h4>Published date:</h4><ul><li id="published-date"><i>DD/MM/YYY</i></li></ul></div>
+    <div class="field language other-countries"><h4>Language (langpredict):</h4><ul><li id="language-langpredict"><i>Language (2 code)</i></li></ul></div>
+<div class="field theme other-countries"><h4>Theme:</h4><ul id="themes"><li><i>Theme 1</i></li><li><i>Theme 2</i></li></ul></div>
 
-RW Fields 
+          </div>
+
+
+
+
+
+                  Other information
 <div class="block block-reliefweb-node block-delta-node-fields clearfix" id="block-reliefweb-node-node-fields-1">
 
 <div class="block-content clearfix">
 <ul class="fields">
-<li class="field content-date"><h4>Published date:</h4><ul><li id="published-date"><i>DD/MM/YYY</i></li></ul></li>
-<li class="field content-format"><h4>Content format (not implemented):</h4><ul><li id="content-format"><i>Not implemented</i></li></ul></li>
-<li class="field language"><h4>Language (langpredict):</h4><ul><li id="language-langpredict"><i>Language (2 code)</i></li></ul></li>
-<li class="field theme"><h4>Theme:</h4><ul id="themes"><li><i>Theme 1</i></li><li><i>Theme 2</i></li></ul></li>
-<li class="field vulnerable-groups"><h4>Vulnerable groups (not implemented):</h4><ul id="vulnerable-groups"><li><i>Group 1</i></li><li><i>Group 2</i></li></ul></li></ul>
-</div>
-</div>
-
-<p></p>Additional meta information
-
-<div class="block block-reliefweb-node block-delta-node-fields clearfix" id="block-reliefweb-node-node-fields-2">
- <div class="block-content clearfix"><ul class="fields">
-<li class="field ocha-format"><h4>OCHA Format (not implemented):</h4><ul><li id="ocha_format"><i>Not implemented</i></li></ul></li>
-<li class="field content-format"><h4>Source:</h4><ul><li id="source"><i>Source</i></li></ul></li>
-<li class="field content-format"><h4>Authors:</h4><ul><li id="authors"><i>Authors</i></li></ul></li>
+    <li class="field content-format"><h4>Authors:</h4><ul><li id="authors"><i>Authors</i></li></ul></li>
 <li class="field content-format"><h4>Keywords:</h4><ul><li id="keywords"><i>Keywords</i></li></ul></li>
 <li class="field content-format"><h4>Tags:</h4><ul><li id="tags"><i>Tags</i></li></ul></li>
 <li class="field content-format"><h4>Meta Keywords:</h4><ul><li id="meta-keywords"><i>Meta Keywords</i></li></ul></li>
 <li class="field content-format"><h4>Topics:</h4><ul><li id="topics"><i>Topics</i></li></ul></li>
 <li class="field language"><h4>Language:</h4><ul><li id="language"><i>Language</i></li></ul></li>
 <li class="field language"><h4>Meta language:</h4><ul><li id="meta-language"><i>Meta Language</i></li></ul></li>
-<li class="field language"><h4>Predicted Language ML (unstable):</h4><ul><li id="predict-language"><i>Language: Percentage</i></li></ul></li>
 <li class="field content-format"><h4>Top Image URL:</h4><ul><li id="top-image-url"><i>sample_url</i></li></ul></li>
-
 <li class="field content-format"><h4>Cities:</h4><ul><li id="cities"><i>City 1</i></li></ul></li>
 <li class="field content-format"><h4>Nationalities:</h4><ul><li id="nationalities"><i>Nationality 1</i></li></ul></li>
 <li class="field content-format"><h4>Publication Type:</h4><ul><li id="publication_type"><i>Publication type</i></li></ul></li>
+
+</div>
+</div>
+
+<p></p>
+
+                  Not implemented
+
+<div class="block block-reliefweb-node block-delta-node-fields clearfix" id="block-reliefweb-node-node-fields-2"><div class="block-content clearfix"><ul class="fields">
+<li class="field content-format"><h4>Content format (not implemented):</h4><ul><li id="content-format"><i>Not implemented</i></li></ul></li>
+<li class="field vulnerable-groups"><h4>Vulnerable groups (not implemented):</h4><ul id="vulnerable-groups"><li><i>Group 1</i></li><li><i>Group 2</i></li></ul></li>
+<li class="field ocha-format"><h4>OCHA Format (not implemented):</h4><ul><li id="ocha_format"><i>Not implemented</i></li></ul></li>
+<li class="field content-format"><h4>Source:</h4><ul><li id="source"><i>Source</i></li></ul></li>
+<li class="field language"><h4>Predicted Language ML (disabled):</h4><ul><li id="predict-language"><i>Language: Percentage</i></li></ul></li>
 
  </ul></div>
 
