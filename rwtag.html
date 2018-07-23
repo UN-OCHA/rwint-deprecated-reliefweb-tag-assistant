@@ -1,438 +1,487 @@
-<html lang="en" dir="ltr" prefix="fb: http://ogp.me/ns/fb# og: http://ogp.me/ns# article: http://ogp.me/ns/article#" class="js gr__reliefweb_int"><head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<!-- Styles for the spinner -->
-  <style>
-/* Center the loader */
-#loader {
-  position: absolute;
-  left: 30%;
-  top: 8%;
-  z-index: 1;
-  width: 150px;
-  height: 150px;
-  border: 16px solid #f3f3f3;
-  border-radius: 90%;
-  border-top: 16px solid #3498db;
-  width: 120px;
-  height: 120px;
-  -webkit-animation: spin 2s linear infinite;
-  animation: spin 2s linear infinite;
-  display: none;
-}
-
-@-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Add animation to "page content" */
-.animate-bottom {
-  position: relative;
-  -webkit-animation-name: animatebottom;
-  -webkit-animation-duration: 1s;
-  animation-name: animatebottom;
-  animation-duration: 1s
-}
-
-@-webkit-keyframes animatebottom {
-  from { bottom:-100px; opacity:0 } 
-  to { bottom:0px; opacity:1 }
-}
-
-@keyframes animatebottom { 
-  from{ bottom:-100px; opacity:0 } 
-  to{ bottom:0; opacity:1 }
-}
-
-/* Buttons styles */
-button.flat  {
-  color: #fff;
-  background-color: #6496c8;
-  text-shadow: -1px 1px #417cb8;
-  font-size: 14px;
-  height:29px;
-  border: none;
-}
-button.flat:hover,
-button.flat.hover {
-  background-color: #346392;
-  text-shadow: -1px 1px #27496d;
-}
-button.flat:active,
-button.flat.active {
-  background-color: #27496d;
-  text-shadow: -1px 1px #193047;
-}
-
-.field
-{
-  word-wrap:break-word;
-}
-
-textarea.code
-{
-  width:100%;
-  height:400px;
-  font-family: Lucida Consola, Monospace, Courier;
-  font-size:10px;
-  word-wrap:break-word;
-  padding:8px 12px;
-  border-left: 4px solid #6496c8;
-}
-
-div.node-info
-{
-  margin-bottom: 10px;
-}
-
-div.summary
-{
-  border-top: 1px solid #e9e9e9;
-  border-bottom: 1px solid #e9e9e9;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  margin-bottom: 8px;
-  color: #999;
-  font-style: italic;
-  word-wrap:break-word;
-
-
-}
-
-
-</style>
-
-
-  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-  <script>
-
-
-	function prettyDict (object, percentages)
-	{
-
-		text = "<ul>";
-		if (percentages) {
-			for (var key in object ){
-				var value = object[key]*100;
-				text = text + "<li>" + key + ": " + value.toFixed(2) + " %</li>";
-			}
-		} else {
-			for (var key in object ){
-				var value = object[key];
-				text = text + "<li>" + key + ": " + value.toFixed(2) + "</li>";
-			}
-		}
-		text = text + "</ul>";
-		return text;
-	}
-
-	function prettyArray (object)
-	{
-
-		text = "<ul>";
-		for (var key in object ){
-			text = text + "<li>" + object[key] + " </li>";
-		}
-		text = text + "</ul>";
-		return text;
-	}
-
-	function prettyTuple (object, percentages)
-	{
-
-		text = "<ul>";
-		if (percentages) {
-			for (var key in object ){
-				var value = object[key][1]*100;
-				text = text + "<li>" + object[key][0] + ": " + value.toFixed(2) + " %</li>";
-			}
-		} else {
-			for (var key in object ){
-				var value = object[key][1];
-				text = text + "<li>" + object[key][0] + ": " + value.toFixed(2) + "</li>";
-			}
-		}
-		text = text + "</ul>";
-		return text;
-	}
-
-	function clickTag() {
-	  document.getElementById("loader").style.display = "block";
-	  getTags();
-	}
-
-        //Usually, you put script-tags into the head
-        function getTags() {
-            //This performs a POST-Request.
-            //Use "$.get();" in order to perform a GET-Request (you have to take a look in the rest-API-documentation, if you're unsure what you need)
-            //The Browser downloads the webpage from the given url, and returns the data.
-	        //$.get( "https://api.reliefweb.int/v1" , function( data ) {
-
-	        if (window.location.hostname.includes("github") ) url = "https://rw-tag.herokuapp.com";
-	        else url = "http://0.0.0.0:5000";
-	        console.log (window.location.hostname);
-
-
-            $.get( url + "/tag?url=" + document.getElementById("url").value , function( data ) {
-                 //As soon as the browser finished downloading, this function is called.
-				
-				result = JSON.parse(data);
-
-				console.log (JSON.stringify(result))
-
-				// hide spinner
-				 document.getElementById("loader").style.display = "none";
-
-				 // FROM NEWSPAPER ARTICLE
-				 document.getElementById("title").innerHTML = result["title"]; // OK
-		    
-		    		 document.getElementById("body").innerHTML = result["text"]; 				 
-				 document.getElementById("body_html").innerHTML = result["article_html"];
-				 document.getElementById("body_markdown").innerHTML = result["body_markdown"];
-
-		
-				 document.getElementById("published-date").innerHTML = result["publish_date"]; // OK
-				 document.getElementById("language").innerHTML = JSON.stringify(result["language"]); // OK
-				 document.getElementById("meta-language").innerHTML = result["meta_lang"]; // OK
-			     //document.getElementById("predict-language").innerHTML = prettyDict(result["predicted_lang"],true);
-				 document.getElementById("language-langpredict").innerHTML = result["langdetect_language"]; // OK
-				 document.getElementById("meta-language").innerHTML = result["meta_lang"]; // OK
-				 document.getElementById("summary").innerHTML = result["summary"]; // OK
-				if (result["top_image"] == null ) {
-					document.getElementById("top-image").src = "https://www.shareicon.net/data/512x512/2016/09/21/831157_cool_512x512.png";
-				} else {
-					document.getElementById("top-image").src = result["top_image"]; // OK
-				}
-
-				 // CLASSIFICATOR
-			  	document.getElementById("themes").innerHTML = prettyTuple(result["theme"], true); // OK
-
-				 // PENDING CLASSIFICATOR
- 				 document.getElementById("content-format").innerHTML = '<i>Pending</i>' ; // OK
-				 document.getElementById("primary-country").innerHTML = result["primary_country"]; // OK
-				 document.getElementById("country").innerHTML = prettyArray(result["countries"]); // OK
-				 document.getElementById("source").innerHTML = '<i>Pending</i>'; // OK
-				 document.getElementById("vulnerable-groups").innerHTML = '<i>Pending</i>'; // OK
-				 // document.getElementById("ocha-format").innerHTML = '<i>Pending</i>'; // OK
-				 // TODO: Active vulnerable groups
-
-				 // ADDITIONAL NO REQUIRED
-				 document.getElementById("authors").innerHTML = prettyArray(result["authors"]); // OK
-				 document.getElementById("top-image-url").innerHTML = result["top_image"]; // OK
-				 document.getElementById("keywords").innerHTML = prettyArray(result["keywords"]); // OK
-				 document.getElementById("tags").innerHTML = prettyArray(result["tags"]); // OK
-				 document.getElementById("meta-keywords").innerHTML = prettyArray(result["meta_keywords"]); // OK
-				 document.getElementById("topics").innerHTML = JSON.stringify(result["topics"]); // OK
-				 document.getElementById("cities").innerHTML = prettyArray(result["cities"]); // OK
-				 document.getElementById("nationalities").innerHTML = prettyArray(result["nationalities"]); // OK
-				 document.getElementById("publication_type").innerHTML = JSON.stringify(result["publication_type"]); // OK
-
-
-
-            });
-        }
-
-    </script>
-
-<link rel="apple-touch-icon" href="favicon.ico">
-<link rel="icon" href="favicon.ico">
-<!--[if IE]><link rel="shortcut icon" href="favicon.ico"><![endif]-->
-<link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon">
-
- <title>ReliefWeb Tag Assistant</title>
-
-<link type="text/css" rel="stylesheet" href="https://reliefweb.int/sites/reliefweb.int/files/css/css_pZ0_Pb__oDuNeqvCF6qYhf0jzCWsmVNwbLqrmnffLp0.css" media="all" />
-<link type="text/css" rel="stylesheet" href="https://reliefweb.int/sites/reliefweb.int/files/css/css_BASTOQC91zKKLftFQnRol1bwiX23xMteceLWJX9jbjM.css" media="all" />
-
-<!--[if gte IE 7]>
-<link type="text/css" rel="stylesheet" href="https://reliefweb.int/profiles/reliefweb/themes/kobe/style-ie.css?pbt7n1" media="all" />
-<![endif]-->
-
-<!--[if IE 7]>
-<link type="text/css" rel="stylesheet" href="https://reliefweb.int/profiles/reliefweb/themes/kobe/style-ie7.css?pbt7n1" media="all" />
-<![endif]-->
-<link type="text/css" rel="stylesheet" href="https://reliefweb.int/sites/reliefweb.int/files/css/css_quW47FRmfqvjanHOMKuGByzNkMTB8GEeRnQVveDnHK8.css" media="all" />
-<link type="text/css" rel="stylesheet" href="https://reliefweb.int/sites/reliefweb.int/files/css/css_XV8UqNFWBCLm0ReFv4qekgAliK2_eDueAtHo7fZyEig.css" media="screen" />
-<link type="text/css" rel="stylesheet" href="https://reliefweb.int/sites/reliefweb.int/files/css/css_iaAfVjuMtAcMY6MOPWDvnn4kuuxWhYeXZRsWD5_o4tU.css" media="print" />
-<link type="text/css" rel="stylesheet" href="https://reliefweb.int/sites/reliefweb.int/files/css/css_0Y7MzWR_MzNcQl_ENmNzclHC3pDgpoalqdZip6d3vUE.css" media="all" />
-
-<!--
-  <script type="text/javascript" src="https://reliefweb.int/sites/reliefweb.int/files/js/js_Exhj8PvK_Ry53PZLz5XstYozgDmtkuZlUNJacdY3sys.js"></script>
-<script type="text/javascript" src="https://reliefweb.int/sites/reliefweb.int/files/js/js_bQkfn7aPjbOOUYAAjRJY1-PavkNWRnzoF6KWmOgTATU.js"></script>
-<script type="text/javascript" src="https://reliefweb.int/sites/reliefweb.int/files/js/js_ZwtHh_UtMhEyIZ7P23uU_tO_tZHXgPG1rk11b_m8s9Y.js"></script>
-<script type="text/javascript" src="https://reliefweb.int/sites/reliefweb.int/files/js/js_MPtDJdz-Hq1MxtompAHNtrbqiBTF823AhhkFyT5F88A.js"></script>
-<script type="text/javascript" src="https://reliefweb.int/sites/reliefweb.int/files/js/js_55eTDjdhBe9wtQZGhLdkOmjD40J90OJGljYUAVfA3KQ.js"></script>
-<script type="text/javascript">
--->
-<!--
-<![CDATA[//><!--
-jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":{"theme":"kobe","theme_token":"aJuDO9or5prGBdyiOWi97Jcy17KqLkGtwyMkRFZQx1E","js":{"misc\/jquery.js":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"misc\/jquery.form.js":1,"misc\/form.js":1,"misc\/ajax.js":1,"misc\/ui\/jquery.ui.core.min.js":1,"misc\/ui\/jquery.ui.widget.min.js":1,"misc\/ui\/jquery.ui.button.min.js":1,"misc\/ui\/jquery.ui.mouse.min.js":1,"misc\/ui\/jquery.ui.draggable.min.js":1,"misc\/ui\/jquery.ui.position.min.js":1,"misc\/ui\/jquery.ui.resizable.min.js":1,"misc\/ui\/jquery.ui.dialog.min.js":1,"sites\/all\/modules\/views\/js\/jquery.ui.dialog.patch.js":1,"misc\/progress.js":1,"sites\/all\/modules\/memcache\/memcache_admin\/memcache.js":1,"sites\/all\/modules\/admin\/includes\/jquery.drilldown.js":1,"misc\/jquery.cookie.js":1,"sites\/all\/modules\/admin\/includes\/admin.toolbar.js":1,"sites\/all\/modules\/admin\/includes\/admin.menu.js":1,"profiles\/reliefweb\/modules\/features\/reliefweb_revisions\/js\/revisions.js":1,"sites\/all\/modules\/boxes\/boxes.js":1,"sites\/all\/themes\/rubik\/js\/rubik.js":1,"profiles\/reliefweb\/themes\/kobe\/js\/kobe.js":1},"css":{"misc\/ui\/jquery.ui.core.css":1,"misc\/ui\/jquery.ui.theme.css":1,"misc\/ui\/jquery.ui.button.css":1,"misc\/ui\/jquery.ui.resizable.css":1,"misc\/ui\/jquery.ui.dialog.css":1,"sites\/all\/modules\/date\/date_api\/date.css":1,"modules\/field\/theme\/field.css":1,"sites\/all\/modules\/logintoboggan\/logintoboggan.css":1,"sites\/all\/modules\/views\/css\/views.css":1,"sites\/all\/modules\/ctools\/css\/ctools.css":1,"sites\/all\/modules\/boxes\/boxes.css":1,"sites\/all\/modules\/admin\/includes\/admin.toolbar.base.css":1,"sites\/all\/modules\/admin\/includes\/admin.toolbar.css":1,"sites\/all\/modules\/admin\/includes\/admin.menu.css":1,"profiles\/reliefweb\/modules\/features\/reliefweb_revisions\/css\/revisions.css":1,"profiles\/reliefweb\/themes\/kobe\/style-ie.css":1,"profiles\/reliefweb\/themes\/kobe\/style-ie7.css":1,"sites\/all\/themes\/tao\/reset.css":1,"sites\/all\/themes\/tao\/base.css":1,"sites\/all\/themes\/tao\/drupal.css":1,"sites\/all\/themes\/rubik\/core.css":1,"sites\/all\/themes\/rubik\/icons.css":1,"profiles\/reliefweb\/themes\/kobe\/style.css":1,"profiles\/reliefweb\/themes\/kobe\/fonts\/rw-icomoon\/rw-icomoon-style.css":1,"profiles\/reliefweb\/themes\/kobe\/style-print.css":1,"profiles\/reliefweb\/modules\/features\/reliefweb_moderation\/css\/moderation.css":1}},"jcarousel":{"ajaxPath":"\/jcarousel\/ajax\/views"},"getQ":"node\/2574349","activePath":"\/updates"});
-<!]]>
-</script>
--->
-<!--
-<script type="text/javascript" id="jQStatus">if(typeof(jQuery)!=='undefined'){var event=new CustomEvent('isJQuery',{detail:'yes'});document.dispatchEvent(event);};</script>
--->
-
-
-</head>
-<body class="html not-front logged-in one-sidebar sidebar-first page-node page-node- page-node-2574349 node-type-report  admin-nw admin-vertical admin-ah   tao rubik layout-default" data-gr-c-s-loaded="true">
-
-    <!-- Header -->
-<!-- Content -->
-<div class="content">
-  <!-- Navigation - Top -->
-<h1> ReliefWeb Tag Assistant </h1>
-
-	<p>URL to tag <input type="text" id="url" placeholder="Type here your URL with http or https" size="100%">
-
-        <button class="flat" onclick="clickTag()" type=submit>Tag It!</button>
-    </p>
-
-
-
-  <!-- Blue header - Local tasks or has a subtitle -->
-
-  <!-- Page -->
-  <div id="page" class="outer"><div id="main-content" class="limiter clearfix">
-
-    <!-- Headers -->
-
-    <!-- Help -->
-
-  <div class="page-body clearfix">
-
-    <div id="content" class="page-content clearfix">
-        <div class="region region-content">
-
-<div class="node node-report node-full node-page" id="node">
-
-<div id="loader"></div>
-
-<h2 id="title" class=""><i>Title of your article</i></h2>
-<div class="summary">
-    <h4>Summary (automatic using machine learning)</h4>
-<span id="summary" class="published-label"><i>Summary</i></span>
-</div>
-<div class="node-content clearfix">
-
-
-    <div class="field body_html" ><h4>Markdown body</h4>
-  <textarea disabled id="body_markdown" class="code" >
+<html lang="en" dir="ltr" prefix="fb: http://ogp.me/ns/fb# og: http://ogp.me/ns# article: http://ogp.me/ns/article#" class="js gr__reliefweb_int">
+   <head>
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-82210237-3"></script>
+      <script>
+         window.dataLayer = window.dataLayer || [];
+         function gtag(){dataLayer.push(arguments);}
+         gtag('js', new Date());
+         
+         gtag('config', 'UA-82210237-3');
+      </script>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <!-- Styles for the spinner -->
+      <style>
+         /* Center the loader */
+         #loader {
+         position: absolute;
+         left: 30%;
+         top: 8%;
+         z-index: 1;
+         width: 150px;
+         height: 150px;
+         border: 16px solid #f3f3f3;
+         border-radius: 90%;
+         border-top: 16px solid #3498db;
+         width: 120px;
+         height: 120px;
+         -webkit-animation: spin 2s linear infinite;
+         animation: spin 2s linear infinite;
+         display: none;
+         }
+         @-webkit-keyframes spin {
+         0% { -webkit-transform: rotate(0deg); }
+         100% { -webkit-transform: rotate(360deg); }
+         }
+         @keyframes spin {
+         0% { transform: rotate(0deg); }
+         100% { transform: rotate(360deg); }
+         }
+         /* Add animation to "page content" */
+         .animate-bottom {
+         position: relative;
+         -webkit-animation-name: animatebottom;
+         -webkit-animation-duration: 1s;
+         animation-name: animatebottom;
+         animation-duration: 1s
+         }
+         @-webkit-keyframes animatebottom {
+         from { bottom:-100px; opacity:0 } 
+         to { bottom:0px; opacity:1 }
+         }
+         @keyframes animatebottom { 
+         from{ bottom:-100px; opacity:0 } 
+         to{ bottom:0; opacity:1 }
+         }
+         /* Buttons styles */
+         button.flat  {
+         color: #fff;
+         background-color: #6496c8;
+         text-shadow: -1px 1px #417cb8;
+         font-size: 14px;
+         height:29px;
+         border: none;
+         }
+         button.flat:hover,
+         button.flat.hover {
+         background-color: #346392;
+         text-shadow: -1px 1px #27496d;
+         }
+         button.flat:active,
+         button.flat.active {
+         background-color: #27496d;
+         text-shadow: -1px 1px #193047;
+         }
+         .field
+         {
+         word-wrap:break-word;
+         }
+         textarea.code
+         {
+         width:100%;
+         height:400px;
+         font-family: Lucida Consola, Monospace, Courier;
+         font-size:10px;
+         word-wrap:break-word;
+         padding:8px 12px;
+         border-left: 4px solid #6496c8;
+         }
+         div.node-info
+         {
+         margin-bottom: 10px;
+         }
+         div.summary
+         {
+         border-top: 1px solid #e9e9e9;
+         border-bottom: 1px solid #e9e9e9;
+         padding-top: 8px;
+         padding-bottom: 8px;
+         margin-bottom: 8px;
+         color: #999;
+         font-style: italic;
+         word-wrap:break-word;
+         }
+      </style>
+      <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+      <script>
+         function prettyDict (object, percentages)
+         {
+         
+         	text = "<ul>";
+         	if (percentages) {
+         		for (var key in object ){
+         			var value = object[key]*100;
+         			text = text + "<li>" + key + ": " + value.toFixed(2) + " %</li>";
+         		}
+         	} else {
+         		for (var key in object ){
+         			var value = object[key];
+         			text = text + "<li>" + key + ": " + value.toFixed(2) + "</li>";
+         		}
+         	}
+         	text = text + "</ul>";
+         	return text;
+         }
+         
+         function prettyArray (object)
+         {
+         
+         	text = "<ul>";
+         	for (var key in object ){
+         		text = text + "<li>" + object[key] + " </li>";
+         	}
+         	text = text + "</ul>";
+         	return text;
+         }
+         
+         function prettyTuple (object, percentages)
+         {
+         
+         	text = "<ul>";
+         	if (percentages) {
+         		for (var key in object ){
+         			var value = object[key][1]*100;
+         			text = text + "<li>" + object[key][0] + ": " + value.toFixed(2) + " %</li>";
+         		}
+         	} else {
+         		for (var key in object ){
+         			var value = object[key][1];
+         			text = text + "<li>" + object[key][0] + ": " + value.toFixed(2) + "</li>";
+         		}
+         	}
+         	text = text + "</ul>";
+         	return text;
+         }
+         
+         function clickTag() {
+           document.getElementById("loader").style.display = "block";
+           getTags();
+         }
+         
+                //Usually, you put script-tags into the head
+                function getTags() {
+                    //This performs a POST-Request.
+                    //Use "$.get();" in order to perform a GET-Request (you have to take a look in the rest-API-documentation, if you're unsure what you need)
+                    //The Browser downloads the webpage from the given url, and returns the data.
+                 //$.get( "https://api.reliefweb.int/v1" , function( data ) {
+         
+                 if (window.location.hostname.includes("github") ) url = "https://rw-tag.herokuapp.com";
+                 else url = "http://0.0.0.0:5000";
+                 console.log (window.location.hostname);
+         
+         
+                    $.get( url + "/tag?url=" + document.getElementById("url").value , function( data ) {
+                         //As soon as the browser finished downloading, this function is called.
+         			
+         			result = JSON.parse(data);
+         
+         			console.log (JSON.stringify(result))
+         
+         			// hide spinner
+         			 document.getElementById("loader").style.display = "none";
+         
+         			 // FROM NEWSPAPER ARTICLE
+         			 document.getElementById("title").innerHTML = result["title"]; // OK
+         	    
+         	    		 document.getElementById("body").innerHTML = result["text"]; 				 
+         			 document.getElementById("body_html").innerHTML = result["article_html"];
+         			 document.getElementById("body_markdown").innerHTML = result["body_markdown"];
+         
+         	
+         			 document.getElementById("published-date").innerHTML = result["publish_date"]; // OK
+         			 document.getElementById("language").innerHTML = JSON.stringify(result["language"]); // OK
+         			 document.getElementById("meta-language").innerHTML = result["meta_lang"]; // OK
+         		     //document.getElementById("predict-language").innerHTML = prettyDict(result["predicted_lang"],true);
+         			 document.getElementById("language-langpredict").innerHTML = result["langdetect_language"]; // OK
+         			 document.getElementById("meta-language").innerHTML = result["meta_lang"]; // OK
+         			 document.getElementById("summary").innerHTML = result["summary"]; // OK
+         			if (result["top_image"] == null ) {
+         				document.getElementById("top-image").src = "https://www.shareicon.net/data/512x512/2016/09/21/831157_cool_512x512.png";
+         			} else {
+         				document.getElementById("top-image").src = result["top_image"]; // OK
+         			}
+         
+         			 // CLASSIFICATOR
+         		  	document.getElementById("themes").innerHTML = prettyTuple(result["theme"], true); // OK
+         
+         			 // PENDING CLASSIFICATOR
+         				 document.getElementById("content-format").innerHTML = '<i>Pending</i>' ; // OK
+         			 document.getElementById("primary-country").innerHTML = result["primary_country"]; // OK
+         			 document.getElementById("country").innerHTML = prettyArray(result["countries"]); // OK
+         			 document.getElementById("source").innerHTML = '<i>Pending</i>'; // OK
+         			 document.getElementById("vulnerable-groups").innerHTML = '<i>Pending</i>'; // OK
+         			 // document.getElementById("ocha-format").innerHTML = '<i>Pending</i>'; // OK
+         			 // TODO: Active vulnerable groups
+         
+         			 // ADDITIONAL NO REQUIRED
+         			 document.getElementById("authors").innerHTML = prettyArray(result["authors"]); // OK
+         			 document.getElementById("top-image-url").innerHTML = result["top_image"]; // OK
+         			 document.getElementById("keywords").innerHTML = prettyArray(result["keywords"]); // OK
+         			 document.getElementById("tags").innerHTML = prettyArray(result["tags"]); // OK
+         			 document.getElementById("meta-keywords").innerHTML = prettyArray(result["meta_keywords"]); // OK
+         			 document.getElementById("topics").innerHTML = JSON.stringify(result["topics"]); // OK
+         			 document.getElementById("cities").innerHTML = prettyArray(result["cities"]); // OK
+         			 document.getElementById("nationalities").innerHTML = prettyArray(result["nationalities"]); // OK
+         			 document.getElementById("publication_type").innerHTML = JSON.stringify(result["publication_type"]); // OK
+         
+         
+         
+                    });
+                }
+         
+            
+      </script>
+      <link rel="apple-touch-icon" href="favicon.ico">
+      <link rel="icon" href="favicon.ico">
+      <!--[if IE]>
+      <link rel="shortcut icon" href="favicon.ico">
+      <![endif]-->
+      <link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon">
+      <title>ReliefWeb Tag Assistant</title>
+      <link type="text/css" rel="stylesheet" href="https://reliefweb.int/sites/reliefweb.int/files/css/css_pZ0_Pb__oDuNeqvCF6qYhf0jzCWsmVNwbLqrmnffLp0.css" media="all" />
+      <link type="text/css" rel="stylesheet" href="https://reliefweb.int/sites/reliefweb.int/files/css/css_BASTOQC91zKKLftFQnRol1bwiX23xMteceLWJX9jbjM.css" media="all" />
+      <!--[if gte IE 7]>
+      <link type="text/css" rel="stylesheet" href="https://reliefweb.int/profiles/reliefweb/themes/kobe/style-ie.css?pbt7n1" media="all" />
+      <![endif]-->
+      <!--[if IE 7]>
+      <link type="text/css" rel="stylesheet" href="https://reliefweb.int/profiles/reliefweb/themes/kobe/style-ie7.css?pbt7n1" media="all" />
+      <![endif]-->
+      <link type="text/css" rel="stylesheet" href="https://reliefweb.int/sites/reliefweb.int/files/css/css_quW47FRmfqvjanHOMKuGByzNkMTB8GEeRnQVveDnHK8.css" media="all" />
+      <link type="text/css" rel="stylesheet" href="https://reliefweb.int/sites/reliefweb.int/files/css/css_XV8UqNFWBCLm0ReFv4qekgAliK2_eDueAtHo7fZyEig.css" media="screen" />
+      <link type="text/css" rel="stylesheet" href="https://reliefweb.int/sites/reliefweb.int/files/css/css_iaAfVjuMtAcMY6MOPWDvnn4kuuxWhYeXZRsWD5_o4tU.css" media="print" />
+      <link type="text/css" rel="stylesheet" href="https://reliefweb.int/sites/reliefweb.int/files/css/css_0Y7MzWR_MzNcQl_ENmNzclHC3pDgpoalqdZip6d3vUE.css" media="all" />
+      <!--
+         <script type="text/javascript" src="https://reliefweb.int/sites/reliefweb.int/files/js/js_Exhj8PvK_Ry53PZLz5XstYozgDmtkuZlUNJacdY3sys.js"></script>
+         <script type="text/javascript" src="https://reliefweb.int/sites/reliefweb.int/files/js/js_bQkfn7aPjbOOUYAAjRJY1-PavkNWRnzoF6KWmOgTATU.js"></script>
+         <script type="text/javascript" src="https://reliefweb.int/sites/reliefweb.int/files/js/js_ZwtHh_UtMhEyIZ7P23uU_tO_tZHXgPG1rk11b_m8s9Y.js"></script>
+         <script type="text/javascript" src="https://reliefweb.int/sites/reliefweb.int/files/js/js_MPtDJdz-Hq1MxtompAHNtrbqiBTF823AhhkFyT5F88A.js"></script>
+         <script type="text/javascript" src="https://reliefweb.int/sites/reliefweb.int/files/js/js_55eTDjdhBe9wtQZGhLdkOmjD40J90OJGljYUAVfA3KQ.js"></script>
+         <script type="text/javascript">
+         -->
+      <!--
+         <![CDATA[//><!--
+         jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":{"theme":"kobe","theme_token":"aJuDO9or5prGBdyiOWi97Jcy17KqLkGtwyMkRFZQx1E","js":{"misc\/jquery.js":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"misc\/jquery.form.js":1,"misc\/form.js":1,"misc\/ajax.js":1,"misc\/ui\/jquery.ui.core.min.js":1,"misc\/ui\/jquery.ui.widget.min.js":1,"misc\/ui\/jquery.ui.button.min.js":1,"misc\/ui\/jquery.ui.mouse.min.js":1,"misc\/ui\/jquery.ui.draggable.min.js":1,"misc\/ui\/jquery.ui.position.min.js":1,"misc\/ui\/jquery.ui.resizable.min.js":1,"misc\/ui\/jquery.ui.dialog.min.js":1,"sites\/all\/modules\/views\/js\/jquery.ui.dialog.patch.js":1,"misc\/progress.js":1,"sites\/all\/modules\/memcache\/memcache_admin\/memcache.js":1,"sites\/all\/modules\/admin\/includes\/jquery.drilldown.js":1,"misc\/jquery.cookie.js":1,"sites\/all\/modules\/admin\/includes\/admin.toolbar.js":1,"sites\/all\/modules\/admin\/includes\/admin.menu.js":1,"profiles\/reliefweb\/modules\/features\/reliefweb_revisions\/js\/revisions.js":1,"sites\/all\/modules\/boxes\/boxes.js":1,"sites\/all\/themes\/rubik\/js\/rubik.js":1,"profiles\/reliefweb\/themes\/kobe\/js\/kobe.js":1},"css":{"misc\/ui\/jquery.ui.core.css":1,"misc\/ui\/jquery.ui.theme.css":1,"misc\/ui\/jquery.ui.button.css":1,"misc\/ui\/jquery.ui.resizable.css":1,"misc\/ui\/jquery.ui.dialog.css":1,"sites\/all\/modules\/date\/date_api\/date.css":1,"modules\/field\/theme\/field.css":1,"sites\/all\/modules\/logintoboggan\/logintoboggan.css":1,"sites\/all\/modules\/views\/css\/views.css":1,"sites\/all\/modules\/ctools\/css\/ctools.css":1,"sites\/all\/modules\/boxes\/boxes.css":1,"sites\/all\/modules\/admin\/includes\/admin.toolbar.base.css":1,"sites\/all\/modules\/admin\/includes\/admin.toolbar.css":1,"sites\/all\/modules\/admin\/includes\/admin.menu.css":1,"profiles\/reliefweb\/modules\/features\/reliefweb_revisions\/css\/revisions.css":1,"profiles\/reliefweb\/themes\/kobe\/style-ie.css":1,"profiles\/reliefweb\/themes\/kobe\/style-ie7.css":1,"sites\/all\/themes\/tao\/reset.css":1,"sites\/all\/themes\/tao\/base.css":1,"sites\/all\/themes\/tao\/drupal.css":1,"sites\/all\/themes\/rubik\/core.css":1,"sites\/all\/themes\/rubik\/icons.css":1,"profiles\/reliefweb\/themes\/kobe\/style.css":1,"profiles\/reliefweb\/themes\/kobe\/fonts\/rw-icomoon\/rw-icomoon-style.css":1,"profiles\/reliefweb\/themes\/kobe\/style-print.css":1,"profiles\/reliefweb\/modules\/features\/reliefweb_moderation\/css\/moderation.css":1}},"jcarousel":{"ajaxPath":"\/jcarousel\/ajax\/views"},"getQ":"node\/2574349","activePath":"\/updates"});
+         <!]]>
+         </script>
+         -->
+      <!--
+         <script type="text/javascript" id="jQStatus">if(typeof(jQuery)!=='undefined'){var event=new CustomEvent('isJQuery',{detail:'yes'});document.dispatchEvent(event);};</script>
+         -->
+   </head>
+   <body class="html not-front logged-in one-sidebar sidebar-first page-node page-node- page-node-2574349 node-type-report  admin-nw admin-vertical admin-ah   tao rubik layout-default" data-gr-c-s-loaded="true">
+      <!-- Header -->
+      <!-- Content -->
+      <div class="content">
+         <!-- Navigation - Top -->
+         <h1> ReliefWeb Tag Assistant </h1>
+         <p>URL to tag <input type="text" id="url" placeholder="Type here your URL with http or https" size="100%">
+            <button class="flat" onclick="clickTag()" type=submit>Tag It!</button>
+         </p>
+         <!-- Blue header - Local tasks or has a subtitle -->
+         <!-- Page -->
+         <div id="page" class="outer">
+            <div id="main-content" class="limiter clearfix">
+               <!-- Headers -->
+               <!-- Help -->
+               <div class="page-body clearfix">
+                  <div id="content" class="page-content clearfix">
+                     <div class="region region-content">
+                        <div class="node node-report node-full node-page" id="node">
+                           <div id="loader"></div>
+                           <h2 id="title" class=""><i>Title of your article</i></h2>
+                           <div class="summary">
+                              <h4>Summary (automatic using machine learning)</h4>
+                              <span id="summary" class="published-label"><i>Summary</i></span>
+                           </div>
+                           <div class="node-content clearfix">
+                              <div class="field body_html" >
+                                 <h4>Markdown body</h4>
+                                 <textarea disabled id="body_markdown" class="code" >
     _This is the markdown of your extracted article._
   </textarea>
-</div>
-
-    <p></p>
-    <div class="field body" ><h4>Plain text</h4>
-    <textarea disabled id="body" class="code" >
+                              </div>
+                              <p></p>
+                              <div class="field body" >
+                                 <h4>Plain text</h4>
+                                 <textarea disabled id="body" class="code" >
 <p><i>This is the body of your extracted article.</i></p>
     </textarea>
-</div>
-
-<p></p>
-<div class="word-wrap:break-word; body_html" ><h4>Raw HTML</h4>
-  <textarea disabled id="body_html" class="code">
+                              </div>
+                              <p></p>
+                              <div class="word-wrap:break-word; body_html" >
+                                 <h4>Raw HTML</h4>
+                                 <textarea disabled id="body_html" class="code">
     <p><i>This is the body of your extracted article.</i></p>
   </textarea>
-</div>
-
-
-</div>
-</div>
-  </div>
-    </div>
-
-
-              <div id="sidebar-first" class="sidebar clearfix">  <div class="region region-sidebar-first">
-
-                            <div class="field field-file">
-<div class="reliefweb-file-pdf-preview attachment-small"><div class="file-pdf-preview">
-<img id="top-image" src="https://www.microsoft.com/net/images/redesign/learn/apps/machine-learning.svg?v=SiiofHeFghOCfKgfgXL4BOhXUOBnkq1iN45l1C0eJuQ" width="260" height="146" alt="main image of the article">
-</div>
-</div></div>
-
-
-<p></p>
-<h4>ReliefWeb Fields</h4>
-
-<div class="block block-reliefweb-taxonomy block-delta-report-countries" id="block-reliefweb-taxonomy-report-countries">
-
-<div class="country other-countries field" style="border-top: 1px solid rgb(209, 223, 227) ;">
-<h4>Primary country</h4>
-<div id="primary-country"><i>Country 1</i></div>
-</div>
-
-<div class="other-countries"><h4>Other countries</h4>
-<ul id="country">
-<li class="country"><i>Country 1</i></li>
-<li class="country"><i>Country 2</i></li>
-<li class="country"><i>Country 3</i></li>
-</ul>
-</div>
-
-    <div class="field content-date other-countries"><h4>Published date:</h4><ul><li id="published-date"><i>DD/MM/YYY</i></li></ul></div>
-    <div class="field language other-countries"><h4>Language (langpredict):</h4><ul><li id="language-langpredict"><i>Language (2 code)</i></li></ul></div>
-<div class="field theme other-countries"><h4>Theme:</h4><ul id="themes"><li><i>Theme 1</i></li><li><i>Theme 2</i></li></ul></div>
-
-          </div>
-
-
-
-
-
-                  <h4>Other information</h4>
-<div class="block block-reliefweb-node block-delta-node-fields clearfix" id="block-reliefweb-node-node-fields-1">
-
-<div class="block-content clearfix">
-<ul class="fields">
-    <li class="field content-format"><h4>Authors:</h4><ul><li id="authors"><i>Authors</i></li></ul></li>
-<li class="field content-format"><h4>Keywords:</h4><ul><li id="keywords"><i>Keywords</i></li></ul></li>
-<li class="field content-format"><h4>Tags:</h4><ul><li id="tags"><i>Tags</i></li></ul></li>
-<li class="field content-format"><h4>Meta Keywords:</h4><ul><li id="meta-keywords"><i>Meta Keywords</i></li></ul></li>
-<li class="field content-format"><h4>Topics:</h4><ul><li id="topics"><i>Topics</i></li></ul></li>
-<li class="field language"><h4>Language:</h4><ul><li id="language"><i>Language</i></li></ul></li>
-<li class="field language"><h4>Meta language:</h4><ul><li id="meta-language"><i>Meta Language</i></li></ul></li>
-<li class="field content-format"><h4>Top Image URL:</h4><ul><li id="top-image-url"><i>sample_url</i></li></ul></li>
-<li class="field content-format"><h4>Cities:</h4><ul><li id="cities"><i>City 1</i></li></ul></li>
-<li class="field content-format"><h4>Nationalities:</h4><ul><li id="nationalities"><i>Nationality 1</i></li></ul></li>
-<li class="field content-format"><h4>Publication Type:</h4><ul><li id="publication_type"><i>Publication type</i></li></ul></li>
-
-</div>
-</div>
-
-<p></p>
-
-                  <h4>Not implemented</h4>
-
-<div class="block block-reliefweb-node block-delta-node-fields clearfix" id="block-reliefweb-node-node-fields-2"><div class="block-content clearfix"><ul class="fields">
-<li class="field content-format"><h4>Content format (not implemented):</h4><ul><li id="content-format"><i>Not implemented</i></li></ul></li>
-<li class="field vulnerable-groups"><h4>Vulnerable groups (not implemented):</h4><ul id="vulnerable-groups"><li><i>Group 1</i></li><li><i>Group 2</i></li></ul></li>
-<li class="field ocha-format"><h4>OCHA Format (not implemented):</h4><ul><li id="ocha_format"><i>Not implemented</i></li></ul></li>
-<li class="field content-format"><h4>Source:</h4><ul><li id="source"><i>Source</i></li></ul></li>
-<li class="field language"><h4>Predicted Language ML (disabled):</h4><ul><li id="predict-language"><i>Language: Percentage</i></li></ul></li>
-
- </ul></div>
-
-</div>
-<p></p>
-
-</div>
-
-  </div>
-
-  </div></div>
-  <!-- End Page -->
-
-  <!-- Navigation - Bottom -->
-
-  </div>
-<!-- End Content -->
-
-</div></body></html>
-
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div id="sidebar-first" class="sidebar clearfix">
+                     <div class="region region-sidebar-first">
+                        <div class="field field-file">
+                           <div class="reliefweb-file-pdf-preview attachment-small">
+                              <div class="file-pdf-preview">
+                                 <img id="top-image" src="https://www.microsoft.com/net/images/redesign/learn/apps/machine-learning.svg?v=SiiofHeFghOCfKgfgXL4BOhXUOBnkq1iN45l1C0eJuQ" width="260" height="146" alt="main image of the article">
+                              </div>
+                           </div>
+                        </div>
+                        <p></p>
+                        <h4>ReliefWeb Fields</h4>
+                        <div class="block block-reliefweb-taxonomy block-delta-report-countries" id="block-reliefweb-taxonomy-report-countries">
+                           <div class="country other-countries field" style="border-top: 1px solid rgb(209, 223, 227) ;">
+                              <h4>Primary country</h4>
+                              <div id="primary-country"><i>Country 1</i></div>
+                           </div>
+                           <div class="other-countries">
+                              <h4>Other countries</h4>
+                              <ul id="country">
+                                 <li class="country"><i>Country 1</i></li>
+                                 <li class="country"><i>Country 2</i></li>
+                                 <li class="country"><i>Country 3</i></li>
+                              </ul>
+                           </div>
+                           <div class="field content-date other-countries">
+                              <h4>Published date:</h4>
+                              <ul>
+                                 <li id="published-date"><i>DD/MM/YYY</i></li>
+                              </ul>
+                           </div>
+                           <div class="field language other-countries">
+                              <h4>Language (langpredict):</h4>
+                              <ul>
+                                 <li id="language-langpredict"><i>Language (2 code)</i></li>
+                              </ul>
+                           </div>
+                           <div class="field theme other-countries">
+                              <h4>Theme:</h4>
+                              <ul id="themes">
+                                 <li><i>Theme 1</i></li>
+                                 <li><i>Theme 2</i></li>
+                              </ul>
+                           </div>
+                        </div>
+                        <h4>Other information</h4>
+                        <div class="block block-reliefweb-node block-delta-node-fields clearfix" id="block-reliefweb-node-node-fields-1">
+                           <div class="block-content clearfix">
+                              <ul class="fields">
+                              <li class="field content-format">
+                                 <h4>Authors:</h4>
+                                 <ul>
+                                    <li id="authors"><i>Authors</i></li>
+                                 </ul>
+                              </li>
+                              <li class="field content-format">
+                                 <h4>Keywords:</h4>
+                                 <ul>
+                                    <li id="keywords"><i>Keywords</i></li>
+                                 </ul>
+                              </li>
+                              <li class="field content-format">
+                                 <h4>Tags:</h4>
+                                 <ul>
+                                    <li id="tags"><i>Tags</i></li>
+                                 </ul>
+                              </li>
+                              <li class="field content-format">
+                                 <h4>Meta Keywords:</h4>
+                                 <ul>
+                                    <li id="meta-keywords"><i>Meta Keywords</i></li>
+                                 </ul>
+                              </li>
+                              <li class="field content-format">
+                                 <h4>Topics:</h4>
+                                 <ul>
+                                    <li id="topics"><i>Topics</i></li>
+                                 </ul>
+                              </li>
+                              <li class="field language">
+                                 <h4>Language:</h4>
+                                 <ul>
+                                    <li id="language"><i>Language</i></li>
+                                 </ul>
+                              </li>
+                              <li class="field language">
+                                 <h4>Meta language:</h4>
+                                 <ul>
+                                    <li id="meta-language"><i>Meta Language</i></li>
+                                 </ul>
+                              </li>
+                              <li class="field content-format">
+                                 <h4>Top Image URL:</h4>
+                                 <ul>
+                                    <li id="top-image-url"><i>sample_url</i></li>
+                                 </ul>
+                              </li>
+                              <li class="field content-format">
+                                 <h4>Cities:</h4>
+                                 <ul>
+                                    <li id="cities"><i>City 1</i></li>
+                                 </ul>
+                              </li>
+                              <li class="field content-format">
+                                 <h4>Nationalities:</h4>
+                                 <ul>
+                                    <li id="nationalities"><i>Nationality 1</i></li>
+                                 </ul>
+                              </li>
+                              <li class="field content-format">
+                                 <h4>Publication Type:</h4>
+                                 <ul>
+                                    <li id="publication_type"><i>Publication type</i></li>
+                                 </ul>
+                              </li>
+                           </div>
+                        </div>
+                        <p></p>
+                        <h4>Not implemented</h4>
+                        <div class="block block-reliefweb-node block-delta-node-fields clearfix" id="block-reliefweb-node-node-fields-2">
+                           <div class="block-content clearfix">
+                              <ul class="fields">
+                                 <li class="field content-format">
+                                    <h4>Content format (not implemented):</h4>
+                                    <ul>
+                                       <li id="content-format"><i>Not implemented</i></li>
+                                    </ul>
+                                 </li>
+                                 <li class="field vulnerable-groups">
+                                    <h4>Vulnerable groups (not implemented):</h4>
+                                    <ul id="vulnerable-groups">
+                                       <li><i>Group 1</i></li>
+                                       <li><i>Group 2</i></li>
+                                    </ul>
+                                 </li>
+                                 <li class="field ocha-format">
+                                    <h4>OCHA Format (not implemented):</h4>
+                                    <ul>
+                                       <li id="ocha_format"><i>Not implemented</i></li>
+                                    </ul>
+                                 </li>
+                                 <li class="field content-format">
+                                    <h4>Source:</h4>
+                                    <ul>
+                                       <li id="source"><i>Source</i></li>
+                                    </ul>
+                                 </li>
+                                 <li class="field language">
+                                    <h4>Predicted Language ML (disabled):</h4>
+                                    <ul>
+                                       <li id="predict-language"><i>Language: Percentage</i></li>
+                                    </ul>
+                                 </li>
+                              </ul>
+                           </div>
+                        </div>
+                        <p></p>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- End Page -->
+            <!-- Navigation - Bottom -->
+         </div>
+         <!-- End Content -->
+      </div>
+   </body>
+</html>
