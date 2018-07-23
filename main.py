@@ -2,11 +2,15 @@
 import socket
 
 from flask import Flask, request
+from flask_cors import CORS, cross_origin
 
 from reliefweb_tag import reliefweb_ml_model, reliefweb_predict, reliefweb_config
 
 global app
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADER']='Content-type'
+#Content-type: application/json
 app.debug = False
 app.threaded = False
 
@@ -97,12 +101,14 @@ def init():
 
 @app.route("/")
 # Instructions ENDPOINT
+@cross_origin()
 def main():
     return "Please, use the /tag endpoint with the param url to tag a url or pdf. Example: http://IP:PORT/tag?url=URL_WITH_HTTP"
 
 
 @app.route("/tag")
 # sample http://localhost:5000/tag?url=https://stackoverflow.com/questions/24892035/python-flask-how-to-get-parameters-from-a-url
+@cross_origin()
 def RWtag():
     import gc
 
@@ -118,6 +124,7 @@ def RWtag():
 
 
 @app.route("/html")
+@cross_origin()
 def htmlpage():
     return app.send_static_file('rwtag.html')
 
