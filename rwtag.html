@@ -49,6 +49,61 @@
   to{ bottom:0; opacity:1 }
 }
 
+/* Buttons styles */
+button.flat  {
+  color: #fff;
+  background-color: #6496c8;
+  text-shadow: -1px 1px #417cb8;
+  font-size: 14px;
+  height:29px;
+  border: none;
+}
+button.flat:hover,
+button.flat.hover {
+  background-color: #346392;
+  text-shadow: -1px 1px #27496d;
+}
+button.flat:active,
+button.flat.active {
+  background-color: #27496d;
+  text-shadow: -1px 1px #193047;
+}
+
+.field
+{
+  word-wrap:break-word;
+}
+
+textarea.code
+{
+  width:100%;
+  height:400px;
+  font-family: Lucida Consola, Monospace, Courier;
+  font-size:10px;
+  word-wrap:break-word;
+  padding:8px 12px;
+  border-left: 4px solid #6496c8;
+}
+
+div.node-info
+{
+  margin-bottom: 10px;
+}
+
+div.summary
+{
+  border-top: 1px solid #e9e9e9;
+  border-bottom: 1px solid #e9e9e9;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  color: #999;
+  font-style: italic;
+  word-wrap:break-word;
+
+
+}
+
 
 </style>
 
@@ -234,9 +289,12 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
   <!-- Navigation - Top -->
 <h1> ReliefWeb Tag Assistant </h1>
 
-<p><i>For this site to work you would need this <a href="https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi?hl=en">Chrome extension</a>. Note: You should enable it, it can cause other websites to stop working. If so, just disable it again.</i></p>
-	<p>URL to get	<input type="text" id="url" placeholder="Type here your URL with http or https" size="100%">
-        <button onclick="clickTag()" type=submit>Tag It!</button></p>
+	<p>URL to tag <input type="text" id="url" placeholder="Type here your URL with http or https" size="100%">
+
+        <button class="flat" onclick="clickTag()" type=submit>Tag It!</button>
+    </p>
+
+
 
   <!-- Blue header - Local tasks or has a subtitle -->
 
@@ -256,29 +314,30 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 
 <div id="loader"></div>
 
-<h1 id="title" class="node-title clearfix"><i>Title of your article</i></h1>
-<div class="node-info clearfix">
+<h2 id="title" class=""><i>Title of your article</i></h2>
+<div class="summary">
+    <h4>Summary (automatic using machine learning)</h4>
 <span id="summary" class="published-label"><i>Summary</i></span>
 </div>
 <div class="node-content clearfix">
 
 
-    <div class="field body_html" ><h3>Markdown body</h3>
-  <textarea disabled id="body_markdown" style="width:100%; height:400px; font-family: Lucida Consola, Monospace, Courier; font-size:10px;">
+    <div class="field body_html" ><h4>Markdown body</h4>
+  <textarea disabled id="body_markdown" class="code" >
     _This is the markdown of your extracted article._
   </textarea>
 </div>
 
     <p></p>
-    <div class="field body" ><h3>Plain text</h3>
-    <textarea disabled id="body" style="width:100%; height:400px; font-family: Lucida Consola, Monospace, Courier; font-size:10px;">
+    <div class="field body" ><h4>Plain text</h4>
+    <textarea disabled id="body" class="code" >
 <p><i>This is the body of your extracted article.</i></p>
     </textarea>
 </div>
 
 <p></p>
-<div class="field body_html" ><h3>Raw HTML</h3>
-  <textarea disabled id="body_html" style="width:100%; height:400px; font-family: Lucida Consola, Monospace, Courier; font-size:10px;">
+<div class="word-wrap:break-word; body_html" ><h4>Raw HTML</h4>
+  <textarea disabled id="body_html" class="code">
     <p><i>This is the body of your extracted article.</i></p>
   </textarea>
 </div>
@@ -298,13 +357,13 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 </div>
 </div></div>
 
-<p></p>
 
-ReliefWeb Fields
+<p></p>
+<h4>ReliefWeb Fields</h4>
 
 <div class="block block-reliefweb-taxonomy block-delta-report-countries" id="block-reliefweb-taxonomy-report-countries">
 
-<div class="country other-countries">
+<div class="country other-countries field" style="border-top: 1px solid rgb(209, 223, 227) ;">
 <h4>Primary country</h4>
 <div id="primary-country"><i>Country 1</i></div>
 </div>
@@ -327,7 +386,7 @@ ReliefWeb Fields
 
 
 
-                  Other information
+                  <h4>Other information</h4>
 <div class="block block-reliefweb-node block-delta-node-fields clearfix" id="block-reliefweb-node-node-fields-1">
 
 <div class="block-content clearfix">
@@ -349,7 +408,7 @@ ReliefWeb Fields
 
 <p></p>
 
-                  Not implemented
+                  <h4>Not implemented</h4>
 
 <div class="block block-reliefweb-node block-delta-node-fields clearfix" id="block-reliefweb-node-node-fields-2"><div class="block-content clearfix"><ul class="fields">
 <li class="field content-format"><h4>Content format (not implemented):</h4><ul><li id="content-format"><i>Not implemented</i></li></ul></li>
@@ -361,6 +420,7 @@ ReliefWeb Fields
  </ul></div>
 
 </div>
+<p></p>
 
 </div>
 
