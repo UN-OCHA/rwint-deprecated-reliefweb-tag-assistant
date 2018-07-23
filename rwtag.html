@@ -118,8 +118,8 @@
             //The Browser downloads the webpage from the given url, and returns the data.
 	        //$.get( "https://api.reliefweb.int/v1" , function( data ) {
 
-	        if (window.location.hostname.includes("github") ) url = "https://rw-tag.herokuapp.com";
-	        else url = "http://0.0.0.0:5000";
+	        if (window.location.hostname.includes("github") ) url = "https://cors-anywhere.herokuapp.com/https://rw-tag.herokuapp.com";
+	        else url = "https://cors-anywhere.herokuapp.com/http://0.0.0.0:5000";
 	        console.log (window.location.hostname);
 
 
