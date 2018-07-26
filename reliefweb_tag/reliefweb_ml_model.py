@@ -117,27 +117,6 @@ class ReliefwebModel:
 
             tic = time.time()
 
-#            self.read_vocabulary(vocabulary_file, term_field)
-
-            toc = time.time()
-            print ("(t) read_vocabulary : %d " % (toc-tic))
-            tic = time.time()
-
-#            data = self.normalize_input(dataset_file,
-#                                        dataset_post_field,
-#                                        dataset_tag_field,
-#                                        skip_normalizing=True)
-            toc = time.time()
-            print ("(t) normalize_input : %d " % (toc-tic))
-            tic = time.time()
-
-#            self.prepare_dataset(data, vocabulary_name, max_words,
-#                                 train_percentage)  # 20000, number of words to take from each post to tokenize)
-
-            toc = time.time()
-            print ("(t) prepare_dataset : %d " % (toc-tic))
-            tic = time.time()
-
             # load json and create model
             json_file = open(model_path + "model_" + vocabulary_name + "_model.json", 'r')
             loaded_model_json = json_file.read()
