@@ -23,11 +23,35 @@ def url_to_tagged_json(model, url, threshold=0.5, diff_terms=0.1):
 
     return json.dumps(sample_dict, indent=4)
 
+def to_tagged_json(model, input, threshold=0.5, diff_terms=0.1, isurl=True ):
+    """
+    Main method to tag a URL
+    :param model:
+    :param url:
+    :param threshold:
+    :param diff_terms:
+    :return:
+    """
 
-def tag_metadata_from_url(url):
+    import json
+
+    try:
+        sample_dict = tag_metadata(input, isurl)
+        tag_language_langdetect(sample_dict)
+        tag_country_basic(sample_dict)
+        # tag_language(model['language'], sample_dict)
+        tag_theme(model['theme'], sample_dict, threshold, diff_terms)
+    except Exception as e:
+        sample_dict = {}
+        sample_dict['error'] = str(e)
+        sample_dict['full_text'] = ''
+
+    return json.dumps(sample_dict, indent=4)
+
+def tag_metadata(input, isurl = True):
     """
     Gets all the tags from the newspaper library
-    :param url:
+    :param input: can be a url or a text string
     :return:
     """
 
@@ -39,11 +63,15 @@ def tag_metadata_from_url(url):
     configuration.request_timeout = 15  # default = 7
     configuration.keep_article_html = True
 
-    article = Article(url, config=configuration)
+    if isurl:
+        article = Article(input, config=configuration)
+    else:
+        article = Article("")
+
     # if URL IS PDF or any binary then
-    if url.lower()[-4:] in [".pdf"]:
+    if input.lower()[-4:] in [".pdf"]:
         try:
-            pdf = reliefweb_tag_aux.get_pdf_url(url)
+            pdf = reliefweb_tag_aux.get_pdf_url(input)
         except Exception as e:
             raise Exception(e)
         pdf_text = ' '.join(pdf)
@@ -54,13 +82,20 @@ def tag_metadata_from_url(url):
                                             '')  # set title fills the field with Configuration when title empty
         article.set_authors([pdf.metadata[0].get('Author', '')])
         article.publish_date = pdf.metadata[0].get('CreationDate', '')
+        article.html
 
+    if (not isurl):
+        article.download(input)
+        article.set_text(input)
+        article.set_article_html(input)
+        article.set_html(input)
+        article.title = input
     else:
         # if it is not pdf
         article.download()
+        article.html
 
     try:
-        article.html
         article.parse()
         article.nlp()
     except Exception as e:

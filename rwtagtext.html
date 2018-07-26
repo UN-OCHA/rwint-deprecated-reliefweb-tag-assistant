@@ -76,16 +76,40 @@
          {
              word-wrap:break-word;
          }
-         textarea.code
+
+         textarea.body-field
          {
              width:100%;
-             height:400px;
+             font-family: Lucida Consola, Monospace, Courier;
+             font-size:10px;
+             word-wrap:break-word;
+             padding:8px 12px;
+             border-left: 4px solid #6496c8;
+             height:300px;
+
+         }
+
+         textarea.how-to-apply
+         {
+             width:100%;
+             font-family: Lucida Consola, Monospace, Courier;
+             font-size:10px;
+             word-wrap:break-word;
+             padding:8px 12px;
+             border-left: 4px solid #6496c8;
+             height:100px;
+         }
+
+         .title-field
+         {
+             width:100%;
              font-family: Lucida Consola, Monospace, Courier;
              font-size:10px;
              word-wrap:break-word;
              padding:8px 12px;
              border-left: 4px solid #6496c8;
          }
+
          div.node-info
          {
              margin-bottom: 10px;
@@ -187,7 +211,9 @@
                  console.log (window.location.hostname);
          
          
-                    $.get( url + "/tag_url?url=" + document.getElementById("url").value , function( data ) {
+                    $.get( url + "/tag_text?text=" + document.getElementById("title").value + ' '
+                    + document.getElementById("body").value + ' '
+                    + document.getElementById("how_to_apply").value    , function( data ) {
                          //As soon as the browser finished downloading, this function is called.
          			
          			result = JSON.parse(data);
@@ -207,37 +233,18 @@
                   	    document.getElementById("error").style.display = "block"; // OK
                   	    document.getElementById("error").innerHTML = "ERROR " + result["error"]; // OK
                     }
-
-         			 // FROM NEWSPAPER ARTICLE
-         			 document.getElementById("title").innerHTML = result["title"]; // OK
-         	    
-         	    		 document.getElementById("body").innerHTML = result["text"]; 				 
-         			 document.getElementById("body_html").innerHTML = result["article_html"];
-         			 document.getElementById("body_markdown").innerHTML = result["body_markdown"];
-         
          	
-         			 document.getElementById("published-date").innerHTML = result["publish_date"]; // OK
+         			 //document.getElementById("published-date").innerHTML = result["publish_date"]; // OK
          			 document.getElementById("language").innerHTML = JSON.stringify(result["language"]); // OK
          			 document.getElementById("meta-language").innerHTML = result["meta_lang"]; // OK
-         		     //document.getElementById("predict-language").innerHTML = prettyDict(result["predicted_lang"],true);
          			 document.getElementById("language-langpredict").innerHTML = result["langdetect_language"]; // OK
          			 document.getElementById("meta-language").innerHTML = result["meta_lang"]; // OK
-         			 document.getElementById("summary").innerHTML = result["summary"]; // OK
-         			if (result["top_image"] == null ) {
-         			    if (result["error"] == null)
-         				    document.getElementById("top-image").src = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/No_image_3x4.svg/200px-No_image_3x4.svg.png";
-         				else
-         				    document.getElementById("top-image").src = "https://i.amz.mshcdn.com/m_xZjrHOtSlP8e-pvBWuXw2FfJw=/950x534/filters:quality(90)/https%3A%2F%2Fblueprint-api-production.s3.amazonaws.com%2Fuploads%2Fcard%2Fimage%2F282930%2Ffacebook-sad-796x398.png"
-         			} else {
-         				document.getElementById("top-image").src = result["top_image"]; // OK
-         			}
+
          
          			 // CLASSIFICATOR
          		  	document.getElementById("themes").innerHTML = prettyTuple(result["theme"], true); // OK
 
          			 // ADDITIONAL NO REQUIRED
-         			 document.getElementById("authors").innerHTML = prettyArray(result["authors"]); // OK
-         			 document.getElementById("top-image-url").innerHTML = result["top_image"]; // OK
          			 document.getElementById("keywords").innerHTML = prettyArray(result["keywords"]); // OK
          			 document.getElementById("tags").innerHTML = prettyArray(result["tags"]); // OK
          			 document.getElementById("meta-keywords").innerHTML = prettyArray(result["meta_keywords"]); // OK
@@ -247,12 +254,9 @@
          			 document.getElementById("publication_type").innerHTML = JSON.stringify(result["publication_type"]); // OK
 
          			 // PENDING CLASSIFICATOR
-         		     document.getElementById("content-format").innerHTML = '<i>Pending</i>' ; // OK
          			 document.getElementById("primary-country").innerHTML = result["primary_country"]; // OK
          			 document.getElementById("country").innerHTML = prettyArray(result["countries"]); // OK
          			 document.getElementById("source").innerHTML = '<i>Pending</i>'; // OK
-         			 document.getElementById("vulnerable-groups").innerHTML = '<i>Pending</i>'; // OK
-         			 // document.getElementById("ocha-format").innerHTML = '<i>Pending</i>'; // OK
 
                     });
                 }
@@ -302,9 +306,6 @@
       <div class="content">
          <!-- Navigation - Top -->
          <h1> ReliefWeb Tag Assistant </h1>
-         <p>URL to tag <input type="text" id="url" placeholder="Type here your URL with http or https" size="100%">
-            <button class="flat" onclick="clickTag()" type=submit>Tag It!</button>
-         </p>
          <!-- Blue header - Local tasks or has a subtitle -->
          <!-- Page -->
          <div id="page" class="outer">
@@ -317,50 +318,38 @@
                      <div class="region region-content">
                         <div class="node node-report node-full node-page" id="node">
                            <div id="loader"></div>
-                           <h2 id="title" class=""><i>Title of your article</i></h2>
+
+                           <p>Title
+                              <textarea type="text" id="title" class="title-field" >
+Title of your job
+                              </textarea>
+                           </p>
+
+                           <!--
                            <div class="summary">
                               <h4>Summary (automatic using machine learning)</h4>
                               <span id="summary" class="published-label"><i>Summary</i></span>
                            </div>
-                           <div class="node-content clearfix">
-                              <div class="field body_html" >
-                                 <h4>Markdown body</h4>
-                                 <textarea disabled id="body_markdown" class="code" >
-    _This is the markdown of your extracted article._
+                           -->
+                                 <p>Job description
+                                 <textarea  id="body" class="body-field" >
+This is the body or job description of your job (**markdown preferred**).
   </textarea>
-                              </div>
-                              <p></p>
-                              <div class="field body" >
-                                 <h4>Plain text</h4>
-                                 <textarea disabled id="body" class="code" >
-<p><i>This is the body of your extracted article.</i></p>
-    </textarea>
-                              </div>
-                              <p></p>
-                              <div class="word-wrap:break-word; body_html" >
-                                 <h4>Raw HTML</h4>
-                                 <textarea disabled id="body_html" class="code">
-    <p><i>This is the body of your extracted article.</i></p>
-  </textarea>
-                              </div>
-                           </div>
+                            </p>
+                                 <p>How to apply<textarea  id="how_to_apply" class="how-to-apply" >
+This is the How to Apply section of your job (**markdown preferred**).
+    </textarea></p>
+                                       <button class="flat" onclick="clickTag()" type=submit>Tag It!</button>
+
                         </div>
                      </div>
                   </div>
                   <div id="sidebar-first" class="sidebar clearfix">
-                     <div class="region region-sidebar-first">
-                        <div class="field field-file">
-                           <div class="reliefweb-file-pdf-preview attachment-small">
-                              <div class="file-pdf-preview">
-                                 <img id="top-image" src="https://www.microsoft.com/net/images/redesign/learn/apps/machine-learning.svg?v=SiiofHeFghOCfKgfgXL4BOhXUOBnkq1iN45l1C0eJuQ" width="260" height="146" alt="main image of the article">
-                              </div>
-                           </div>
-                        </div>
-                        <p></p>
-                        <h4>ReliefWeb Fields</h4>
+                     <p>ReliefWeb Fields</p>
+
                         <div class="block block-reliefweb-taxonomy block-delta-report-countries" id="block-reliefweb-taxonomy-report-countries">
                            <div class="country other-countries field" style="border-top: 1px solid rgb(209, 223, 227) ;">
-                              <h4>Primary country</h4>
+                              <h4>Country</h4>
                               <div id="primary-country"><i>Country 1</i></div>
                            </div>
                            <div class="other-countries">
@@ -371,36 +360,54 @@
                                  <li class="country"><i>Country 3</i></li>
                               </ul>
                            </div>
-                           <div class="field content-date other-countries">
-                              <h4>Published date:</h4>
-                              <ul>
-                                 <li id="published-date"><i>DD/MM/YYY</i></li>
+                           <div class="field other-countries">
+                                 <h4>Cities:</h4>
+                                 <ul>
+                                    <li id="cities"><i>City 1</i></li>
+                                 </ul>
+                              </div>
+                           <div class="field theme other-countries">
+                              <h4>Theme (x3):</h4>
+                              <ul id="themes">
+                                 <li><i>Theme 1</i></li>
+                                 <li><i>Theme 2</i></li>
+                                  <li><i>Theme 3</i></li>
+
                               </ul>
                            </div>
-                           <div class="field language other-countries">
+                             <div class="field other-countries">
+                                 <h4>Career Category:</h4>
+                                 <ul>
+                                    <li id="career-category"><i>Career Category</i></li>
+                                 </ul>
+                              </div>
+
+                                                       <div class="field other-countries">
+                                 <h4>Job type:</h4>
+                                 <ul>
+                                    <li id="job-type"><i>Job Type</i></li>
+                                 </ul>
+                              </div>
+                                                                                   <div class="field other-countries">
+                                 <h4>Years of Experience:</h4>
+                                 <ul>
+                                    <li id="years-experience"><i>Category of experience</i></li>
+                                 </ul>
+                              </div>
+
+
+                        </div>
+                                           <p> Other information
+                        <div class="block block-reliefweb-node block-delta-node-fields clearfix" id="block-reliefweb-node-node-fields-1">
+                           <div class="block-content clearfix">
+                              <ul class="fields">
+                                                             <li class="field language other-countries">
                               <h4>Language (langpredict):</h4>
                               <ul>
                                  <li id="language-langpredict"><i>Language (2 code)</i></li>
                               </ul>
-                           </div>
-                           <div class="field theme other-countries">
-                              <h4>Theme:</h4>
-                              <ul id="themes">
-                                 <li><i>Theme 1</i></li>
-                                 <li><i>Theme 2</i></li>
-                              </ul>
-                           </div>
-                        </div>
-                        <h4>Other information</h4>
-                        <div class="block block-reliefweb-node block-delta-node-fields clearfix" id="block-reliefweb-node-node-fields-1">
-                           <div class="block-content clearfix">
-                              <ul class="fields">
-                              <li class="field content-format">
-                                 <h4>Authors:</h4>
-                                 <ul>
-                                    <li id="authors"><i>Authors</i></li>
-                                 </ul>
-                              </li>
+                           </li>
+
                               <li class="field content-format">
                                  <h4>Keywords:</h4>
                                  <ul>
@@ -438,18 +445,6 @@
                                  </ul>
                               </li>
                               <li class="field content-format">
-                                 <h4>Top Image URL:</h4>
-                                 <ul>
-                                    <li id="top-image-url"><i>sample_url</i></li>
-                                 </ul>
-                              </li>
-                              <li class="field content-format">
-                                 <h4>Cities:</h4>
-                                 <ul>
-                                    <li id="cities"><i>City 1</i></li>
-                                 </ul>
-                              </li>
-                              <li class="field content-format">
                                  <h4>Nationalities:</h4>
                                  <ul>
                                     <li id="nationalities"><i>Nationality 1</i></li>
@@ -461,19 +456,27 @@
                                     <li id="publication_type"><i>Publication type</i></li>
                                  </ul>
                               </li>
+                              </ul>
                            </div>
                         </div>
-                        <p></p>
-                        <h4>Not implemented</h4>
+                      </p>
+                                           <p> To add by user
                         <div class="block block-reliefweb-node block-delta-node-fields clearfix" id="block-reliefweb-node-node-fields-2">
                            <div class="block-content clearfix">
                               <ul class="fields">
                                  <li class="field content-format">
-                                    <h4>Content format (not implemented):</h4>
+                                    <h4>Closing date:</h4>
                                     <ul>
-                                       <li id="content-format"><i>Not implemented</i></li>
+                                       <li id="closing-date"><i>DD/MM/YYYY</i></li>
                                     </ul>
                                  </li>
+                                  <li class="field post-date">
+                                    <h4>Posting date:</h4>
+                                    <ul>
+                                       <li id="post-date"><i>DD/MM/YYYY</i></li>
+                                    </ul>
+                                 </li>
+                                  <!--
                                  <li class="field vulnerable-groups">
                                     <h4>Vulnerable groups (not implemented):</h4>
                                     <ul id="vulnerable-groups">
@@ -481,29 +484,18 @@
                                        <li><i>Group 2</i></li>
                                     </ul>
                                  </li>
-                                 <li class="field ocha-format">
-                                    <h4>OCHA Format (not implemented):</h4>
-                                    <ul>
-                                       <li id="ocha_format"><i>Not implemented</i></li>
-                                    </ul>
-                                 </li>
-                                 <li class="field content-format">
+                                 -->
+                                 <li class="field source">
                                     <h4>Source:</h4>
                                     <ul>
                                        <li id="source"><i>Source</i></li>
                                     </ul>
                                  </li>
-                                 <li class="field language">
-                                    <h4>Predicted Language ML (disabled):</h4>
-                                    <ul>
-                                       <li id="predict-language"><i>Language: Percentage</i></li>
-                                    </ul>
-                                 </li>
+
                               </ul>
                            </div>
                         </div>
-                        <p></p>
-                     </div>
+                      </p>
                   </div>
                </div>
             </div>

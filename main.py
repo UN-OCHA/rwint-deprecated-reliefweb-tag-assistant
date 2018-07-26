@@ -106,20 +106,37 @@ def main():
     return "Please, use the /tag endpoint with the param url to tag a url or pdf. Example: http://IP:PORT/tag?url=URL_WITH_HTTP"
 
 
-@app.route("/tag")
-# sample http://localhost:5000/tag?url=https://stackoverflow.com/questions/24892035/python-flask-how-to-get-parameters-from-a-url
+@app.route("/tag_url")
+# sample http://localhost:5000/tag_url?url=https://stackoverflow.com/questions/24892035/python-flask-how-to-get-parameters-from-a-url
 @cross_origin()
-def RWtag():
+def reliefweb_tag_url():
     import gc
 
     gc.collect()
-    sample = request.args.get('url')
+    url = request.args.get('url')
     # if (RWModel.get('language', '') == '') or (RWModel.get('theme', '') == ''):
     if RWModel.get('theme', '') == '':
         init()
-    json_data = reliefweb_predict.url_to_tagged_json(model=RWModel, url=sample, threshold=reliefweb_config.THRESHOLD,
-                                                     diff_terms=reliefweb_config.DIFF_TERMS_THRESHOLD)
-    print("\nDone prediction for: " + sample)
+    json_data = reliefweb_predict.to_tagged_json(model=RWModel, input=url, threshold=reliefweb_config.THRESHOLD,
+                                                     diff_terms=reliefweb_config.DIFF_TERMS_THRESHOLD, isurl=True)
+    print("\nDone prediction for: " + url)
+    return json_data
+
+
+@app.route("/tag_text")
+# sample http://localhost:5000/tag_text?text=Blablalblbalblalbalñldfjk
+@cross_origin()
+def reliefweb_tag_text():
+    import gc
+
+    gc.collect()
+    text = request.args.get('text')
+    if RWModel.get('theme', '') == '':
+        init()
+    json_data = reliefweb_predict.to_tagged_json(model=RWModel, input=text, threshold=reliefweb_config.THRESHOLD,
+                                                     diff_terms=reliefweb_config.DIFF_TERMS_THRESHOLD, isurl=False)
+    print("\nDone prediction for: " + str(text)[:20] + "...")
+    # TODO : Probably this string is very long
     return json_data
 
 
