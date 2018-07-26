@@ -10,11 +10,16 @@ def url_to_tagged_json(model, url, threshold=0.5, diff_terms=0.1):
 
     import json
 
-    sample_dict = tag_metadata_from_url(url)
-    tag_language_langdetect(sample_dict)
-    tag_country_basic(sample_dict)
-    # tag_language(model['language'], sample_dict)
-    tag_theme(model['theme'], sample_dict, threshold, diff_terms)
+    try:
+        sample_dict = tag_metadata_from_url(url)
+        tag_language_langdetect(sample_dict)
+        tag_country_basic(sample_dict)
+        # tag_language(model['language'], sample_dict)
+        tag_theme(model['theme'], sample_dict, threshold, diff_terms)
+    except Exception as e:
+        sample_dict = {}
+        sample_dict['error'] = str(e)
+        sample_dict['full_text'] = ''
 
     return json.dumps(sample_dict, indent=4)
 
@@ -37,7 +42,10 @@ def tag_metadata_from_url(url):
     article = Article(url, config=configuration)
     # if URL IS PDF or any binary then
     if url.lower()[-4:] in [".pdf"]:
-        pdf = reliefweb_tag_aux.get_pdf_url(url)
+        try:
+            pdf = reliefweb_tag_aux.get_pdf_url(url)
+        except Exception as e:
+            raise Exception(e)
         pdf_text = ' '.join(pdf)
         article.set_text(pdf_text)
         article.set_article_html(pdf_text)
@@ -51,9 +59,12 @@ def tag_metadata_from_url(url):
         # if it is not pdf
         article.download()
 
-    article.html
-    article.parse()
-    article.nlp()
+    try:
+        article.html
+        article.parse()
+        article.nlp()
+    except Exception as e:
+        raise Exception(e)
 
     data = {'publish_date': str(article.publish_date),
             'meta_lang': article.meta_lang,

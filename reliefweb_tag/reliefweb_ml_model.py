@@ -117,22 +117,22 @@ class ReliefwebModel:
 
             tic = time.time()
 
-            self.read_vocabulary(vocabulary_file, term_field)
+#            self.read_vocabulary(vocabulary_file, term_field)
 
             toc = time.time()
             print ("(t) read_vocabulary : %d " % (toc-tic))
             tic = time.time()
 
-            data = self.normalize_input(dataset_file,
-                                        dataset_post_field,
-                                        dataset_tag_field,
-                                        skip_normalizing=True)
+#            data = self.normalize_input(dataset_file,
+#                                        dataset_post_field,
+#                                        dataset_tag_field,
+#                                        skip_normalizing=True)
             toc = time.time()
             print ("(t) normalize_input : %d " % (toc-tic))
             tic = time.time()
 
-            self.prepare_dataset(data, vocabulary_name, max_words,
-                                 train_percentage)  # 20000, number of words to take from each post to tokenize)
+#            self.prepare_dataset(data, vocabulary_name, max_words,
+#                                 train_percentage)  # 20000, number of words to take from each post to tokenize)
 
             toc = time.time()
             print ("(t) prepare_dataset : %d " % (toc-tic))
@@ -147,9 +147,13 @@ class ReliefwebModel:
             model.load_weights(model_path + "model_" + vocabulary_name + "_weights.h5")
             # model = load_model(model_path + "model_" + vocabulary_name + ".model")
 
-            # loading
+            # loading tokenizer
             tokenizer_file = open(model_path +'model_' + vocabulary_name + '_tokenizer.pickle', 'rb')
             self.tokenize = pickle.load(tokenizer_file)
+
+            # loading text_labels
+            text_labels_file = open(model_path + 'model_' + vocabulary_name + '_text_labels.pickle', 'rb')
+            self.text_labels = pickle.load (text_labels_file)
 
             print("Loaded model " + vocabulary_name + " from disk")
 
@@ -178,6 +182,10 @@ class ReliefwebModel:
             # saving tokenizer (vector of words to map the input text)
             tokenizer_file = open(model_path + 'model_' + vocabulary_name + '_tokenizer.pickle', 'w+b')
             pickle.dump(self.tokenize, tokenizer_file, protocol=pickle.HIGHEST_PROTOCOL)
+
+            # saving text_labels
+            text_labels_file = open(model_path + 'model_' + vocabulary_name + '_text_labels.pickle', 'w+b')
+            pickle.dump(self.text_labels, text_labels_file, protocol=pickle.HIGHEST_PROTOCOL)
 
             print("Saved model " + vocabulary_name + " to disk")
 

@@ -14,13 +14,14 @@ app.config['CORS_HEADER']='Content-type'
 app.debug = False
 app.threaded = False
 
-global RWModel
-RWModel = {}
 
 print("** In the main flow **")
 
 
 def init():
+    global RWModel
+    RWModel = {}
+
     print("Initializing the ReliefWeb Tag Assistant: auto-tag urls using RW Tags and Machine Learning")
 
     # Creating the API endpoints

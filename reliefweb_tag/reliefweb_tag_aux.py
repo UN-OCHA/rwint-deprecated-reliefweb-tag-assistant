@@ -11,7 +11,11 @@ def get_pdf_url(pdf_url):
     """
     # libraries:
     import requests
-    import slate
+    try:
+        import slate
+    except Exception as e:
+        print("ERROR: For some reason, I couldn't load the slate library. More info: \n"+ str(e))
+        raise Exception (e)
 
     response = requests.get(pdf_url, stream=True)
 
@@ -23,6 +27,7 @@ def get_pdf_url(pdf_url):
     # with open(PATH_PDF_TMP_FILE, "rb") as f:
     f = open(reliefweb_config.TMP_PDF_FILE, "rb")
     doc = slate.PDF(f)
+
     f.close()
     return doc
 
