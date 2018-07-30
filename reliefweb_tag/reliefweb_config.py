@@ -14,7 +14,8 @@ MODEL_PATH = "model/"
 # DATA_PATH = "~/reliefweb-tag-assistant/data/"
 DATA_PATH = "data/"  #config for Heroku
 
-CONFIG_ARRAY = ["max_words", "batch_size", "epochs", "train_percentage", "threshold", "diff_terms"]
+MODEL_NAMES = ["theme"] # array with all the models that we want to load
+CONFIG_ARRAY = ["max_words", "batch_size", "epochs", "train_percentage", "threshold", "diff_terms", "scope"]
 MODEL_DEF = {}
 
 '''
@@ -25,6 +26,7 @@ The dataset should be a csv file with headers. The model will read the fields "p
 
 MODEL_DEF["theme"] = {"vocabulary": "rw-themes.csv",
                       "dataset": "report_theme_uneven_multiple-30k.csv",
+                      # "scope": "report",
                       # "dataset": "report_theme_en-1k.csv",
                       }
 MODEL_DEF["language"] = {"vocabulary": "rw-languages.csv",
@@ -39,6 +41,7 @@ MODEL_DEF["default"] = {
                       "train_percentage": 0.99,
                       "threshold": 0.1,
                       # When predicting, if a terms is lower than this percentage, it won't be returned
-                      "diff_terms": 0.1  # 0.01 # When predicting, if the difference with the previous
+                      "diff_terms": 0.1,  # 0.01 # When predicting, if the difference with the previous
                       # predicted term is less than this, the term WILL appear
+                      "scope":"all"
                       }

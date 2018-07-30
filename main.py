@@ -27,9 +27,11 @@ def init_models():
 
     print("> MAIN: Creating neural network for themes")
 
-    if models.get('theme', '') == '':
-        model_theme = reliefweb_ml_model.ReliefwebModel("theme")
-        models['theme'] = model_theme
+    for each in reliefweb_config.MODEL_NAMES:
+    # TODO: What does this language collector means? Can we remove it?
+        if models.get(each, '') == '':
+            model = reliefweb_ml_model.ReliefwebModel(each)
+            models[each] = model
 
 
 # Creating the API endpoints
@@ -50,12 +52,13 @@ def reliefweb_tag_url():
     url = request.args.get('url')
     # if (RWModel.get('language', '') == '') or (RWModel.get('theme', '') == ''):
     init_models()
-    json_data = reliefweb_predict.predict(models=models, _input=url)
+    json_data = reliefweb_predict.predict(_models=models, _input=url, _scope="report")
     print("\nDone prediction for: " + url)
     return json_data
 
 
 @app.route("/tag_text")
+# TODO: To send the text as the body of a POST request
 # sample http://localhost:5000/tag_text?text=Blablalblbalblalbalñldfjk
 @cross_origin()
 def reliefweb_tag_text():
@@ -64,7 +67,7 @@ def reliefweb_tag_text():
     gc.collect()
     text = request.args.get('text')
     init_models()
-    json_data = reliefweb_predict.predict(models=models, _input=text)
+    json_data = reliefweb_predict.predict(models=models, _input=text, _scope="job")
     print("\nDone prediction for: " + str(text)[:20] + "...")
     return json_data
 
@@ -81,9 +84,6 @@ def test():
 
 
 if __name__ == '__main__':
-    import gc
-
-    gc.collect()
 
     # get public IP -- if needed
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

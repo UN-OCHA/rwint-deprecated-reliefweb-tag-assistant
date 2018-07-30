@@ -1,27 +1,29 @@
-def predict(models, _input):
+def predict(_models, _input, _scope):
     """
     Main method to tag a URL or text, return a JSON with all the fields populated and predicted
     :param models: array of machine learning models
-    :param input: url format or free text
-    :param threshold: for ML, only predicted values higher than this will appear in the result. From 0 to 1
-    :param diff_terms: for ML, if the difference of confidence of one term with the prev one is less than this value,
-    it will also return that value as they are possibly very similar to be discarted. Overrides threshold behaviour.
-    From 0 to 1
+    :param _input: url format or free text
+    :param scope: scope to match for each ML model to tag on that vocabulary
     :return:
     """
 
     import json
 
-    try:
-        sample_dict = tag_metadata(_input)
-        tag_language_langdetect(sample_dict)
-        tag_country_basic(sample_dict)
-        # tag_language(model['language'], sample_dict)
-        tag_machine_learning_model(models['theme'], sample_dict)
-    except Exception as e:
-        sample_dict = {}
-        sample_dict['error'] = str(e)
-        sample_dict['full_text'] = ''
+    #try:
+    sample_dict = tag_metadata(_input)
+    tag_language_langdetect(sample_dict)
+    tag_country_basic(sample_dict)
+
+    for each in _models.keys():
+        if (_models[each].config['scope'] == _scope) or (_models[each].config['scope'] == "all"):
+            tag_machine_learning_model(_models[each], sample_dict)
+
+
+
+    #except Exception as e:
+    #    sample_dict = {}
+    #    sample_dict['error'] = str(e)
+    #    sample_dict['full_text'] = ''
 
     return json.dumps(sample_dict, indent=4)
 
