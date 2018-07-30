@@ -1,21 +1,23 @@
-def url_to_tagged_json(model, url, threshold=0.5, diff_terms=0.1):
+def predict(models, _input):
     """
-    Main method to tag a URL
-    :param model:
-    :param url:
-    :param threshold:
-    :param diff_terms:
+    Main method to tag a URL or text, return a JSON with all the fields populated and predicted
+    :param models: array of machine learning models
+    :param input: url format or free text
+    :param threshold: for ML, only predicted values higher than this will appear in the result. From 0 to 1
+    :param diff_terms: for ML, if the difference of confidence of one term with the prev one is less than this value,
+    it will also return that value as they are possibly very similar to be discarted. Overrides threshold behaviour.
+    From 0 to 1
     :return:
     """
 
     import json
 
     try:
-        sample_dict = tag_metadata_from_url(url)
+        sample_dict = tag_metadata(_input)
         tag_language_langdetect(sample_dict)
         tag_country_basic(sample_dict)
         # tag_language(model['language'], sample_dict)
-        tag_theme(model['theme'], sample_dict, threshold, diff_terms)
+        tag_machine_learning_model(models['theme'], sample_dict)
     except Exception as e:
         sample_dict = {}
         sample_dict['error'] = str(e)
@@ -23,32 +25,8 @@ def url_to_tagged_json(model, url, threshold=0.5, diff_terms=0.1):
 
     return json.dumps(sample_dict, indent=4)
 
-def to_tagged_json(model, input, threshold=0.5, diff_terms=0.1, isurl=True ):
-    """
-    Main method to tag a URL
-    :param model:
-    :param url:
-    :param threshold:
-    :param diff_terms:
-    :return:
-    """
 
-    import json
-
-    try:
-        sample_dict = tag_metadata(input, isurl)
-        tag_language_langdetect(sample_dict)
-        tag_country_basic(sample_dict)
-        # tag_language(model['language'], sample_dict)
-        tag_theme(model['theme'], sample_dict, threshold, diff_terms)
-    except Exception as e:
-        sample_dict = {}
-        sample_dict['error'] = str(e)
-        sample_dict['full_text'] = ''
-
-    return json.dumps(sample_dict, indent=4)
-
-def tag_metadata(input, isurl = True):
+def tag_metadata(input):
     """
     Gets all the tags from the newspaper library
     :param input: can be a url or a text string
@@ -62,6 +40,8 @@ def tag_metadata(input, isurl = True):
     configuration = Config()
     configuration.request_timeout = 15  # default = 7
     configuration.keep_article_html = True
+
+    isurl = (input.lower()[:7] == 'http://') or (input.lower()[:8] == 'https://')
 
     if isurl:
         article = Article(input, config=configuration)
@@ -118,15 +98,15 @@ def tag_metadata(input, isurl = True):
             'top_image': article.top_image}
 
     if article.article_html == '':
-        data['article_html'] =  article.html #takes all the html of the page
+        data['article_html'] = article.html  # takes all the html of the page
 
-    import html2text # Other libraries are tomd and pandoc
-    data['body_markdown']=html2text.html2text(data['article_html'])
+    import html2text  # Other libraries are tomd and pandoc
+    data['body_markdown'] = html2text.html2text(data['article_html'])
 
     return data
 
 
-def tag_theme(model, dict_in, threshold, diff_terms):
+def tag_machine_learning_model(model, dict_in):
     """
     Creates the 'theme' value on the dictionary based on the theme neural model
     :param model:
@@ -137,24 +117,8 @@ def tag_theme(model, dict_in, threshold, diff_terms):
     """
 
     text = dict_in['full_text']
-    predicted_value = model.predict_nonlanguage_text(sample=text,
-                                                     vocabulary_name='theme',
-                                                     threshold=threshold,
-                                                     diff_terms=diff_terms)
-    dict_in['theme'] = predicted_value
-    return dict_in
-
-
-def tag_language(model, dict_in):
-    """
-    Creates the 'predicted_lang' value on the dictionary based on the language neural model
-    :param model:
-    :param dict_in:
-    :return:
-    """
-
-    predicted_value = model.predict_language(dict_in['full_text'])
-    dict_in['predicted_lang'] = predicted_value
+    predicted_value = model.predict_nonlanguage_text(sample=text)
+    dict_in[model.vocabulary_name] = predicted_value
     return dict_in
 
 
@@ -197,7 +161,6 @@ def tag_country_basic(dict_in):
     if len(places.country_mentions) > 0:
         country = pycountry.countries.get(alpha_2=list(places.country_mentions)[0])
         dict_in['primary_country'] = [country.name, list(places.country_mentions)[0]]
-
         dict_in['countries'] = []
     while len(places.country_mentions) > 0:
         c = places.country_mentions.popitem(last=False)
