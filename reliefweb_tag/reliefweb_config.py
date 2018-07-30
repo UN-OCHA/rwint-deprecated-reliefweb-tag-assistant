@@ -7,12 +7,12 @@ FAST_TESTING = False  # If true, the input dataset is not processed nor normaliz
 
 # Name and route of the temporarary file to create for the PDFs
 # TMP_PDF_FILE = "~/reliefweb-tag-assistant/temp/online_document.pdf"
-TMP_PDF_FILE = "/Users/Miguel/reliefweb-tag-assistant/temp/online_document.pdf"  # config for Heroku
+TMP_PDF_FILE = "temp/online_document.pdf"  # config for Heroku
 
-MODEL_PATH = "/Users/Miguel/reliefweb-tag-assistant/model/"
+MODEL_PATH = "model/"
 # Files with data (with read access)
 # DATA_PATH = "~/reliefweb-tag-assistant/data/"
-DATA_PATH = "/Users/Miguel/reliefweb-tag-assistant/data/"  # config for Heroku
+DATA_PATH = "data/"  #config for Heroku
 
 CONFIG_ARRAY = ["max_words", "batch_size", "epochs", "train_percentage", "threshold", "diff_terms"]
 MODEL_DEF = {}
