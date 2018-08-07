@@ -28,7 +28,7 @@ def init_models():
     print("> MAIN: Creating neural network for themes")
 
     for each in reliefweb_config.MODEL_NAMES:
-    # TODO: What does this language collector means? Can we remove it?
+        # TODO: What does this language collector means? Can we remove it?
         if models.get(each, '') == '':
             model = reliefweb_ml_model.ReliefwebModel(each)
             models[each] = model
@@ -84,7 +84,6 @@ def test():
 
 
 if __name__ == '__main__':
-
     # get public IP -- if needed
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(("8.8.8.8", 80))

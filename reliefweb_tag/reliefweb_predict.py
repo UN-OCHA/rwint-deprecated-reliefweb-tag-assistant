@@ -1,37 +1,35 @@
 def predict(_models, _input, _scope):
     """
     Main method to tag a URL or text, return a JSON with all the fields populated and predicted
-    :param models: array of machine learning models
+    :param _models: array of machine learning models
     :param _input: url format or free text
-    :param scope: scope to match for each ML model to tag on that vocabulary
+    :param _scope: scope to match for each ML model to tag on that vocabulary
     :return:
     """
 
     import json
 
-    #try:
-    sample_dict = tag_metadata(_input)
-    tag_language_langdetect(sample_dict)
-    tag_country_basic(sample_dict)
+    try:
+        sample_dict = tag_metadata(_input)
+        tag_language_langdetect(sample_dict)
+        tag_country_basic(sample_dict)
 
-    for each in _models.keys():
-        if (_models[each].config['scope'] == _scope) or (_models[each].config['scope'] == "all"):
-            tag_machine_learning_model(_models[each], sample_dict)
+        for each in _models.keys():
+            if (_models[each].config['scope'] == _scope) or (_models[each].config['scope'] == "all"):
+                tag_machine_learning_model(_models[each], sample_dict)
 
-
-
-    #except Exception as e:
-    #    sample_dict = {}
-    #    sample_dict['error'] = str(e)
-    #    sample_dict['full_text'] = ''
+    except Exception as e:
+        sample_dict = {}
+        sample_dict['error'] = str(e)
+        sample_dict['full_text'] = ''
 
     return json.dumps(sample_dict, indent=4)
 
 
-def tag_metadata(input):
+def tag_metadata(_input):
     """
     Gets all the tags from the newspaper library
-    :param input: can be a url or a text string
+    :param _input: can be a url or a text string
     :return:
     """
 
@@ -43,15 +41,15 @@ def tag_metadata(input):
     configuration.request_timeout = 15  # default = 7
     configuration.keep_article_html = True
 
-    isurl = (input.lower()[:7] == 'http://') or (input.lower()[:8] == 'https://')
+    isurl = (_input.lower()[:7] == 'http://') or (_input.lower()[:8] == 'https://')
 
     if isurl:
-        article = Article(input, config=configuration)
+        article = Article(_input, config=configuration)
     else:
         article = Article("")
 
     # if URL IS PDF or any binary then
-    if input.lower()[-4:] in [".pdf"]:
+    if _input.lower()[-4:] in [".pdf"]:
         try:
             pdf = reliefweb_tag_aux.get_pdf_url(input)
         except Exception as e:
@@ -108,35 +106,33 @@ def tag_metadata(input):
     return data
 
 
-def tag_machine_learning_model(model, dict_in):
+def tag_machine_learning_model(_model, _dict_in):
     """
     Creates the 'theme' value on the dictionary based on the theme neural model
-    :param model:
-    :param dict_in:
-    :param threshold:
-    :param diff_terms:
+    :param _model:
+    :param _dict_in:
     :return:
     """
 
-    text = dict_in['full_text']
-    predicted_value = model.predict_nonlanguage_text(sample=text)
-    dict_in[model.vocabulary_name] = predicted_value
-    return dict_in
+    text = _dict_in['full_text']
+    predicted_value = _model.predict_nonlanguage_text(sample=text)
+    _dict_in[_model.vocabulary_name] = predicted_value
+    return _dict_in
 
 
-def tag_language_langdetect(dict_in):
+def tag_language_langdetect(_dict_in):
     """
     Creates the 'langdetect_language' value on the dictionary based on the theme neural model
-    :param dict_in:
+    :param _dict_in:
     :return:
     """
 
     from reliefweb_tag import reliefweb_tag_aux
-    dict_in['langdetect_language'] = reliefweb_tag_aux.detect_language(dict_in['full_text'])
-    return dict_in
+    _dict_in['langdetect_language'] = reliefweb_tag_aux.detect_language(_dict_in['full_text'])
+    return _dict_in
 
 
-def tag_country_basic(dict_in):
+def tag_country_basic(_dict_in):
     """
     Creates the 'countries', 'primary_country', 'countries_iso2', 'cities', 'nationalities' value on the dictionary
     using the GeoText module
@@ -147,27 +143,27 @@ def tag_country_basic(dict_in):
     location = geolocator.geocode("175 5th Avenue NYC")
     print(location.address, location.latitude, location.longitude))
 
-    :param dict_in:
+    :param _dict_in:
     :return:
     """
 
     from geotext import GeoText
     import pycountry
 
-    places = GeoText(dict_in['full_text'])
-    dict_in['cities'] = places.cities
-    dict_in['nationalities'] = places.nationalities
-    dict_in['countries_iso2'] = places.country_mentions
+    places = GeoText(_dict_in['full_text'])
+    _dict_in['cities'] = places.cities
+    _dict_in['nationalities'] = places.nationalities
+    _dict_in['countries_iso2'] = places.country_mentions
 
-    dict_in['primary_country'] = ""
+    _dict_in['primary_country'] = ""
     if len(places.country_mentions) > 0:
         country = pycountry.countries.get(alpha_2=list(places.country_mentions)[0])
-        dict_in['primary_country'] = [country.name, list(places.country_mentions)[0]]
-        dict_in['countries'] = []
+        _dict_in['primary_country'] = [country.name, list(places.country_mentions)[0]]
+        _dict_in['countries'] = []
     while len(places.country_mentions) > 0:
         c = places.country_mentions.popitem(last=False)
         iso2 = c[0]
         if iso2 == 'UK':
             iso2 = 'GB'
         country = pycountry.countries.get(alpha_2=iso2)
-        dict_in['countries'].append((country.name, iso2, c[1]))
+        _dict_in['countries'].append((country.name, iso2, c[1]))

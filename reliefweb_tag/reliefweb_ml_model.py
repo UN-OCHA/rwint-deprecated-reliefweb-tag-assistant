@@ -249,16 +249,23 @@ class ReliefwebModel:
         tic = time.time()
 
         if not self.config["skip_normalizing"]:
+            original_prev_post = ""
             for i in range(1, len(data)):
-                data[dataset_post_field][i] = reliefweb_tag_aux.normalize_global(data[dataset_post_field][i])
+                original_post = data[dataset_post_field][i]
+                if original_post != original_prev_post: # if it is already normalized, we just copy it
+                    data[dataset_post_field][i] = reliefweb_tag_aux.normalize_global_real(data[dataset_post_field][i])
+                    # 2 cycles of data normalization to remove extra numbers and some other remaining strings
+                    # data[dataset_post_field][i] = reliefweb_tag_aux.normalize_global_real(data[dataset_post_field][i])
+                else:
+                    data[dataset_post_field][i] = normalized_prev_post
                 data[dataset_tag_field][i] = data[dataset_tag_field][i].strip(' \t\n\r')
-                # TODO: Tokenizer later theoretically does this
                 if i % 1000 == 0:
                     # Displaying time left
                     toc = time.time()
                     logging.debug("normalize_input - %d entries in %d seconds / Left estimation: < %d minutes" % (
                         i, (toc - tic), ((toc - tic) * (len(data) - i)) / (i * 60) + 1))
-
+                original_prev_post = original_post
+                normalized_prev_post = data[dataset_post_field][i]
         toc_input = time.time()
         logging.info("END: normalize_input / %d sec Elapsed" % (toc_input - tic_input))
 

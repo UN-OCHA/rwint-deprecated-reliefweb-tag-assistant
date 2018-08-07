@@ -14,8 +14,8 @@ def get_pdf_url(pdf_url):
     try:
         import slate
     except Exception as e:
-        print("ERROR: For some reason, I couldn't load the slate library. More info: \n"+ str(e))
-        raise Exception (e)
+        print("ERROR: For some reason, I couldn't load the slate library. More info: \n" + str(e))
+        raise Exception(e)
 
     response = requests.get(pdf_url, stream=True)
 
@@ -33,12 +33,12 @@ def get_pdf_url(pdf_url):
 
 
 def normalize_global(text):
-
     text = text.lower()
 
     return text
 
-def normalize_global_real (text):
+
+def normalize_global_real(text):
     """
     normalizing the input -- it is supposed to remove stopwords (if not, nltk.corpus.stopwords.words()-- l
     ist of stopwords ) /
@@ -61,21 +61,37 @@ def normalize_global_real (text):
     cucco_config.language = detect_language(text)
     # removing stop words per language
 
+    normalizations = [
+        'remove_stop_words',
+        'remove_accent_marks',  # french accents and spanish enies replaced by regular letter
+        ('replace_hyphens', {'replacement': ' '}),  # not needed in FR and ES
+        ('replace_symbols', {'replacement': ' '}),  # removes spanish accents, to except those characters
+        ('replace_punctuation', {'replacement': ' '}),  # dont remove ” “
+        'remove_extra_white_spaces',
+    ]
+
     cucco = Cucco(config=cucco_config)
+    # default normalizations: replace_puctuation , remove_extra_white_spaces, replaces_symbols, remove_stop_words
 
     text = text.lower()
-
-    text_in = text
-
-    text = cucco.normalize(text)
-
-    text = re.sub('(\d+)%', '%', text)  # convert numbers percent to %
-    text = re.sub('(\d+)', '#', text)  # convert numbers to #
-    text = re.sub('(•|“|‘|”|’s|(.|)’)', "", text)  # remove dot point for lists and “‘”
-    text = re.sub('#(?P<word>([a-zA-Z])+)', '\g<word>', text)  # remove numbers before and after strings'
-    text = re.sub('(?P<word>([a-zA-Z])+)#', '\g<word>', text)  # remove numbers before and after strings'
+    text_original = text # for debug purposes
     text = text.split()
     text = [w for w in text if (2 < len(w) < 20)]  # remove short and very long words
+    text = ' '.join(text)
+    # to save some time to Cucco
+
+    text = cucco.normalize(text, normalizations)
+
+    text = re.sub('(\d+)([,.]*\d*)+', '', text)  # remove numbers
+    #text = re.sub('(\d+)%', '%', text)  # convert numbers percent to %
+    #text = re.sub('(\d+)', '#', text)  # convert numbers to #
+    # text = re.sub('(•|“|‘|”|’s|(.|)’)', "", text)  # remove dot point for lists and “‘”
+    text = re.sub('“|”|’s|’|‘|', "", text)  # remove dot point for lists and “‘”
+    #text = re.sub('#(?P<word>([a-zA-Z])+)', '\g<word>', text)  # remove numbers before and after strings'
+    #text = re.sub('(?P<word>([a-zA-Z])+)#', '\g<word>', text)  # remove numbers before and after strings'
+
+    text = text.split()
+    text = [w for w in text if (2 < len(w) < 20)]  # if it appeared vi,
     text = ' '.join(text)
 
     return text
@@ -145,4 +161,8 @@ def normalize_language(text):
 
 def detect_language(text):
     from langdetect import detect
-    return detect(text)
+    lang = detect(text)
+    if (lang) in ["es", "en", "fr"]:
+        return detect(text)
+    else:
+        return "en"
