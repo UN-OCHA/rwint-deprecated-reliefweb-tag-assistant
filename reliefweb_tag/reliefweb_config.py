@@ -9,7 +9,7 @@ FAST_TESTING = False  # If true, the input dataset is not processed nor normaliz
 # TMP_PDF_FILE = "~/reliefweb-tag-assistant/temp/online_document.pdf"
 TMP_PDF_FILE = "temp/online_document.pdf"  # config for Heroku
 
-MODEL_PATH = "model/"  # NOTE: This directory should exist to save the model files
+MODEL_PATH = "model/"
 # Files with data (with read access)
 # DATA_PATH = "~/reliefweb-tag-assistant/data/"
 DATA_PATH = "data/"  #config for Heroku
@@ -41,7 +41,7 @@ MODEL_DEF["job-type"] = {"vocabulary": "rw-job-type.csv",
                          }
 MODEL_DEF["job-experience"] = {"vocabulary": "rw-job-experience.csv",
                                "dataset": "tmp-rw-job-experience-4k-even.csv",
-                         "scope": "job",
+                               "scope": "job",
                                "batch_size": 256,  # 1024
                                # "dataset": "report_theme_en-1k.csv",
                                }
@@ -55,8 +55,10 @@ MODEL_DEF["job-category"] = {"vocabulary": "rw-job-category.csv",
                              "dataset": "tmp-rw-job-category-5k-even.csv",
                              "scope": "job",
                              "batch_size": 256,  # 1024
-                         # "dataset": "report_theme_en-1k.csv",
-                         }
+                             # "dataset": "report_theme_en-1k.csv",
+                             }
+
+
 
 # Neural network model parameters
 MODEL_DEF["default"] = {
