@@ -144,10 +144,11 @@
 
       </style>
       <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-      <script>
+       <link rel="apple-touch-icon" href="favicon.ico">
+       <script>
          function prettyDict (object, percentages)
          {
-         
+
          	text = "<ul>";
          	if (percentages) {
          		for (var key in object ){
@@ -163,10 +164,10 @@
          	text = text + "</ul>";
          	return text;
          }
-         
+
          function prettyArray (object)
          {
-         
+
          	text = "<ul>";
          	for (var key in object ){
          		text = text + "<li>" + object[key] + " </li>";
@@ -174,10 +175,10 @@
          	text = text + "</ul>";
          	return text;
          }
-         
+
          function prettyTuple (object, percentages)
          {
-         
+
          	text = "<ul>";
          	if (percentages) {
          		for (var key in object ){
@@ -193,33 +194,43 @@
          	text = text + "</ul>";
          	return text;
          }
-         
+
+
+         function clearText() {
+            document.getElementById("title").innerHTML =  ''
+            document.getElementById("body").innerHTML =  ''
+            document.getElementById("how_to_apply").innerHTML =  ''
+            document.getElementById("title").value =  ''
+            document.getElementById("body").value =  ''
+            document.getElementById("how_to_apply").value =  ''
+         }
+
          function clickTag() {
            document.getElementById("loader").style.display = "block";
            getTags();
          }
-         
+
                 //Usually, you put script-tags into the head
                 function getTags() {
                     //This performs a POST-Request.
                     //Use "$.get();" in order to perform a GET-Request (you have to take a look in the rest-API-documentation, if you're unsure what you need)
                     //The Browser downloads the webpage from the given url, and returns the data.
                  //$.get( "https://api.reliefweb.int/v1" , function( data ) {
-         
+
                  if (window.location.hostname.includes("github") ) url = "https://rw-tag.herokuapp.com";
                  else url = "http://localhost:5000";
                  console.log (window.location.hostname);
-         
-         
+
+
                     $.get( url + "/tag_text?scope=job&text=" + document.getElementById("title").value + ' '
                     + document.getElementById("body").value + ' '
                     + document.getElementById("how_to_apply").value    , function( data ) {
                          //As soon as the browser finished downloading, this function is called.
-         			
+
          			result = data;
-         
+
          			console.log (JSON.stringify(result))
-         
+
          			// hide spinner
          			 document.getElementById("loader").style.display = "none";
 
@@ -233,14 +244,14 @@
                   	    document.getElementById("error").style.display = "block"; // OK
                   	    document.getElementById("error").innerHTML = "ERROR " + result["error"]; // OK
                     }
-         	
+
          			 //document.getElementById("published-date").innerHTML = result["publish_date"]; // OK
          			 document.getElementById("language").innerHTML = JSON.stringify(result["language"]); // OK
          			 document.getElementById("meta-language").innerHTML = result["meta_lang"]; // OK
          			 document.getElementById("language-langpredict").innerHTML = result["langdetect_language"]; // OK
          			 document.getElementById("meta-language").innerHTML = result["meta_lang"]; // OK
 
-         
+
          			 // CLASSIFICATOR
          			document.getElementById("job-type").innerHTML = prettyTuple(result["job-type"], true); // OK
          		  	document.getElementById("themes").innerHTML = prettyTuple(result["theme"], true); // OK
@@ -261,11 +272,10 @@
 
                     });
                 }
-         
-            
+
+
       </script>
-      <link rel="apple-touch-icon" href="favicon.ico">
-      <link rel="icon" href="favicon.ico">
+       <link rel="icon" href="favicon.ico">
       <!--[if IE]>
       <link rel="shortcut icon" href="favicon.ico">
       <![endif]-->
@@ -341,6 +351,9 @@ This is the body or job description of your job (**markdown preferred**).
 This is the How to Apply section of your job (**markdown preferred**).
     </textarea></p>
                                        <button class="flat" onclick="clickTag()" type=submit>Tag It!</button>
+
+                            <button class="flat" onclick="clearText()">Clear Texts</button>
+
 
                         </div>
                      </div>
