@@ -224,7 +224,7 @@
 // TODO: Limit to 8192 based on Heroku
                     $.get( ( url + "/tag_text?scope=job&text=" + document.getElementById("title").value + ' '
                     + document.getElementById("body").value + ' '
-                    + document.getElementById("how_to_apply").value ).substring(0,8192)   , function( data ) {
+                    + document.getElementById("how_to_apply").value ).substring(0,8000)   , function( data ) {
                          //As soon as the browser finished downloading, this function is called.
 
          			result = data;
