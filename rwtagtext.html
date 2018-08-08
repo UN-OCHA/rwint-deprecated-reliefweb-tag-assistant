@@ -221,10 +221,10 @@
                  else url = "http://localhost:5000";
                  console.log (window.location.hostname);
 
-
-                    $.get( url + "/tag_text?scope=job&text=" + document.getElementById("title").value + ' '
+// TODO: Limit to 8192 based on Heroku
+                    $.get( substring ( url + "/tag_text?scope=job&text=" + document.getElementById("title").value + ' '
                     + document.getElementById("body").value + ' '
-                    + document.getElementById("how_to_apply").value    , function( data ) {
+                    + document.getElementById("how_to_apply").value , 8192)   , function( data ) {
                          //As soon as the browser finished downloading, this function is called.
 
          			result = data;
@@ -254,6 +254,10 @@
 
          			 // CLASSIFICATOR
          			document.getElementById("job-type").innerHTML = prettyTuple(result["job-type"], true); // OK
+                    document.getElementById("job-experience").innerHTML = prettyTuple(result["job-experience"], true); // OK
+         			document.getElementById("job-theme").innerHTML = prettyTuple(result["job-theme"], true); // OK
+         			document.getElementById("job-category").innerHTML = prettyTuple(result["job-category"], true); // OK
+
          		  	document.getElementById("themes").innerHTML = prettyTuple(result["theme"], true); // OK
 
          			 // ADDITIONAL NO REQUIRED
@@ -382,7 +386,7 @@ This is the How to Apply section of your job (**markdown preferred**).
                               </div>
                            <div class="field theme other-countries">
                               <h4>Theme (x3):</h4>
-                              <ul id="themes">
+                               <ul id="job-theme">
                                  <li><i>Theme 1</i></li>
                                  <li><i>Theme 2</i></li>
                                   <li><i>Theme 3</i></li>
@@ -392,7 +396,7 @@ This is the How to Apply section of your job (**markdown preferred**).
                              <div class="field other-countries">
                                  <h4>Career Category:</h4>
                                  <ul>
-                                    <li id="career-category"><i>Career Category</i></li>
+                                     <li id="job-category"><i>Career Category</i></li>
                                  </ul>
                               </div>
 
@@ -405,7 +409,7 @@ This is the How to Apply section of your job (**markdown preferred**).
                                                                                    <div class="field other-countries">
                                  <h4>Years of Experience:</h4>
                                  <ul>
-                                    <li id="years-experience"><i>Category of experience</i></li>
+                                     <li id="job-experience"><i>Category of experience</i></li>
                                  </ul>
                               </div>
 
