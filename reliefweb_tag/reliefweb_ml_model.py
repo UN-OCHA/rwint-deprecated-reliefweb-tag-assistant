@@ -67,7 +67,6 @@ class ReliefwebModel:
     # ReliefwebModel is an array of models and more attributes on its root.
 
     def __init__(self, vocabulary_name):
-
         self.model = {}
         self.text_labels = {}
         self.config = {}
@@ -79,16 +78,17 @@ class ReliefwebModel:
             else:
                 self.config[each] = reliefweb_config.MODEL_DEF["default"][each]
 
-        self.config["dataset_file"] = reliefweb_config.DATA_PATH + reliefweb_config.MODEL_DEF[vocabulary_name]["dataset"]
+        self.config["dataset_file"] = reliefweb_config.DATA_PATH + reliefweb_config.MODEL_DEF[vocabulary_name][
+            "dataset"]
         self.config["vocabulary_file"] = reliefweb_config.DATA_PATH + \
-                                        reliefweb_config.MODEL_DEF[vocabulary_name]["vocabulary"]
+                                         reliefweb_config.MODEL_DEF[vocabulary_name]["vocabulary"]
         self.vocabulary_name = vocabulary_name
         self.config["skip_normalizing"] = reliefweb_config.FAST_TESTING
         self.config["model_path"] = reliefweb_config.MODEL_PATH
         self.config["dataset_post_field"] = "post"
         self.config["dataset_tag_field"] = "value"
 
-        self.create_train_one_tag_model( vocabulary_name, vocabulary_language='' )
+        self.create_train_one_tag_model(vocabulary_name, vocabulary_language='')
 
         return
 
@@ -113,7 +113,7 @@ class ReliefwebModel:
         # if not, create model and save
         model_path = self.config["model_path"]
 
-        print("Looking for file  " + model_path + "model_" + vocabulary_name + "_*.*")
+        print("Looking for file " + model_path + "model_" + vocabulary_name + "_*.*")
 
         import pickle  # to load and save the tokenizer
 
@@ -163,9 +163,14 @@ class ReliefwebModel:
                 'wordnet',  # Required for lemmatization and Wordnet
                 'stopwords'
             ]
-            downloaded_nltk_corpora = os.listdir(nltk.data.find("corpora")) + \
-                                      os.listdir(nltk.data.find("tokenizers")) + \
-                                      os.listdir(nltk.data.find("taggers"))
+            try:
+                downloaded_nltk_corpora = [os.listdir(nltk.data.find("corpora")),
+                                           os.listdir(nltk.data.find("tokenizers")),
+                                           os.listdir(nltk.data.find("taggers"))]
+            except Exception as e:
+                print("nltk vacio, initialiting")
+                downloaded_nltk_corpora = []
+
             print("Start downloading nltk corpora.", flush=True)
             for each in required_nltk_corpora:
                 if each not in downloaded_nltk_corpora:
@@ -238,7 +243,7 @@ class ReliefwebModel:
 
     def normalize_input(self):
 
-        data = read_data(self.config["dataset_file"] )
+        data = read_data(self.config["dataset_file"])
         dataset_post_field = self.config["dataset_post_field"]
         dataset_tag_field = self.config["dataset_tag_field"]
 
@@ -252,7 +257,7 @@ class ReliefwebModel:
             original_prev_post = ""
             for i in range(1, len(data)):
                 original_post = data[dataset_post_field][i]
-                if original_post != original_prev_post: # if it is already normalized, we just copy it
+                if original_post != original_prev_post:  # if it is already normalized, we just copy it
                     data[dataset_post_field][i] = reliefweb_tag_aux.normalize_global_real(data[dataset_post_field][i])
                     # 2 cycles of data normalization to remove extra numbers and some other remaining strings
                     # data[dataset_post_field][i] = reliefweb_tag_aux.normalize_global_real(data[dataset_post_field][i])
@@ -317,7 +322,7 @@ class ReliefwebModel:
         return
 
     def build_one_tag_model(self):
-        # TODO: These mode variables can also go in the cofig
+        # TODO: These mode variables can also go in the config
 
         logging.debug('START: build_model / ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
@@ -366,7 +371,8 @@ class ReliefwebModel:
             result = []
 
             if self.model is None:
-                logging.ERROR("ERROR: The unique model for vocabulary '%s' has not been defined yet" % self.vocabulary_name)
+                logging.ERROR(
+                    "ERROR: The unique model for vocabulary '%s' has not been defined yet" % self.vocabulary_name)
                 return result
             else:
                 result = self.predict_one_tag_value(sample)
@@ -399,7 +405,9 @@ class ReliefwebModel:
             result = {}
 
             while ((predicted_confidence > self.config["threshold"]) or
-                   (((prev_predicted_confidence - predicted_confidence) / predicted_confidence) < self.config["diff_terms"])):
+                   ((predicted_confidence > 0) and
+                    (((prev_predicted_confidence - predicted_confidence) / predicted_confidence)
+                     < self.config["diff_terms"]))):
                 if len(result) > 0:
                     prev_predicted_confidence = float(result[predicted_label])
                 predicted_confidence = prediction[0, np.argmax(prediction)]

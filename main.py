@@ -2,6 +2,7 @@
 import socket
 
 from flask import Flask, request
+from flask import make_response
 from flask_cors import CORS, cross_origin
 
 from reliefweb_tag import reliefweb_ml_model, reliefweb_predict, reliefweb_config
@@ -25,11 +26,10 @@ def init_models():
 
     print("> Initializing machine learning model")
 
-    print("> MAIN: Creating neural network for themes")
-
     for each in reliefweb_config.MODEL_NAMES:
         # TODO: What does this language collector means? Can we remove it?
         if models.get(each, '') == '':
+            print("> MAIN: Creating neural network for " + each)
             model = reliefweb_ml_model.ReliefwebModel(each)
             models[each] = model
 
@@ -43,34 +43,52 @@ def main():
 
 
 @app.route("/tag_url")
-# sample http://localhost:5000/tag_url?url=https://stackoverflow.com/questions/24892035/python-flask-how-to-get-parameters-from-a-url
+# sample http://localhost:5000/tag_url?scope=report&url=https://stackoverflow.com/questions/24892035/python-flask-how-to-get-parameters-from-a-url
 @cross_origin()
 def reliefweb_tag_url():
+
     import gc
+    import json
 
     gc.collect()
     url = request.args.get('url')
+    scope = request.args.get('scope')
     # if (RWModel.get('language', '') == '') or (RWModel.get('theme', '') == ''):
+    sample_dict = reliefweb_predict.process_url_input(url)
     init_models()
-    json_data = reliefweb_predict.predict(_models=models, _input=url, _scope="report")
+    if scope in ["report", "job"]:
+        sample_dict = reliefweb_predict.predict(_models=models, _sample_dict=sample_dict, _scope=scope)
+    else:
+        sample_dict = {"error": "scope parameter should be job or report", "full_text": ""}
     print("\nDone prediction for: " + url)
-    return json_data
 
+    response = make_response(json.dumps(sample_dict, indent=4))
+    response.headers['content-type'] = 'application/json'
+    return response
 
 @app.route("/tag_text")
-# TODO: To send the text as the body of a POST request
-# sample http://localhost:5000/tag_text?text=Blablalblbalblalbalñldfjk
+# TODO: To send the text as the body of a POST request -- request.POST.get('value')
+# sample http://localhost:5000/tag_text?scope=job&text=Blablalblbalblalbalñldfjk
 @cross_origin()
 def reliefweb_tag_text():
     import gc
+    import json
 
     gc.collect()
     text = request.args.get('text')
-    init_models()
-    json_data = reliefweb_predict.predict(models=models, _input=text, _scope="job")
-    print("\nDone prediction for: " + str(text)[:20] + "...")
-    return json_data
+    scope = request.args.get('scope')
 
+    sample_dict = reliefweb_predict.process_text_input(text)
+    init_models()
+    if scope in ["report", "job"]:
+        sample_dict = reliefweb_predict.predict(_models=models, _sample_dict=sample_dict, _scope=scope)
+    else:
+        sample_dict = {"error": "scope parameter should be job or report", "full_text": ""}
+    print("\nDone prediction for: " + str(text)[:20] + "...")
+
+    response = make_response(json.dumps(sample_dict, indent=4))
+    response.headers['content-type'] = 'application/json'
+    return response
 
 @app.route("/html")
 @cross_origin()

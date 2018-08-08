@@ -207,16 +207,16 @@
                  //$.get( "https://api.reliefweb.int/v1" , function( data ) {
          
                  if (window.location.hostname.includes("github") ) url = "https://rw-tag.herokuapp.com";
-                 else url = "http://0.0.0.0:5000";
+                 else url = "http://localhost:5000";
                  console.log (window.location.hostname);
          
          
-                    $.get( url + "/tag_text?text=" + document.getElementById("title").value + ' '
+                    $.get( url + "/tag_text?scope=job&text=" + document.getElementById("title").value + ' '
                     + document.getElementById("body").value + ' '
                     + document.getElementById("how_to_apply").value    , function( data ) {
                          //As soon as the browser finished downloading, this function is called.
          			
-         			result = JSON.parse(data);
+         			result = data;
          
          			console.log (JSON.stringify(result))
          
@@ -242,6 +242,7 @@
 
          
          			 // CLASSIFICATOR
+         			document.getElementById("job-type").innerHTML = prettyTuple(result["job-type"], true); // OK
          		  	document.getElementById("themes").innerHTML = prettyTuple(result["theme"], true); // OK
 
          			 // ADDITIONAL NO REQUIRED
@@ -269,7 +270,7 @@
       <link rel="shortcut icon" href="favicon.ico">
       <![endif]-->
       <link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon">
-      <title>ReliefWeb Tag Assistant</title>
+       <title>ReliefWeb Tag Assistant / Jobs</title>
       <link type="text/css" rel="stylesheet" href="https://reliefweb.int/sites/reliefweb.int/files/css/css_pZ0_Pb__oDuNeqvCF6qYhf0jzCWsmVNwbLqrmnffLp0.css" media="all" />
       <link type="text/css" rel="stylesheet" href="https://reliefweb.int/sites/reliefweb.int/files/css/css_BASTOQC91zKKLftFQnRol1bwiX23xMteceLWJX9jbjM.css" media="all" />
       <!--[if gte IE 7]>

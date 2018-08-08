@@ -9,12 +9,12 @@ FAST_TESTING = False  # If true, the input dataset is not processed nor normaliz
 # TMP_PDF_FILE = "~/reliefweb-tag-assistant/temp/online_document.pdf"
 TMP_PDF_FILE = "temp/online_document.pdf"  # config for Heroku
 
-MODEL_PATH = "model/"
+MODEL_PATH = "model/"  # NOTE: This directory should exist to save the model files
 # Files with data (with read access)
 # DATA_PATH = "~/reliefweb-tag-assistant/data/"
 DATA_PATH = "data/"  #config for Heroku
 
-MODEL_NAMES = ["theme"] # array with all the models that we want to load
+MODEL_NAMES = ["job-type"]  # array with all the models that we want to load  - ["theme", "job-type"]
 CONFIG_ARRAY = ["max_words", "batch_size", "epochs", "train_percentage", "threshold", "diff_terms", "scope"]
 MODEL_DEF = {}
 
@@ -26,9 +26,14 @@ The dataset should be a csv file with headers. The model will read the fields "p
 
 MODEL_DEF["theme"] = {"vocabulary": "rw-themes.csv",
                       "dataset": "report_theme_uneven_multiple-30k.csv",
-                      # "scope": "report",
+                      "scope": "report",
                       # "dataset": "report_theme_en-1k.csv",
                       }
+MODEL_DEF["job-type"] = {"vocabulary": "rw-job-type.csv",
+                         "dataset": "job_type_3_2k.csv",
+                         "scope": "job",
+                         # "dataset": "report_theme_en-1k.csv",
+                         }
 MODEL_DEF["language"] = {"vocabulary": "rw-languages.csv",
                          "dataset": "report_language-1k.csv"}
 # To access a route : DATA_PATH + DATASETS["theme"]["vocabulary"]

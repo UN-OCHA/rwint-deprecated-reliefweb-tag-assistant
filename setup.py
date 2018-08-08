@@ -4,7 +4,9 @@ from setuptools import setup
 
 sys.path.append("/usr/local/lib/python3.5/dist-packages/")
 if sys.version_info < (3, 5):
-    sys.exit('Sorry, you should run this on Python > 3.5')
+    sys.exit('Sorry, you should run this on Python > 3.5 < 3.7')
+if sys.version_info > (3, 6):
+    sys.exit('Sorry, you should run this on Python > 3.5 < 3.7')
 
 setup(
     name='reliefweb_tag',
@@ -19,22 +21,9 @@ setup(
     keywords='reliefweb humanitarian updates news articles neural classification tagging multitagging',
     zip_safe=False,
     install_requires=[
-        'numpy',
-        'pandas',
-        'sklearn',
-        'keras',
-        'tensorflow',
-        'cucco',
-        'flask',
-        'newspaper3k',
-        'nltk',
-        'langdetect',
-        'geotext',
-        'pycountry',
-        'slate',
-        'requests',
+        # see requirements.txt
     ],
-    python_requires='>3',
+    python_requires='>3, <3.7',
     include_package_data=True,
     classifiers=[
         'Programming Language :: Python :: 3',
