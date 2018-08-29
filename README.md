@@ -58,3 +58,12 @@ $ sudo python3 setup.py install
 $ python3 main.py &
 ```
 
+Once the backend is running you can use the following endpoints:
+
+- http://localhost:5000/tag_url?scope=report&url=https://stackoverflow.com/questions/24892035/python-flask-how-to-get-parameters-from-a-url
+- http://localhost:5000/tag_text?scope=job&text=Blablalblbalblalbal%C3%B1ldfjk
+
+(Updated information and last names for the endpoints in the ```main.py``` file)
+
+Also, as a frontend, there are 2 html webpages that can be loaded in any browser that call those endpoints automatically and display the results in a more friendly way. Those 2 html files have a call to the endpoint that should be modified to reflect your current configuration.
+
