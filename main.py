@@ -66,19 +66,24 @@ def reliefweb_tag_url():
     response.headers['content-type'] = 'application/json'
     return response
 
-@app.route("/tag_text")
-# TODO: To send the text as the body of a POST request -- request.POST.get('value')
-# sample http://localhost:5000/tag_text?scope=job&text=Blablalblbalblalbalñldfjk
+
+@app.route("/tag_text", methods=['POST', 'GET'])
+# GET sample http://localhost:5000/tag_text?scope=job&text=Blablalblbalblalbalñldfjk
 @cross_origin()
 def reliefweb_tag_text():
     import gc
     import json
 
     gc.collect()
-    text = request.args.get('text')
-    scope = request.args.get('scope')
 
-    sample_dict = reliefweb_predict.process_text_input(text)
+    if request.method == 'POST':  # the request will be always POST from the HTML frontend
+        text = request.form['text']
+        scope = request.form['scope']
+    else:  # The get has limitations in the size of the text as it is on the URL
+        text = request.args.get('text')
+        scope = request.args.get('scope')
+
+    sample_dict = reliefweb_predict.process_text_input(_input=text)
     init_models()
     if scope in ["report", "job"]:
         sample_dict = reliefweb_predict.predict(_models=models, _sample_dict=sample_dict, _scope=scope)
