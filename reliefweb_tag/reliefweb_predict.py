@@ -163,7 +163,8 @@ def tag_metadata_url(_url):
     article.parse()
     article.nlp()
 
-    data = {'publish_date': str(article.publish_date),
+    data = {'url': _url,
+            'publish_date': str(article.publish_date),
             'meta_lang': article.meta_lang,
             'meta_keywords': article.meta_keywords,
             'topics': article.meta_data.get('TOPICS', ''),
@@ -225,7 +226,8 @@ def tag_metadata_url_pdf(_urlpdf):
     article.parse()
     article.nlp()
 
-    data = {'publish_date': str(article.publish_date),
+    data = {'url': _urlpdf,
+            'publish_date': str(article.publish_date),
             'meta_lang': article.meta_lang,
             'meta_keywords': article.meta_keywords,
             'topics': article.meta_data.get('TOPICS', ''),
