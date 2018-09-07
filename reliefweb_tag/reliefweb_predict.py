@@ -117,7 +117,8 @@ def tag_metadata(_input):
     except Exception as e:
         print("There was an error processing the text, some of the metadata will not be available")
 
-    data = {'publish_date': str(article.publish_date),
+    data = {'url': _input,
+            'publish_date': str(article.publish_date),
             'meta_lang': article.meta_lang,
             'meta_keywords': article.meta_keywords,
             'topics': article.meta_data.get('TOPICS', ''),
