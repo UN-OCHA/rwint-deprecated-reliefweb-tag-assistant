@@ -324,13 +324,27 @@ def tag_geolocation(_dict_in):
 
     _dict_in['primary_country'] = ""
     if len(places.country_mentions) > 0:
-        country = pycountry.countries.get(alpha_2=list(places.country_mentions)[0])
-        _dict_in['primary_country'] = [country.name, list(places.country_mentions)[0]]
-        _dict_in['countries'] = []
+        prim_country_iso2 = list(places.country_mentions)[0]
+        if prim_country_iso2 == 'UK': # GeoText gets UK as iso2 UK and pycountry get it as GB .
+        # Issue: https://github.com/elyase/geotext/issues/15
+            prim_country_iso2 = 'GB'
+        try: # In case that the FIPS code is not recognized by pycountry
+            country = pycountry.countries.get(alpha_2=prim_country_iso2)
+            _dict_in['primary_country'] = [country.name, prim_country_iso2]
+            _dict_in['countries'] = []
+        except Exception as e:
+            _dict_in['primary_country'] = []
+            _dict_in['countries'] = []
+            _dict_in['error'] = 'The primary country identified ' + prim_country_iso2 + \
+                                ' has a FIPS code not matching any ISO2'
     while len(places.country_mentions) > 0:
         c = places.country_mentions.popitem(last=False)
         iso2 = c[0]
         if iso2 == 'UK':
             iso2 = 'GB'
-        country = pycountry.countries.get(alpha_2=iso2)
-        _dict_in['countries'].append((country.name, iso2, c[1]))
+        try:  # In case that the FIPS code is not recognized by pycountry
+            country = pycountry.countries.get(alpha_2=iso2)
+            _dict_in['countries'].append((country.name, iso2, c[1]))
+        except Exception as e:
+            _dict_in['countries'] = []
+            _dict_in['error'] = 'A country identified ' + iso2 + ' has a FIPS code not matching any ISO2'

@@ -39,7 +39,7 @@ def init_models():
 # Instructions ENDPOINT
 @cross_origin()
 def main():
-    return "Please, use the /tag endpoint with the param url to tag a url or pdf. Example: http://IP:PORT/tag?url=URL_WITH_HTTP"
+    return "Please, use the /tag_url endpoint with the param url to tag a url or pdf. Example: http://IP:PORT/tag_url?url=URL_WITH_HTTP"
 
 
 @app.route("/tag_url")
@@ -115,4 +115,4 @@ if __name__ == '__main__':
 
     # app.run(debug=reliefweb_config.DEBUG, host=publicIP, port=reliefweb_config.PORT)  # use_reloader=False
     init_models()
-    app.run(debug=reliefweb_config.DEBUG, host='0.0.0.0')  # use_reloader=False // This does not call to main
+    app.run(debug=reliefweb_config.DEBUG, host='0.0.0.0', port=reliefweb_config.PORT)  # use_reloader=False // This does not call to main

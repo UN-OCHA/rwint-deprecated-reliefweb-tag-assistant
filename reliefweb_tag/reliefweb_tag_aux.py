@@ -161,8 +161,8 @@ def normalize_language(text):
 
 def detect_language(text):
     from langdetect import detect
-    lang = detect(text)
+    lang = detect(text[0:500]) #For saving time it only gets the first characters of the text
     if (lang) in ["es", "en", "fr"]:
-        return detect(text)
+        return lang
     else:
         return "en"
