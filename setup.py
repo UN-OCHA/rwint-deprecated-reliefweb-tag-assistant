@@ -3,10 +3,8 @@ import sys
 from setuptools import setup
 
 sys.path.append("/usr/local/lib/python3.5/dist-packages/")
-if sys.version_info < (3, 5):
-    sys.exit('Sorry, you should run this on Python > 3.5 < 3.7')
-if sys.version_info > (3, 6):
-    sys.exit('Sorry, you should run this on Python > 3.5 < 3.7')
+if (sys.version_info.major, sys.version_info.minor) != (3, 6):
+    sys.exit('Sorry, you should run this on Python 3.6')
 
 setup(
     name='reliefweb_tag',

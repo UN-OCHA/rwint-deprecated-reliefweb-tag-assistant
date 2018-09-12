@@ -52,8 +52,8 @@ $ pip install -r requirements.txt
 ```
 # if you install from your home path, there is no need to change the config file
 $ git clone https://github.com/reliefweb/reliefweb-tag-assistant/
-$ gedit reliefweb-tag-assistant/reliefweb_config.py # configure the data main path and names of the datasets and vocabulary files.
 $ cd reliefweb-tag-assistant
+$ gedit reliefweb-tag/reliefweb_config.py # configure the data main path and names of the datasets and vocabulary files.
 $ sudo python3 setup.py install
 $ python3 main.py &
 ```
