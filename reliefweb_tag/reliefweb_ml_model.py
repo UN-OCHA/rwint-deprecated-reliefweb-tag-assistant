@@ -412,8 +412,16 @@ class ReliefwebModel:
                     prev_predicted_confidence = float(result[predicted_label])
                 predicted_confidence = prediction[0, np.argmax(prediction)]
                 predicted_label = self.text_labels[np.argmax(prediction)]
-                result[predicted_label] = str(predicted_confidence)
-                prediction[0, np.argmax(prediction)] = 0
+                # only add if it meets the requirements
+                # TODO: To improve this double evaluation
+                if ((predicted_confidence > self.config["threshold"]) or
+                        ((predicted_confidence > 0) and
+                         (((prev_predicted_confidence - predicted_confidence) / predicted_confidence)
+                          < self.config["diff_terms"]))):
+                    result[predicted_label] = str(predicted_confidence)
+                    prediction[0, np.argmax(prediction)] = 0
+                else:
+                    break
 
             # order the result by %
 

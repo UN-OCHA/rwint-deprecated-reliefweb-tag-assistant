@@ -330,7 +330,7 @@ def tag_geolocation(_dict_in):
             prim_country_iso2 = 'GB'
         try: # In case that the FIPS code is not recognized by pycountry
             country = pycountry.countries.get(alpha_2=prim_country_iso2)
-            _dict_in['primary_country'] = [country.name, prim_country_iso2]
+            _dict_in['primary_country'] = [country.name, country.alpha_3]
             _dict_in['countries'] = []
         except Exception as e:
             _dict_in['primary_country'] = []
@@ -344,7 +344,7 @@ def tag_geolocation(_dict_in):
             iso2 = 'GB'
         try:  # In case that the FIPS code is not recognized by pycountry
             country = pycountry.countries.get(alpha_2=iso2)
-            _dict_in['countries'].append((country.name, iso2, c[1]))
+            _dict_in['countries'].append((country.name, country.alpha_3, c[1]))
         except Exception as e:
             _dict_in['countries'] = []
             _dict_in['error'] = 'A country identified ' + iso2 + ' has a FIPS code not matching any ISO2'
