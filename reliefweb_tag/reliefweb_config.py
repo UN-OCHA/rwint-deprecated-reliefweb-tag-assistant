@@ -1,5 +1,5 @@
 # PORT for the API
-PORT = 80
+PORT = 5001
 
 # Debug mode for the messages
 DEBUG = True
@@ -57,8 +57,6 @@ MODEL_DEF["job-category"] = {"vocabulary": "rw-job-category.csv",
                              "batch_size": 256,  # 1024
                              # "dataset": "report_theme_en-1k.csv",
                              }
-
-
 
 # Neural network model parameters
 MODEL_DEF["default"] = {

@@ -9,11 +9,7 @@ def process_url_input(_input):
             # if it is not a URL
             return {"error": "The input should be an url", "full_text": ""}
 
-        # if URL IS PDF or any binary then
-        if _input.lower()[-4:] in [".pdf"]:
-            sample_dict = tag_metadata_url_pdf(_input)
-        else:
-            sample_dict = tag_metadata(_input)
+        sample_dict = tag_metadata(_input)
         tag_language_langdetect(sample_dict)
         tag_geolocation(sample_dict)
 
@@ -116,6 +112,7 @@ def tag_metadata(_input):
         article.nlp()
     except Exception as e:
         print("There was an error processing the text, some of the metadata will not be available")
+        raise e
 
     data = {'url': _input,
             'publish_date': str(article.publish_date),
@@ -142,116 +139,6 @@ def tag_metadata(_input):
     data['article_html'] = 'Removed for better visualization'
 
     return data
-
-
-def tag_metadata_url(_url):
-    """
-    Gets all the tags from the newspaper library
-    :param _input: url not containing a pdf
-    :return:
-    """
-
-    from newspaper import Article, Config
-
-    configuration = Config()
-    configuration.request_timeout = 15  # default = 7
-    configuration.keep_article_html = True
-
-    article = Article(_url, config=configuration)
-
-    article.download()
-    article.html
-    article.parse()
-    article.nlp()
-
-    data = {'url': _url,
-            'publish_date': str(article.publish_date),
-            'meta_lang': article.meta_lang,
-            'meta_keywords': article.meta_keywords,
-            'topics': article.meta_data.get('TOPICS', ''),
-            'language': article.meta_data.get('LANGUAGE', ''),
-            'publication_type': article.meta_data.get('PUBLICATION_TYPE', ''),
-            'text': article.text,
-            'full_text': article.title + " " + str(article.text),
-            'article_html': article.article_html,
-            'authors': article.authors,
-            'title': article.title,
-            'tags': list(article.tags),
-            'keywords': article.keywords,
-            'summary': article.summary,
-            'top_image': article.top_image}
-
-    if article.article_html == '':
-        data['article_html'] = article.html  # takes all the html of the page
-
-    import html2text  # Other libraries are tomd and pandoc
-    data['body_markdown'] = html2text.html2text(str(data['article_html']))
-
-    return data
-
-
-def tag_metadata_url_pdf(_urlpdf):
-    """
-    Gets all the tags from the newspaper library
-    :param _urlpdf: url containing a pdf
-    :return:
-    """
-
-    from reliefweb_tag import reliefweb_tag_aux
-
-    from newspaper import Article, Config
-
-    configuration = Config()
-    configuration.request_timeout = 15  # default = 7
-    configuration.keep_article_html = True
-
-    article = Article(_urlpdf, config=configuration)
-
-    try:
-        pdf = reliefweb_tag_aux.get_pdf_url(input)
-    except Exception as e:
-        raise Exception(e)
-    pdf_text = ' '.join(pdf)
-    article.set_text(pdf_text)
-    article.set_article_html(pdf_text)
-    article.set_html(pdf_text)
-    article.title = pdf.metadata[0].get('Title',
-                                        '')  # set title fills the field with Configuration when title empty
-    article.set_authors([pdf.metadata[0].get('Author', '')])
-    article.publish_date = pdf.metadata[0].get('CreationDate', '')
-    article.html
-
-    article.download()
-    article.html
-
-    article.parse()
-    article.nlp()
-
-    data = {'url': _urlpdf,
-            'publish_date': str(article.publish_date),
-            'meta_lang': article.meta_lang,
-            'meta_keywords': article.meta_keywords,
-            'topics': article.meta_data.get('TOPICS', ''),
-            'language': article.meta_data.get('LANGUAGE', ''),
-            'publication_type': article.meta_data.get('PUBLICATION_TYPE', ''),
-            'text': article.text,
-            'full_text': article.title + " " + str(article.text),
-            'article_html': article.article_html,
-            'authors': article.authors,
-            'title': article.title,
-            'tags': list(article.tags),
-            'keywords': article.keywords,
-            'summary': article.summary,
-            'top_image': article.top_image}
-
-    if article.article_html == '':
-        data['article_html'] = article.html  # takes all the html of the page
-
-    import html2text  # Other libraries are tomd and pandoc
-    data['body_markdown'] = html2text.html2text(str(data['article_html']))
-
-    return data
-
 
 def tag_metadata_text(_text):
     """

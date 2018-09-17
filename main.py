@@ -22,9 +22,7 @@ print("** In the main flow **")
 
 
 def init_models():
-    print("Initializing the ReliefWeb Tag Assistant: auto-tag urls using RW Tags and Machine Learning")
-
-    print("> Initializing machine learning model")
+    print("Testing if machine learning models exist")
 
     for each in reliefweb_config.MODEL_NAMES:
         # TODO: What does this language collector means? Can we remove it?
