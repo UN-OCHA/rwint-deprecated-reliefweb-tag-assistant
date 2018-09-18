@@ -92,6 +92,38 @@ class ReliefwebModel:
 
         return
 
+    def download_nltk_corpus(self):
+        # from https://raw.githubusercontent.com/codelucas/newspaper/master/download_corpora.py
+        # -*- coding: utf-8 -*-
+        # Downloads the necessary NLTK models and corpora required to support
+        # all of newspaper's features. Modify for your own needs.
+        import nltk
+
+        # this is only needed to build the models from scratch
+        required_nltk_corpora = [
+            'brown',  # Required for FastNPExtractor
+            'punkt',  # Required for WordTokenizer
+            'maxent_treebank_pos_tagger',  # Required for NLTKTagger
+            'movie_reviews',  # Required for NaiveBayesAnalyzer
+            'wordnet',  # Required for lemmatization and Wordnet
+            'stopwords'
+        ]
+        try:
+            downloaded_nltk_corpora = [os.listdir(nltk.data.find("corpora")),
+                                       os.listdir(nltk.data.find("tokenizers")),
+                                       os.listdir(nltk.data.find("taggers"))]
+        except Exception as e:
+            print("Empty nltk corpus, initialiting")
+            downloaded_nltk_corpora = []
+
+        print("Start downloading nltk corpora.", flush=True)
+        for each in required_nltk_corpora:
+            if each not in downloaded_nltk_corpora:
+                print(('Downloading "{0}"'.format(each)))
+                nltk.download(each)
+        print("Finished downloading nltk corpora.")
+        return
+
     # main method for creating the whole model:
     # creates the vocabulary, normalize the training set, create the dataset for training,
     # trains and sets the new final model on the models dictionary
@@ -117,7 +149,9 @@ class ReliefwebModel:
 
         import pickle  # to load and save the tokenizer
 
-        model = Sequential()
+        model = Sequential()  # init model
+
+        self.download_nltk_corpus()  # download corpora
 
         if os.path.isfile(model_path + "model_" + vocabulary_name + "_model.json") and \
                 os.path.isfile(model_path + "model_" + vocabulary_name + "_weights.h5") and \
@@ -147,36 +181,6 @@ class ReliefwebModel:
             print("Loaded model " + vocabulary_name + " from disk")
 
         else:  # download nltk corpora, create model and input, save model
-
-            # from https://raw.githubusercontent.com/codelucas/newspaper/master/download_corpora.py
-            # -*- coding: utf-8 -*-
-            # Downloads the necessary NLTK models and corpora required to support
-            # all of newspaper's features. Modify for your own needs.
-            import nltk
-
-            # this is only needed to build the models from scratch
-            required_nltk_corpora = [
-                'brown',  # Required for FastNPExtractor
-                'punkt',  # Required for WordTokenizer
-                'maxent_treebank_pos_tagger',  # Required for NLTKTagger
-                'movie_reviews',  # Required for NaiveBayesAnalyzer
-                'wordnet',  # Required for lemmatization and Wordnet
-                'stopwords'
-            ]
-            try:
-                downloaded_nltk_corpora = [os.listdir(nltk.data.find("corpora")),
-                                           os.listdir(nltk.data.find("tokenizers")),
-                                           os.listdir(nltk.data.find("taggers"))]
-            except Exception as e:
-                print("nltk vacio, initialiting")
-                downloaded_nltk_corpora = []
-
-            print("Start downloading nltk corpora.", flush=True)
-            for each in required_nltk_corpora:
-                if each not in downloaded_nltk_corpora:
-                    print(('Downloading "{0}"'.format(each)))
-                    nltk.download(each)
-            print("Finished downloading nltk corpora.")
 
             self.read_vocabulary()
             data = self.normalize_input()
