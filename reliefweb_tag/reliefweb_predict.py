@@ -4,13 +4,17 @@ def process_url_input(_input):
     :param _input: url of a page or a pdf
     :return: dictionary with the basic tagging
     """
+
+    from reliefweb_tag import reliefweb_tag_aux
+
     try:
         if not ((_input.lower()[:7] == 'http://') or (_input.lower()[:8] == 'https://')):
             # if it is not a URL
             return {"error": "The input should be an url", "full_text": ""}
 
         sample_dict = tag_metadata(_input)
-        tag_language_langdetect(sample_dict)
+        if reliefweb_tag_aux.reliefweb_config.ALL_FIELDS:
+            tag_language_langdetect(sample_dict)
         tag_geolocation(sample_dict)
 
     except Exception as e:
@@ -107,36 +111,39 @@ def tag_metadata(_input):
         article.download()
         article.html
 
-    try:
-        article.parse()
-        article.nlp()
-    except Exception as e:
-        print("There was an error processing the text, some of the metadata will not be available")
-        raise e
-
     data = {'url': _input,
-            'publish_date': str(article.publish_date),
-            'meta_lang': article.meta_lang,
-            'meta_keywords': article.meta_keywords,
-            'topics': article.meta_data.get('TOPICS', ''),
-            'language': article.meta_data.get('LANGUAGE', ''),
-            'publication_type': article.meta_data.get('PUBLICATION_TYPE', ''),
             'text': article.text,
-            'full_text': article.title + " " + str(article.text),
             'article_html': article.article_html,
-            'authors': article.authors,
-            'title': article.title,
-            'tags': list(article.tags),
-            'keywords': article.keywords,
-            'summary': article.summary,
-            'top_image': article.top_image}
+            'title': article.title}
 
     if article.article_html == '':
-        data['article_html'] = article.html  # takes all the html of the page
-
+        article_html = str(article.html)  # takes all the html of the page
+    else:
+        article_html = article.article_html
     import html2text  # Other libraries are tomd and pandoc
-    data['body_markdown'] = html2text.html2text(str(data['article_html']))
-    data['article_html'] = 'Removed for better visualization'
+    data['body_markdown'] = html2text.html2text(str(article_html))
+
+    if reliefweb_tag_aux.reliefweb_config.ALL_FIELDS:
+        try:
+            article.parse()
+            article.nlp()
+
+            data['publish_date'] = str(article.publish_date)
+            data['meta_lang'] = article.meta_lang
+            data['meta_keywords'] = article.meta_keywords,
+            data['topics'] = article.meta_data.get('TOPICS', '')
+            data['language'] = article.meta_data.get('LANGUAGE', '')
+            data['publication_type'] = article.meta_data.get('PUBLICATION_TYPE', '')
+            data['full_text'] = "{0} {1}".format(article.title, str(article.text))
+            data['article_html'] = article_html
+            data['authors'] = article.authors
+            data['tags'] = list(article.tags)
+            data['keywords'] = article.keywords
+            data['summary'] = article.summary
+            data['top_image'] = article.top_image
+        except Exception as e:
+            print("There was an error processing the text, some of the metadata will not be available")
+            raise e
 
     return data
 

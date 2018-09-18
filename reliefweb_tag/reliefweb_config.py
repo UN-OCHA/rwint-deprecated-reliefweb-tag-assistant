@@ -4,6 +4,7 @@ PORT = 5001
 # Debug mode for the messages
 DEBUG = True
 FAST_TESTING = False  # If true, the input dataset is not processed nor normalized for quick testing
+ALL_FIELDS = False  # If True, it will return all fields, if False, only the ones necessary for jobs and RW platform
 
 # Name and route of the temporarary file to create for the PDFs
 # TMP_PDF_FILE = "~/reliefweb-tag-assistant/temp/online_document.pdf"
