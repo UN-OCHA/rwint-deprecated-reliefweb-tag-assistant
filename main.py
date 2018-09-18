@@ -18,12 +18,46 @@ app.threaded = False
 global models
 models = {}
 
-print("** In the main flow **")
 
+def download_nltk_corpus():
+    # from https://raw.githubusercontent.com/codelucas/newspaper/master/download_corpora.py
+    # -*- coding: utf-8 -*-
+    # Downloads the necessary NLTK models and corpora required to support
+    # all of newspaper's features. Modify for your own needs.
+    import nltk
+
+    # this is only needed to build the models from scratch
+    required_nltk_corpora = [
+        'brown',  # Required for FastNPExtractor
+        'punkt',  # Required for WordTokenizer
+        'maxent_treebank_pos_tagger',  # Required for NLTKTagger
+        'movie_reviews',  # Required for NaiveBayesAnalyzer
+        'wordnet',  # Required for lemmatization and Wordnet
+        'stopwords'
+    ]
+    try:
+        downloaded_nltk_corpora = [os.listdir(nltk.data.find("corpora")),
+                                   os.listdir(nltk.data.find("tokenizers")),
+                                   os.listdir(nltk.data.find("taggers"))]
+    except Exception as e:
+        print("Empty nltk corpus, initialiting")
+        downloaded_nltk_corpora = []
+
+    print("Start downloading nltk corpora.", flush=True)
+    for each in required_nltk_corpora:
+        if each not in downloaded_nltk_corpora:
+            print(('Downloading "{0}"'.format(each)))
+            nltk.download(each)
+    print("Finished downloading nltk corpora.")
+    return
+
+
+download_nltk_corpus()
+
+print("** In the main flow **")
 
 def init_models():
     print("Testing if machine learning models exist")
-
     for each in reliefweb_config.MODEL_NAMES:
         # TODO: What does this language collector means? Can we remove it?
         if models.get(each, '') == '':
@@ -52,10 +86,11 @@ def reliefweb_tag_url():
     url = request.args.get('url')
     scope = request.args.get('scope')
     # if (RWModel.get('language', '') == '') or (RWModel.get('theme', '') == ''):
-    sample_dict = reliefweb_predict.process_url_input(url)
+    sample_dict = reliefweb_predict.process_url_input(url)  # metadata and scraping the article
     init_models()
     if scope in ["report", "job"]:
         sample_dict = reliefweb_predict.predict(_models=models, _sample_dict=sample_dict, _scope=scope)
+        # machine learning predictions
     else:
         sample_dict = {"error": "scope parameter should be job or report", "full_text": ""}
     print("\nDone prediction for: " + url)

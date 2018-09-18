@@ -110,11 +110,12 @@ def tag_metadata(_input):
         # if it is not pdf
         article.download()
         article.html
+        article.parse()
 
     data = {'url': _input,
+            'title': article.title,
             'text': article.text,
-            'article_html': article.article_html,
-            'title': article.title}
+            'article_html': article.article_html}
 
     if article.article_html == '':
         article_html = str(article.html)  # takes all the html of the page
@@ -122,10 +123,10 @@ def tag_metadata(_input):
         article_html = article.article_html
     import html2text  # Other libraries are tomd and pandoc
     data['body_markdown'] = html2text.html2text(str(article_html))
+    data['full_text'] = "{0} {1}".format(article.title, str(article.text))  # necessary for predictions
 
     if reliefweb_tag_aux.reliefweb_config.ALL_FIELDS:
         try:
-            article.parse()
             article.nlp()
 
             data['publish_date'] = str(article.publish_date)
@@ -134,13 +135,12 @@ def tag_metadata(_input):
             data['topics'] = article.meta_data.get('TOPICS', '')
             data['language'] = article.meta_data.get('LANGUAGE', '')
             data['publication_type'] = article.meta_data.get('PUBLICATION_TYPE', '')
-            data['full_text'] = "{0} {1}".format(article.title, str(article.text))
-            data['article_html'] = article_html
             data['authors'] = article.authors
             data['tags'] = list(article.tags)
             data['keywords'] = article.keywords
             data['summary'] = article.summary
             data['top_image'] = article.top_image
+            data['article_html'] = article_html
         except Exception as e:
             print("There was an error processing the text, some of the metadata will not be available")
             raise e
