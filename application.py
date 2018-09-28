@@ -7,13 +7,13 @@ from flask_cors import CORS, cross_origin
 
 from reliefweb_tag import reliefweb_ml_model, reliefweb_predict, reliefweb_config
 
-global app
-app = Flask(__name__)
-cors = CORS(app)
-app.config['CORS_HEADER'] = 'Content-type'
+global application
+application = Flask(__name__)
+cors = CORS(application)
+application.config['CORS_HEADER'] = 'Content-type'
 # Content-type: application/json
-app.debug = False
-app.threaded = False
+application.debug = False
+application.threaded = False
 
 global models
 models = {}
@@ -67,14 +67,14 @@ def init_models():
 
 
 # Creating the API endpoints
-@app.route("/")
+@application.route("/")
 # Instructions ENDPOINT
 @cross_origin()
 def main():
     return "Please, use the /tag_url endpoint with the param url to tag a url or pdf. Example: http://IP:PORT/tag_url?url=URL_WITH_HTTP"
 
 
-@app.route("/tag_url")
+@application.route("/tag_url")
 # sample http://localhost:5000/tag_url?scope=report&url=https://stackoverflow.com/questions/24892035/python-flask-how-to-get-parameters-from-a-url
 @cross_origin()
 def reliefweb_tag_url():
@@ -100,7 +100,7 @@ def reliefweb_tag_url():
     return response
 
 
-@app.route("/tag_text", methods=['POST', 'GET'])
+@application.route("/tag_text", methods=['POST', 'GET'])
 # GET sample http://localhost:5000/tag_text?scope=job&text=Blablalblbalblalbalñldfjk
 @cross_origin()
 def reliefweb_tag_text():
@@ -128,13 +128,13 @@ def reliefweb_tag_text():
     response.headers['content-type'] = 'application/json'
     return response
 
-@app.route("/html")
+@application.route("/html")
 @cross_origin()
 def htmlpage():
     return app.send_static_file('rwtag.html')
 
 
-@app.route("/test")
+@application.route("/test")
 def test():
     return "TEST ENDPOINT"
 
@@ -146,6 +146,6 @@ if __name__ == '__main__':
     publicIP = s.getsockname()[0]
     s.close()
 
-    # app.run(debug=reliefweb_config.DEBUG, host=publicIP, port=reliefweb_config.PORT)  # use_reloader=False
+    # application.run(debug=reliefweb_config.DEBUG, host=publicIP, port=reliefweb_config.PORT)  # use_reloader=False
     init_models()
-    app.run(debug=reliefweb_config.DEBUG, host='0.0.0.0', port=reliefweb_config.PORT)  # use_reloader=False // This does not call to main
+    application.run(debug=reliefweb_config.DEBUG, host='0.0.0.0', port=reliefweb_config.PORT)  # use_reloader=False // This does not call to main
