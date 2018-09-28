@@ -25,6 +25,7 @@ def download_nltk_corpus():
     # Downloads the necessary NLTK models and corpora required to support
     # all of newspaper's features. Modify for your own needs.
     import nltk
+    import os
 
     # this is only needed to build the models from scratch
     required_nltk_corpora = [
@@ -47,10 +48,9 @@ def download_nltk_corpus():
     for each in required_nltk_corpora:
         if each not in downloaded_nltk_corpora:
             print(('Downloading "{0}"'.format(each)))
-            nltk.download(each)
+            nltk.download(each, download_dir=reliefweb_config.NLTK_DATA_PATH)
     print("Finished downloading nltk corpora.")
     return
-
 
 download_nltk_corpus()
 

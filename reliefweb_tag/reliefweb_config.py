@@ -1,5 +1,5 @@
 # PORT for the API
-PORT = 5001
+PORT = 80
 
 # Debug mode for the messages
 DEBUG = True
@@ -14,6 +14,8 @@ MODEL_PATH = "model/"
 # Files with data (with read access)
 # DATA_PATH = "~/reliefweb-tag-assistant/data/"
 DATA_PATH = "data/"  #config for Heroku
+NLTK_DATA_PATH = "nltk_data/"
+
 
 MODEL_NAMES = ["job-type", "job-experience", "job-theme",
                "job-category"]  # array with all the models that we want to load  - ["theme", "job-type"]
@@ -58,6 +60,8 @@ MODEL_DEF["job-category"] = {"vocabulary": "rw-job-category.csv",
                              "batch_size": 256,  # 1024
                              # "dataset": "report_theme_en-1k.csv",
                              }
+
+
 
 # Neural network model parameters
 MODEL_DEF["default"] = {
