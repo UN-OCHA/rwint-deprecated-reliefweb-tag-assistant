@@ -209,36 +209,41 @@ def tag_geolocation(_dict_in):
 
     from geotext import GeoText
     import pycountry
-    import json
+    from collections import Counter
 
     places = GeoText(_dict_in['full_text'])
-    _dict_in['cities'] = places.cities
-    _dict_in['nationalities'] = places.nationalities
-    _dict_in['countries_iso2'] = json.dumps(places.country_mentions)
 
-    _dict_in['primary_country'] = ""
-    if len(places.country_mentions) > 0:
-        prim_country_iso2 = list(places.country_mentions)[0]
-        if prim_country_iso2 == 'UK': # GeoText gets UK as iso2 UK and pycountry get it as GB .
-        # Issue: https://github.com/elyase/geotext/issues/15
-            prim_country_iso2 = 'GB'
-        try: # In case that the FIPS code is not recognized by pycountry
-            country = pycountry.countries.get(alpha_2=prim_country_iso2)
-            _dict_in['primary_country'] = [country.name, country.alpha_3]
-            _dict_in['countries'] = []
-        except Exception as e:
-            _dict_in['primary_country'] = []
-            _dict_in['countries'] = []
-            _dict_in['error'] = 'The primary country identified ' + prim_country_iso2 + \
-                                ' has a FIPS code not matching any ISO2'
-    while len(places.country_mentions) > 0:
-        c = places.country_mentions.popitem(last=False)
-        iso2 = c[0]
-        if iso2 == 'UK':
-            iso2 = 'GB'
+    countries_frequency = Counter(places.country_mentions)
+    cities_frequency = Counter(places.cities)  # It doesn't report the frequency of the cities
+    # TODO: To use https://github.com/ushahidi/geograpy for better Geo Performance
+
+    countries_iso2 = list(countries_frequency)  # list of unique elements
+    cities = list(cities_frequency)
+
+    _dict_in['cities'] = cities
+    _dict_in['nationalities'] = places.nationalities
+    _dict_in['countries_iso2'] = countries_iso2
+
+    # primary city
+    if len(cities_frequency) > 0:
+        primary_city = cities_frequency.most_common(1)[0][0]
+        _dict_in['primary_city'] = primary_city
+    else:
+        _dict_in['primary_city'] = ""
+
+    # country and primary country
+    i = 0
+    _dict_in['countries'] = []
+    while i < len(countries_iso2):
+        country_iso2 = countries_iso2[i]
+        i = i + 1
+        if country_iso2 == 'UK':
+            country_iso2 = 'GB'
         try:  # In case that the FIPS code is not recognized by pycountry
-            country = pycountry.countries.get(alpha_2=iso2)
-            _dict_in['countries'].append((country.name, country.alpha_3, c[1]))
+            country = pycountry.countries.get(alpha_2=country_iso2)
+            _dict_in['countries'].append((country.name, country.alpha_3, country_iso2))
+            if i == 0:  # primary country
+                _dict_in['primary_country'] = [country.name, country.alpha_3]
         except Exception as e:
             _dict_in['countries'] = []
-            _dict_in['error'] = 'A country identified ' + iso2 + ' has a FIPS code not matching any ISO2'
+            _dict_in['error'] = 'A country identified ' + country_iso2 + ' has a FIPS code not matching any ISO2'
