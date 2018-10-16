@@ -15,7 +15,8 @@ MODEL_PATH = "model/"
 # DATA_PATH = "~/reliefweb-tag-assistant/data/"
 DATA_PATH = "data/"  # config for Heroku
 
-MODEL_NAMES = ["theme", "job-type"]  # array with all the models that we want to load
+MODEL_NAMES = ["job-theme", "job-type", "job-category",
+               "job-experience"]  # array with all the models that we want to load
 CONFIG_ARRAY = ["max_words", "batch_size", "epochs", "train_percentage", "threshold", "diff_terms", "scope"]
 MODEL_DEF = {}
 
@@ -25,13 +26,13 @@ named the same as the vocabulary_name
 The dataset should be a csv file with headers. The model will read the fields "post" and "value" which are mandatory.
 '''
 
-MODEL_DEF["theme"] = {"vocabulary": "rw-themes.csv",
-                      "dataset": "report_theme_uneven_multiple-30k.csv",
-                      # "scope": "report",
-                      # "dataset": "report_theme_en-1k.csv",
-                      }
+MODEL_DEF["job-theme"] = {"vocabulary": "rw-themes.csv",
+                          "dataset": "theme_30k.csv",
+                          # "scope": "report",
+                          # "dataset": "report_theme_en-1k.csv",
+                          }
 MODEL_DEF["job-type"] = {"vocabulary": "rw-job-type.csv",
-                         "dataset": "job_type_3_2k.csv",
+                         "dataset": "job_type_30k.csv",
                          # "scope": "report",
                          # "dataset": "report_theme_en-1k.csv",
                          }

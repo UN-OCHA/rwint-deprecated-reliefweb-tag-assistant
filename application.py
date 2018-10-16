@@ -5,7 +5,7 @@ from flask import Flask, request
 from flask import make_response
 from flask_cors import CORS, cross_origin
 
-from reliefweb_tag import reliefweb_ml_model, reliefweb_predict, reliefweb_config
+from reliefweb_tag import reliefweb_ml_model, reliefweb_predict, reliefweb_config, reliefweb_compare
 
 global application
 application = Flask(__name__)
@@ -94,6 +94,9 @@ def reliefweb_tag_url():
     else:
         sample_dict = {"error": "scope parameter should be job or report", "full_text": ""}
     print("\nDone prediction for: " + url)
+
+    if (reliefweb_config.COMPARE_RELIEFWEB):
+        sample_dict = reliefweb_compare.compare_results_job(scope, sample_dict)
 
     response = make_response(json.dumps(sample_dict, indent=4))
     response.headers['content-type'] = 'application/json'

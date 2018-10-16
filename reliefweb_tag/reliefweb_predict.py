@@ -222,18 +222,18 @@ def tag_geolocation(_dict_in):
 
     _dict_in['cities'] = cities
     _dict_in['nationalities'] = places.nationalities
-    _dict_in['countries_iso2'] = countries_iso2
+    _dict_in['countries-iso2'] = countries_iso2
 
     # primary city
     if len(cities_frequency) > 0:
         primary_city = cities_frequency.most_common(1)[0][0]
-        _dict_in['primary_city'] = primary_city
+        _dict_in['city'] = primary_city
     else:
-        _dict_in['primary_city'] = ""
+        _dict_in['city'] = ""
 
     # country and primary country
     i = 0
-    _dict_in['countries'] = []
+    _dict_in['country'] = []
     while i < len(countries_iso2):
         country_iso2 = countries_iso2[i]
         i = i + 1
@@ -241,9 +241,9 @@ def tag_geolocation(_dict_in):
             country_iso2 = 'GB'
         try:  # In case that the FIPS code is not recognized by pycountry
             country = pycountry.countries.get(alpha_2=country_iso2)
-            _dict_in['countries'].append((country.name, country.alpha_3, country_iso2))
+            _dict_in['country'].append((country.name, country.alpha_3, country_iso2))
             if i == 0:  # primary country
-                _dict_in['primary_country'] = [country.name, country.alpha_3]
+                _dict_in['primary-country'] = [country.name, country.alpha_3]
         except Exception as e:
-            _dict_in['countries'] = []
+            _dict_in['country'] = []
             _dict_in['error'] = 'A country identified ' + country_iso2 + ' has a FIPS code not matching any ISO2'

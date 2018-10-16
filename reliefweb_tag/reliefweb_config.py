@@ -5,6 +5,7 @@ PORT = 80
 DEBUG = True
 FAST_TESTING = False  # If true, the input dataset is not processed nor normalized for quick testing
 ALL_FIELDS = False  # If True, it will return all fields, if False, only the ones necessary for jobs and RW platform
+COMPARE_RELIEFWEB = True  # IF the url to analyze is from ReliefWeb, it will compare the predictions with the data in RW
 
 # Name and route of the temporarary file to create for the PDFs
 # TMP_PDF_FILE = "~/reliefweb-tag-assistant/temp/online_document.pdf"
@@ -16,9 +17,8 @@ MODEL_PATH = "model/"
 DATA_PATH = "data/"  #config for Heroku
 NLTK_DATA_PATH = "nltk_data/"
 
-
-MODEL_NAMES = ["job-type", "job-experience", "job-theme",
-               "job-category"]  # array with all the models that we want to load  - ["theme", "job-type"]
+MODEL_NAMES = ["job-type", "job-experience", "job-theme", "job-category"]
+# array with all the models that we want to load  - ["theme", "job-type"]
 CONFIG_ARRAY = ["max_words", "batch_size", "epochs", "train_percentage", "threshold", "diff_terms", "scope"]
 MODEL_DEF = {}
 
@@ -37,27 +37,27 @@ MODEL_DEF["language"] = {"vocabulary": "rw-languages.csv",
                          "dataset": "report_language-1k.csv"}
 # To access a route : DATA_PATH + DATASETS["theme"]["vocabulary"]
 MODEL_DEF["job-type"] = {"vocabulary": "rw-job-type.csv",
-                         "dataset": "tmp-rw-job-type-2k-even.csv",
+                         "dataset": "job_type_30k.csv",
                          "scope": "job",
                          "batch_size": 128,  # 1024
                          # "dataset": "report_theme_en-1k.csv",
                          }
 MODEL_DEF["job-experience"] = {"vocabulary": "rw-job-experience.csv",
-                               "dataset": "tmp-rw-job-experience-4k-even.csv",
+                               "dataset": "experience_30k.csv",
                                "scope": "job",
-                               "batch_size": 256,  # 1024
+                               "batch_size": 128,  # 1024
                                # "dataset": "report_theme_en-1k.csv",
                                }
 MODEL_DEF["job-theme"] = {"vocabulary": "rw-job-theme.csv",
-                          "dataset": "tmp-rw-job-theme-10k-even.csv",
+                          "dataset": "theme_30k.csv",
                           "scope": "job",
-                          "batch_size": 512,  # 1024
+                          "batch_size": 128,  # 1024
                           # "dataset": "report_theme_en-1k.csv",
                           }
 MODEL_DEF["job-category"] = {"vocabulary": "rw-job-category.csv",
-                             "dataset": "tmp-rw-job-category-5k-even.csv",
+                             "dataset": "category_30k.csv",
                              "scope": "job",
-                             "batch_size": 256,  # 1024
+                             "batch_size": 128,  # 1024
                              # "dataset": "report_theme_en-1k.csv",
                              }
 
