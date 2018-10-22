@@ -242,7 +242,7 @@ def tag_geolocation(_dict_in):
         try:  # In case that the FIPS code is not recognized by pycountry
             country = pycountry.countries.get(alpha_2=country_iso2)
             _dict_in['country'].append((country.name, country.alpha_3, country_iso2))
-            if i == 0:  # primary country
+            if i == 1:  # primary country
                 _dict_in['primary-country'] = [country.name, country.alpha_3]
         except Exception as e:
             _dict_in['country'] = []
