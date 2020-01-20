@@ -47,7 +47,7 @@ pycountry==18.5.26
 pytest==3.8.1
 python-dateutil==2.7.3
 pytz==2018.4
-PyYAML==3.12
+PyYAML==5.1
 requests==2.19.1
 requests-file==1.4.3
 setuptools==39.1.0
